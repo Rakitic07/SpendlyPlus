@@ -1,0 +1,26 @@
+src/components/ExpenseForm.tsx
+  s_995f1e3ac5091f::t_303db23f35d73d 114-115,117
+  s_995f1e3ac5091f::t_5991f669ff9450 105,107-108,110
+  s_995f1e3ac5091f::t_8812d9eca6c5d1 170-175
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "8241973c3e01eccb7f9eda39d3390a914985e87b",
+  "prompts": {},
+  "humans": {
+    "h_a373eedd7fd2e3": {
+      "author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  },
+  "sessions": {
+    "s_995f1e3ac5091f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2cfe14fe-abca-475a-b90e-25b3e200ffb2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  }
+}
