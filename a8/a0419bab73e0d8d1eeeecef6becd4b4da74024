@@ -1,0 +1,43 @@
+src/components/SyncButton.tsx
+  s_995f1e3ac5091f::t_6ba3ba3720cb92 1-49
+src/lib/offline.ts
+  s_995f1e3ac5091f::t_947cbddb317ae6 25-44
+  s_995f1e3ac5091f::t_45ec6fc3c22ae8 1-24,45-238
+src/components/Dashboard.tsx
+  s_995f1e3ac5091f::t_e142af9e112acc 38,42-59
+  s_995f1e3ac5091f::t_191398e4d1cc95 60
+src/app/page.tsx
+  s_995f1e3ac5091f::t_7157a932ba405e 3-5
+src/lib/api.ts
+  s_995f1e3ac5091f::t_04f0b33a31eee4 17-22
+src/components/Spendly.tsx
+  s_995f1e3ac5091f::t_e6f3dca022af5d 18-20
+  s_995f1e3ac5091f::t_3e041ddfd1579c 231-236
+  s_995f1e3ac5091f::t_53f7a5f9514697 90,102-105,107-118,123-134,137
+  s_995f1e3ac5091f::t_940a1cc26063c3 176
+  s_995f1e3ac5091f::t_e26ebd51a14221 9-17,21,27,38-40,42-61,84-89,91-97,138-142,144-163,167-174,180,183-185,187-188,191-193,196-198,201-206
+  s_995f1e3ac5091f::t_8482d7baa2d126 98
+src/app/api/bootstrap/route.ts
+  s_995f1e3ac5091f::t_fddadee051014e 1-38
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "a8a0419bab73e0d8d1eeeecef6becd4b4da74024",
+  "prompts": {},
+  "humans": {
+    "h_a373eedd7fd2e3": {
+      "author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  },
+  "sessions": {
+    "s_995f1e3ac5091f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2cfe14fe-abca-475a-b90e-25b3e200ffb2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  }
+}
