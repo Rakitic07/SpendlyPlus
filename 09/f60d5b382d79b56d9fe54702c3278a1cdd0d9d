@@ -1,0 +1,40 @@
+src/components/ServiceWorkerRegister.tsx
+  s_995f1e3ac5091f::t_f0d9021f9b6092 1-25
+src/app/layout.tsx
+  s_995f1e3ac5091f::t_897a9902b89f68 3-43
+  s_995f1e3ac5091f::t_293241333cd86a 1-2
+  s_995f1e3ac5091f::t_6b517415f2548e 44-46
+src/app/manifest.ts
+  s_995f1e3ac5091f::t_5b3d698d5bfd29 1-39
+README.md
+  s_995f1e3ac5091f::t_d7b3b7965f5422 108-128
+  s_995f1e3ac5091f::t_40dd524a817d6a 136-143
+  s_995f1e3ac5091f::t_6f019908bdee20 105-107
+  s_995f1e3ac5091f::t_68615cc766126b 129-131,133-135
+  s_995f1e3ac5091f::t_3173b044b2a3f9 144-146
+public/sw.js
+  s_995f1e3ac5091f::t_2b44eb78d83b89 1-72
+package-lock.json
+  s_995f1e3ac5091f::t_4d3b1b7a35657c 1-7023
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "09f60d5b382d79b56d9fe54702c3278a1cdd0d9d",
+  "prompts": {},
+  "humans": {
+    "h_a373eedd7fd2e3": {
+      "author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  },
+  "sessions": {
+    "s_995f1e3ac5091f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2cfe14fe-abca-475a-b90e-25b3e200ffb2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": null
+    }
+  }
+}
