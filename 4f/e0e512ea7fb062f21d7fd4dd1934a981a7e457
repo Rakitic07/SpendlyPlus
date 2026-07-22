@@ -1,0 +1,19 @@
+package-lock.json
+  s_995f1e3ac5091f::t_4d3b1b7a35657c 1-7023
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "4fe0e512ea7fb062f21d7fd4dd1934a981a7e457",
+  "prompts": {},
+  "sessions": {
+    "s_995f1e3ac5091f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2cfe14fe-abca-475a-b90e-25b3e200ffb2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  }
+}
