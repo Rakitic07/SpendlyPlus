@@ -1,0 +1,57 @@
+src/lib/api.ts
+  s_995f1e3ac5091f::t_3e3e516ca2c650 17,20-27,33-39
+  s_995f1e3ac5091f::t_d38f31440c70e5 28-32
+src/app/api/budget/route.ts
+  s_995f1e3ac5091f::t_d981c0645ed5da 1-18,33-60
+  s_995f1e3ac5091f::t_664c2aeeb2d3f1 19-32
+src/components/BudgetRing.tsx
+  s_995f1e3ac5091f::t_369337cdabfca2 36
+  s_995f1e3ac5091f::t_74194ec37a8ed0 98
+  s_995f1e3ac5091f::t_4a747b92b6219c 67
+src/lib/offline.ts
+  s_995f1e3ac5091f::t_03c0499cc9d552 264-270,272-290,292,297-308,310
+  s_995f1e3ac5091f::t_012fad42e3a683 25-26
+  s_995f1e3ac5091f::t_4bef26269b56c6 98-135
+src/components/Dashboard.tsx
+  s_995f1e3ac5091f::t_1fd6ca11c0050d 144-145,150-152
+  s_995f1e3ac5091f::t_b664a81053ac16 276-277
+src/app/api/bootstrap/route.ts
+  s_995f1e3ac5091f::t_cd5a377917269d 23,37
+prisma/schema.prisma
+  s_995f1e3ac5091f::t_3b8153634995af 18-19
+prisma/schema.sqlite.prisma
+  s_995f1e3ac5091f::t_dc70eec4bf1196 20
+src/components/Spendly.tsx
+  s_995f1e3ac5091f::t_7ea94709361c36 54,61-62
+  s_995f1e3ac5091f::t_8f7813caf01f73 100
+  s_995f1e3ac5091f::t_d042148b3f75f9 39
+  s_995f1e3ac5091f::t_cb1cf17553d7dd 382-394
+  s_995f1e3ac5091f::t_830a53e51012b4 210,216-225
+  s_995f1e3ac5091f::t_0e580b7ca04f7c 21-24
+  s_995f1e3ac5091f::t_9fd0dff6444402 162
+  s_995f1e3ac5091f::t_bfe986521ecf27 5
+  s_995f1e3ac5091f::t_c8244cb7ebaa8f 113-114,116-117,119,121-143,145,148
+  s_995f1e3ac5091f::t_3320c48be4e03c 226
+  s_995f1e3ac5091f::t_dea9d163c0dcd4 308-309
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "ad5f8c302e457b872aa093e39a8aa79a56667a18",
+  "prompts": {},
+  "humans": {
+    "h_a373eedd7fd2e3": {
+      "author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  },
+  "sessions": {
+    "s_995f1e3ac5091f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2cfe14fe-abca-475a-b90e-25b3e200ffb2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": null
+    }
+  }
+}
