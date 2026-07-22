@@ -1,0 +1,54 @@
+src/app/layout.tsx
+  s_995f1e3ac5091f::t_0422e0ec7cb9f6 6,9,14
+src/components/Background.tsx
+  s_995f1e3ac5091f::t_7bf0714658a352 7-15
+.env.example
+  s_995f1e3ac5091f::t_db71a265da5bf9 2
+src/components/CurrencySelect.tsx
+  s_995f1e3ac5091f::t_56c77631a0884f 11,14-19,24,28
+public/sw.js
+  s_995f1e3ac5091f::t_700782043dff44 1
+  s_995f1e3ac5091f::t_73db2c5b8e68f3 8
+package.json
+  s_995f1e3ac5091f::t_e8212bb672810a 2,5
+src/components/ExpenseForm.tsx
+  s_995f1e3ac5091f::t_b43c5fb9279897 168-170,172
+  s_995f1e3ac5091f::t_ef5319ef8c7645 72-75
+src/app/globals.css
+  s_995f1e3ac5091f::t_778aa532b9c139 46
+  s_995f1e3ac5091f::t_584c72c9404f57 30
+  s_995f1e3ac5091f::t_ad94147a1836e1 63
+  s_995f1e3ac5091f::t_1482b294c5017d 77
+  s_995f1e3ac5091f::t_4be3a7e8c0190a 139-173
+README.md
+  s_995f1e3ac5091f::t_11bb8485767856 110
+  s_995f1e3ac5091f::t_a1edd4e3663dd5 1
+src/app/manifest.ts
+  s_995f1e3ac5091f::t_3549d85c190fd5 3-4,7-8
+src/components/Spendly.tsx
+  s_995f1e3ac5091f::t_18816867470aea 103-105,108,110,117,124
+  s_995f1e3ac5091f::t_f421afe75ec656 106
+  s_995f1e3ac5091f::t_19de65c09e7f5d 219
+  s_995f1e3ac5091f::t_7a0219bdb843fe 109
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "cd9ba3df95196e887ebd8f57e5384fea7723caf0",
+  "prompts": {},
+  "humans": {
+    "h_a373eedd7fd2e3": {
+      "author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  },
+  "sessions": {
+    "s_995f1e3ac5091f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2cfe14fe-abca-475a-b90e-25b3e200ffb2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  }
+}
