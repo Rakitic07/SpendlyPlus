@@ -1,0 +1,48 @@
+src/app/globals.css
+  s_995f1e3ac5091f::t_b5976d9f15039b 164-190
+  s_995f1e3ac5091f::t_0735b98e9b7423 191-202
+src/lib/categories.ts
+  s_995f1e3ac5091f::t_a985e87cac149b 29-32
+src/components/ExpenseForm.tsx
+  s_995f1e3ac5091f::t_2cca421649ece5 5,7-17
+  s_995f1e3ac5091f::t_c5edc64bc44811 6
+  s_995f1e3ac5091f::t_1a0c6a303af19f 82
+  s_995f1e3ac5091f::t_ab9008eee2a678 103-105,111
+  s_995f1e3ac5091f::t_6eb4afea8f38ef 66-68,71,81
+  s_995f1e3ac5091f::t_298a4b14547f68 69-70,72-73
+  s_995f1e3ac5091f::t_cec3f7dc58addf 210-216,228-230,246-262
+  s_995f1e3ac5091f::t_27e0e0dd8e860c 23-25
+  s_995f1e3ac5091f::t_797038e9688dd9 51-52
+  s_995f1e3ac5091f::t_a2c5ed11e45fff 53-54
+  s_995f1e3ac5091f::t_f87a4b90221fda 175-201
+  s_995f1e3ac5091f::t_0e41fd967ac9c8 263-274
+src/components/Spendly.tsx
+  s_995f1e3ac5091f::t_e72ff414b0abbd 302-306
+  s_995f1e3ac5091f::t_84071dbb604e41 183-193
+  s_995f1e3ac5091f::t_f7ffdcd1332bdb 284,289-291,293-294
+  s_995f1e3ac5091f::t_b9bfe07b114cee 47
+  s_995f1e3ac5091f::t_178083edcfb9d6 292
+public/sw.js
+  s_995f1e3ac5091f::t_a5ac93959b6036 8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "1a2a7582b6acf62be0f6896eab178e04315cf1b7",
+  "prompts": {},
+  "humans": {
+    "h_a373eedd7fd2e3": {
+      "author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  },
+  "sessions": {
+    "s_995f1e3ac5091f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2cfe14fe-abca-475a-b90e-25b3e200ffb2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": null
+    }
+  }
+}
