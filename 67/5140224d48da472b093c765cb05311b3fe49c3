@@ -1,0 +1,34 @@
+src/lib/categories.ts
+  s_995f1e3ac5091f::t_a985e87cac149b 29-32
+src/components/ExpenseForm.tsx
+  s_995f1e3ac5091f::t_c5edc64bc44811 6
+  s_995f1e3ac5091f::t_27e0e0dd8e860c 12-14
+  s_995f1e3ac5091f::t_6eb4afea8f38ef 53-57,65
+  s_995f1e3ac5091f::t_ab9008eee2a678 86-88,94
+  s_995f1e3ac5091f::t_797038e9688dd9 40-41
+  s_995f1e3ac5091f::t_f87a4b90221fda 158-184
+  s_995f1e3ac5091f::t_0e41fd967ac9c8 221-232
+src/components/Spendly.tsx
+  s_995f1e3ac5091f::t_f7ffdcd1332bdb 272,277-282
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "675140224d48da472b093c765cb05311b3fe49c3",
+  "prompts": {},
+  "humans": {
+    "h_a373eedd7fd2e3": {
+      "author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  },
+  "sessions": {
+    "s_995f1e3ac5091f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2cfe14fe-abca-475a-b90e-25b3e200ffb2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  }
+}
