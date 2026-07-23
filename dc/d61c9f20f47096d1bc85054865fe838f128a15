@@ -1,0 +1,27 @@
+src/components/Dashboard.tsx
+  s_995f1e3ac5091f::t_5caf4bd761670a 19-20
+  s_995f1e3ac5091f::t_24c8545008a78e 259-280
+  s_995f1e3ac5091f::t_1fc3137df56347 3-4
+  s_995f1e3ac5091f::t_1c8797dba6a410 502-547
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "dcd61c9f20f47096d1bc85054865fe838f128a15",
+  "prompts": {},
+  "humans": {
+    "h_a373eedd7fd2e3": {
+      "author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  },
+  "sessions": {
+    "s_995f1e3ac5091f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2cfe14fe-abca-475a-b90e-25b3e200ffb2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  }
+}
