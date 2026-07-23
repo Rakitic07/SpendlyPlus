@@ -1,0 +1,29 @@
+src/components/Dashboard.tsx
+  s_995f1e3ac5091f::t_1f59f030475e74 195-200
+  s_995f1e3ac5091f::t_5a975707c460ec 283-291
+src/components/BudgetRing.tsx
+  s_995f1e3ac5091f::t_9d1266511140d6 140-163,169
+  s_995f1e3ac5091f::t_cc2a49e952534e 8-26,32-34,40-43,53-58
+  s_995f1e3ac5091f::t_4b9ff0cf372300 59
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "6451620afe14a9b41d54826b73ddeb554cfc952c",
+  "prompts": {},
+  "humans": {
+    "h_a373eedd7fd2e3": {
+      "author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  },
+  "sessions": {
+    "s_995f1e3ac5091f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2cfe14fe-abca-475a-b90e-25b3e200ffb2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  }
+}
