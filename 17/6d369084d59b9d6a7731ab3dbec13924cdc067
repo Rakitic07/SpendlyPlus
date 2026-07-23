@@ -1,0 +1,32 @@
+src/components/Dashboard.tsx
+  s_995f1e3ac5091f::t_00e9b6bf2da688 40
+  s_995f1e3ac5091f::t_cb48895aaa0435 216-226
+  s_995f1e3ac5091f::t_6f69af2c55702f 416-430,432-439
+  s_995f1e3ac5091f::t_5a472b65e8f60c 181,183
+  s_995f1e3ac5091f::t_0d7529f7bcce3b 61-73
+  s_995f1e3ac5091f::t_f027f0dad63d4a 172
+  s_995f1e3ac5091f::t_872d9f7e8eddfb 258-269
+  s_995f1e3ac5091f::t_912683d370192d 200
+  s_995f1e3ac5091f::t_c535a0b4a7a228 276,290-293
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "176d369084d59b9d6a7731ab3dbec13924cdc067",
+  "prompts": {},
+  "humans": {
+    "h_a373eedd7fd2e3": {
+      "author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  },
+  "sessions": {
+    "s_995f1e3ac5091f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2cfe14fe-abca-475a-b90e-25b3e200ffb2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  }
+}
