@@ -1,0 +1,29 @@
+src/components/AdminDashboard.tsx
+  s_995f1e3ac5091f::t_a4860e344dd82a 282-290
+package-lock.json
+  s_995f1e3ac5091f::t_23fe8be4fff46f 19,29,1192-1203,5320-5408,5643-5681,6319-6327,7151-7159
+package.json
+  s_995f1e3ac5091f::t_4d7665bd2905f5 24
+  s_995f1e3ac5091f::t_08a4635515c7fe 34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "20bd23a2d682dcb0bf59f21a87874dc4953d979e",
+  "prompts": {},
+  "humans": {
+    "h_a373eedd7fd2e3": {
+      "author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  },
+  "sessions": {
+    "s_995f1e3ac5091f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2cfe14fe-abca-475a-b90e-25b3e200ffb2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": null
+    }
+  }
+}
