@@ -1,0 +1,26 @@
+src/app/api/admin/stats/route.ts
+  s_995f1e3ac5091f::t_eaba793c0629f1 11-15,20-22,33-37,40-50,54,61,66,69-71,73,76,80,95-267,269
+src/components/AdminDashboard.tsx
+  s_995f1e3ac5091f::t_5ba09844796366 16,19-23,26-34,45-53,55-56,58-71,78,84-89,91-94,103-117,127-136,140-155,179-187,191-192,198-227,244,252,255,260-261,265-267,345,371,384-386,388-391,395,398-403,406-410,412-423,437-453,457-458,463-532,534-698
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "f51747f7d54de62f54e72ed9eb99995e4466c2e2",
+  "prompts": {},
+  "humans": {
+    "h_a373eedd7fd2e3": {
+      "author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  },
+  "sessions": {
+    "s_995f1e3ac5091f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2cfe14fe-abca-475a-b90e-25b3e200ffb2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  }
+}
