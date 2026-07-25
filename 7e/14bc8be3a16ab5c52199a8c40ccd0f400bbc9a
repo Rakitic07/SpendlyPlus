@@ -1,0 +1,28 @@
+src/app/api/auth/find-space/route.ts
+  s_995f1e3ac5091f::t_14fa98c128041b 29
+src/components/RecoverModal.tsx
+  s_995f1e3ac5091f::t_69cddd560ee85b 239-240,242
+src/lib/validation.ts
+  s_995f1e3ac5091f::t_9e8f8758192b09 50-51
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "7e14bc8be3a16ab5c52199a8c40ccd0f400bbc9a",
+  "prompts": {},
+  "humans": {
+    "h_a373eedd7fd2e3": {
+      "author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  },
+  "sessions": {
+    "s_995f1e3ac5091f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2cfe14fe-abca-475a-b90e-25b3e200ffb2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  }
+}
