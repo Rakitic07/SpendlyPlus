@@ -1,0 +1,67 @@
+prisma/schema.sqlite.prisma
+  s_995f1e3ac5091f::t_4bfb6f269be1b4 20,24-39
+prisma/schema.prisma
+  s_995f1e3ac5091f::t_2ed48cdeef642e 18-20,25-47
+src/app/api/admin/stats/route.ts
+  s_995f1e3ac5091f::t_9dcc227b36e62e 3,19,57-58,60
+  s_995f1e3ac5091f::t_99b69f435b7624 235-282
+src/app/api/auth/reset-status/route.ts
+  s_995f1e3ac5091f::t_b0c04162f254bf 1-38
+src/lib/admin.ts
+  s_995f1e3ac5091f::t_8cae90b38ebd71 1-46
+src/app/api/auth/reset-request/route.ts
+  s_995f1e3ac5091f::t_1f6d962803937f 1-51
+src/app/api/auth/register/route.ts
+  s_995f1e3ac5091f::t_777cd3632753e7 42-47,49,53
+  s_995f1e3ac5091f::t_3023027937921a 6
+src/lib/api.ts
+  s_995f1e3ac5091f::t_0e0bc13f480d50 48-82
+src/components/AuthCard.tsx
+  s_995f1e3ac5091f::t_0a28b330ce9bec 5,8,19-23,30-36,44-95
+  h_a373eedd7fd2e3 145
+  s_995f1e3ac5091f::t_d3f0c2f08a73a7 190-202,204-205
+  s_995f1e3ac5091f::t_76e26ebdc9d665 96-97
+src/lib/recovery.ts
+  s_995f1e3ac5091f::t_f4b2e60c774a7c 1-29
+src/lib/validation.ts
+  s_995f1e3ac5091f::t_02e93a2408f174 30-62
+src/components/RecoverModal.tsx
+  s_995f1e3ac5091f::t_cbcf5501d8f4fb 1-330
+src/app/api/auth/recover/route.ts
+  s_995f1e3ac5091f::t_8d41e8d972475e 1-54
+src/components/AdminDashboard.tsx
+  s_995f1e3ac5091f::t_636cf1ac16fa6d 59-72
+  s_995f1e3ac5091f::t_e110bf7330592e 24-27
+  s_995f1e3ac5091f::t_609edd2460aa86 153
+  s_995f1e3ac5091f::t_cb12b24be6343f 252,747-890
+  s_995f1e3ac5091f::t_f810db4804f67c 463,465-466
+  s_995f1e3ac5091f::t_d5b5d2d6e44060 131
+  s_995f1e3ac5091f::t_43ea61b910c200 446
+  s_995f1e3ac5091f::t_ea0c252e18b5d0 225,233-249
+  s_995f1e3ac5091f::t_66d256d750c2b3 263
+  s_995f1e3ac5091f::t_17914529a2143c 250-251
+  s_995f1e3ac5091f::t_d33c4707701da7 253
+src/app/api/admin/reset/route.ts
+  s_995f1e3ac5091f::t_bf499828afabb7 1-88
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "5bb838c9964d5e1296bdedda4885c3c79b15c053",
+  "prompts": {},
+  "humans": {
+    "h_a373eedd7fd2e3": {
+      "author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  },
+  "sessions": {
+    "s_995f1e3ac5091f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2cfe14fe-abca-475a-b90e-25b3e200ffb2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  }
+}
