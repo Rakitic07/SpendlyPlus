@@ -1,0 +1,35 @@
+src/components/Spendly.tsx
+  s_995f1e3ac5091f::t_9bf7fa31474f67 49
+  s_995f1e3ac5091f::t_e56833e8720d04 32
+  s_995f1e3ac5091f::t_111bd20d4b80ff 419-441,443-444
+  s_995f1e3ac5091f::t_356146664d719d 5
+src/app/api/admin/stats/route.ts
+  s_995f1e3ac5091f::t_8a1d9b4c58ec62 1-196
+src/components/AdminDashboard.tsx
+  s_995f1e3ac5091f::t_0300087b620421 48-63
+  s_995f1e3ac5091f::t_d995f07b94ea73 10
+  s_995f1e3ac5091f::t_75f6c2dbdf52e6 1-9,11-47,64-79,81-82,84-91,93-94,96-104,124-130,132-141,143-198,200-204,232,290-469
+  s_995f1e3ac5091f::t_da06cc032eb912 199,205-231,233-289
+  s_995f1e3ac5091f::t_2f59237b249203 80,83,92,95,105-123,131,142
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "d08a632936596d7f9e838b91585a7eef5c5da334",
+  "prompts": {},
+  "humans": {
+    "h_a373eedd7fd2e3": {
+      "author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  },
+  "sessions": {
+    "s_995f1e3ac5091f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2cfe14fe-abca-475a-b90e-25b3e200ffb2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  }
+}
