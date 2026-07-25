@@ -1,0 +1,49 @@
+src/app/api/auth/find-space/route.ts
+  s_995f1e3ac5091f::t_d8e66aef0c8993 1-62
+src/lib/api.ts
+  s_995f1e3ac5091f::t_b476c283d74636 76-85
+src/app/api/auth/register/route.ts
+  s_995f1e3ac5091f::t_6d06bf6a28a14f 4,19
+src/lib/validation.ts
+  s_995f1e3ac5091f::t_9c20c7fee01ee4 36-53
+README.md
+  s_995f1e3ac5091f::t_13610b88a9b512 8-9
+src/components/AdminDashboard.tsx
+  s_995f1e3ac5091f::t_6cf9cece4118e1 21
+  s_995f1e3ac5091f::t_9da60c104a5dd3 878-880
+  s_995f1e3ac5091f::t_7350ad70a87453 886-922,924-930,932-970,972-973,976-991,993,995-999,1001-1024
+  s_995f1e3ac5091f::t_3eb2d48dfb1e3d 294
+  s_995f1e3ac5091f::t_62d0c65e45f706 881-883
+src/components/AuthCard.tsx
+  s_995f1e3ac5091f::t_061637ec1f14c3 145,149
+src/components/RecoverModal.tsx
+  s_995f1e3ac5091f::t_c60b684b143662 60-63,78-80
+  s_995f1e3ac5091f::t_0056a95481446b 222-231,235-258,260-270
+  s_995f1e3ac5091f::t_57d0e69e941e60 16-17,21
+  s_995f1e3ac5091f::t_abd9f9769cba00 184-188
+  s_995f1e3ac5091f::t_d0f570b6351d7e 259
+  s_995f1e3ac5091f::t_c4b4d34baafde1 134
+  s_995f1e3ac5091f::t_a085a2708767ed 119-133,135-139
+  s_995f1e3ac5091f::t_d25bb986b80e10 271-272
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "a647d3442551f0da5b7eff3ef5ef797c6ad0dbd5",
+  "prompts": {},
+  "humans": {
+    "h_a373eedd7fd2e3": {
+      "author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  },
+  "sessions": {
+    "s_995f1e3ac5091f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2cfe14fe-abca-475a-b90e-25b3e200ffb2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  }
+}
