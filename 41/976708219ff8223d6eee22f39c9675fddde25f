@@ -1,0 +1,97 @@
+src/components/Spendly.tsx
+  s_995f1e3ac5091f::t_fc6dd8a4de123f 477-478
+  s_995f1e3ac5091f::t_8eae80e316e904 35
+src/lib/appUpdate.ts
+  s_995f1e3ac5091f::t_542ca1fa6d5443 4-8,16,31-42,45-55,68-70,72-79
+  s_995f1e3ac5091f::t_c21da072bb7b46 1-3,9-15,17-30,43-44,56-67,71,80-87
+src/middleware.ts
+  s_995f1e3ac5091f::t_d989128fefaea6 1-48
+tsconfig.json
+  s_995f1e3ac5091f::t_16bf64097c6dfb 39-40
+src/app/globals.css
+  s_995f1e3ac5091f::t_4be3a7e8c0190a 193-195
+  s_995f1e3ac5091f::t_6ef5844582c0df 142-148,156-157,160-164,167-186,188-192
+  s_995f1e3ac5091f::t_5b39f16e8044d6 196
+  s_995f1e3ac5091f::t_b1be622ee5e61f 197-247
+src/app/api/auth/register/route.ts
+  s_995f1e3ac5091f::t_4d472f18addb67 52-58
+src/app/api/auth/login/route.ts
+  s_995f1e3ac5091f::t_5dcdc97ab37790 45-48
+src/components/UpdatePrompt.tsx
+  s_995f1e3ac5091f::t_e42b3f461c9694 89,92,94,98,102
+  s_995f1e3ac5091f::t_2310f042f86f2b 7,11-14,16-20,28-32
+  s_995f1e3ac5091f::t_94a1c3bace8344 3,26-27,39,56,60
+  s_995f1e3ac5091f::t_60e4f5d065f0a6 66-67
+  s_995f1e3ac5091f::t_ae405f3f650d31 75
+  s_995f1e3ac5091f::t_2a38466ba6f81c 5
+  s_995f1e3ac5091f::t_1dbb5a4f773b6a 40,49
+src/app/layout.tsx
+  s_995f1e3ac5091f::t_6f326ae4c25d73 40-53
+next.config.mjs
+  s_995f1e3ac5091f::t_afcb5ae57a8de3 2-9,12-18
+package.json
+  s_995f1e3ac5091f::t_005ec3391c0f87 10
+scripts/build-native.mjs
+  s_995f1e3ac5091f::t_c7fad235f69799 1-40,53-67,78-83,85-92
+  s_995f1e3ac5091f::t_885c2753ffa339 41-52
+  s_995f1e3ac5091f::t_ef56925bb07286 68-72
+  s_995f1e3ac5091f::t_7ad136ea33c71a 73-77,84
+src/lib/appVersion.ts
+  s_995f1e3ac5091f::t_e819713d141bf4 15-19,26
+src/app/manifest.ts
+  s_995f1e3ac5091f::t_0d82360479d50a 3-6
+src/components/Background.tsx
+  s_995f1e3ac5091f::t_01c2064c4d5874 13-15
+src/lib/http.ts
+  s_995f1e3ac5091f::t_f6a73d0eba7abe 1-70
+src/app/api/version/route.ts
+  s_995f1e3ac5091f::t_2224e31eb7a4c3 34-35
+  s_995f1e3ac5091f::t_97e106e9191a55 82-85
+  s_995f1e3ac5091f::t_1234ea419076a6 12-20,27-31,33,36-44,47-49,72-73,75
+.gitignore
+  s_995f1e3ac5091f::t_a8c2b2c76af0ba 41-45
+  s_995f1e3ac5091f::t_503f42048b60dd 10-12
+src/lib/api.ts
+  s_995f1e3ac5091f::t_f5e9b298e108f3 2-3,13-19,22,28,38,43,52,57-63,69,83,93,102,111,116-118,122-128,132,137,146,155
+src/lib/auth.ts
+  s_995f1e3ac5091f::t_0a8f47cf4da16d 1
+  s_995f1e3ac5091f::t_032df93d0ee23a 23-26,41-42,46-55,57
+src/components/CheckUpdatesButton.tsx
+  s_995f1e3ac5091f::t_179d91a367b6d3 11-16,20-22,25-29,43-47,66-67
+  s_995f1e3ac5091f::t_f89ed950615e8e 1-10,17-19,23-24,30-42,48-65,68-117
+src/components/AdminDashboard.tsx
+  s_995f1e3ac5091f::t_3d651163b39e0a 170
+  s_995f1e3ac5091f::t_9b4f4461109d7b 245
+  s_995f1e3ac5091f::t_35b52d7d0c101d 30
+capacitor.config.ts
+  s_995f1e3ac5091f::t_3d8f94977a549b 4,6-10,12-13,18,20-28
+Makefile
+  s_995f1e3ac5091f::t_0804854cb42a29 77-78,80-81,87-88,98-99
+  s_995f1e3ac5091f::t_a3b23ec17f53b4 108-112,114-115,117-122,124,126-128,130-131,133
+  s_995f1e3ac5091f::t_8e3e0bf4cb8f77 138-139,146-147,151-152,156
+  s_995f1e3ac5091f::t_e53f33a8ee09d9 113,125,129,132
+src/components/ServiceWorkerRegister.tsx
+  s_995f1e3ac5091f::t_55e6670052c3de 4,11-14,22
+  s_995f1e3ac5091f::t_62ae4778043e3d 15-21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "41976708219ff8223d6eee22f39c9675fddde25f",
+  "prompts": {},
+  "humans": {
+    "h_a373eedd7fd2e3": {
+      "author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  },
+  "sessions": {
+    "s_995f1e3ac5091f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2cfe14fe-abca-475a-b90e-25b3e200ffb2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": null
+    }
+  }
+}
