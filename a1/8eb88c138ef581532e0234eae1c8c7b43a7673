@@ -1,0 +1,152 @@
+src/components/Spendly.tsx
+  s_995f1e3ac5091f::t_4b66cdedf0e68f 5
+  s_995f1e3ac5091f::t_688a00d264970d 431-439
+public/sw.js
+  s_995f1e3ac5091f::t_a8f56d8191757b 10
+  s_995f1e3ac5091f::t_8588d49a414349 3-8,16,24-42,60-63,65-67,71-72,77-78,80-90
+src/components/ServiceWorkerRegister.tsx
+  s_995f1e3ac5091f::t_ef9e203b0d892d 11-29
+Makefile
+  s_995f1e3ac5091f::t_45c999d4af13ea 1-21,25-60,62-67,69-80,82-85,87,89-90,92-95,97,99-120
+  s_995f1e3ac5091f::t_f1c74cce5e9efd 22-24
+  s_995f1e3ac5091f::t_684e342df5aa75 86,88,96,98
+  s_995f1e3ac5091f::t_ac6a099e7e740b 68
+  s_995f1e3ac5091f::t_16d4d9c14d55fd 61
+  s_995f1e3ac5091f::t_f464871dcd9f1e 81
+  s_995f1e3ac5091f::t_ef86ccccb2cd68 91
+capacitor.config.ts
+  s_995f1e3ac5091f::t_fddba3fadd06eb 1-35
+.github/workflows/android-release.yml
+  s_995f1e3ac5091f::t_c5ed6937beca23 1-77
+.gitignore
+  s_995f1e3ac5091f::t_eac74368d3006c 37-50
+package.json
+  s_995f1e3ac5091f::t_0c506cfac372d0 28-29,31,33-37,40,42,44-45,48-49,51-52
+  s_995f1e3ac5091f::t_e47d8adf6b0f26 11
+  s_995f1e3ac5091f::t_1cdce59c34160c 14-19
+  s_995f1e3ac5091f::t_b09b17fb839cba 47
+native/www/index.html
+  s_995f1e3ac5091f::t_1bab1e5677fcd6 1-70
+README.md
+  s_995f1e3ac5091f::t_7017138140cb46 202-221
+  s_995f1e3ac5091f::t_fcf32b1f35ba80 240-242
+  s_995f1e3ac5091f::t_a1764bf5bbac3f 162
+  s_995f1e3ac5091f::t_0f746b148511d9 127-141,144,173-200
+  s_995f1e3ac5091f::t_f6f3d3ff3113c9 145-149,158,163,167,171-172
+  s_995f1e3ac5091f::t_5f4fd23c3c6921 26
+  s_995f1e3ac5091f::t_cc5ed97c7cce55 143
+  s_995f1e3ac5091f::t_7b84f49cdaf1cd 150-157,159-161,164-166,168-170
+  s_995f1e3ac5091f::t_1ba70bab6be36c 142
+  s_995f1e3ac5091f::t_6e8476e308eb7a 201
+.env.example
+  s_995f1e3ac5091f::t_4efe86f2798b85 19-22
+eslint.config.mjs
+  s_995f1e3ac5091f::t_322c84ecf03c3b 17-25
+  s_995f1e3ac5091f::t_649287f00e6747 3-14,26-28
+  s_995f1e3ac5091f::t_5d6cca27368adb 1-2,15-16
+android/.gitignore
+  s_995f1e3ac5091f::t_de242f43fb9abd 1-101
+android/app/.gitignore
+  s_995f1e3ac5091f::t_c24f83752d7cf1 1-2
+android/app/build.gradle
+  s_995f1e3ac5091f::t_655c6607261bba 1-54
+android/app/capacitor.build.gradle
+  s_995f1e3ac5091f::t_a94387c8b2feed 1-19
+android/app/proguard-rules.pro
+  s_995f1e3ac5091f::t_fd33dcc6e483e0 1-21
+android/app/src/androidTest/java/com/getcapacitor/myapp/ExampleInstrumentedTest.java
+  s_995f1e3ac5091f::t_90974d718263fa 1-26
+android/app/src/main/AndroidManifest.xml
+  s_995f1e3ac5091f::t_8a281503e555c3 1-41
+android/app/src/main/java/app/spendlyplus/mobile/MainActivity.java
+  s_995f1e3ac5091f::t_c96bdb1b309b4a 1-5
+android/app/src/main/res/drawable-v24/ic_launcher_foreground.xml
+  s_995f1e3ac5091f::t_189caeb0a90fc0 1-34
+android/app/src/main/res/drawable/ic_launcher_background.xml
+  s_995f1e3ac5091f::t_715d0f405552a1 1-170
+android/app/src/main/res/layout/activity_main.xml
+  s_995f1e3ac5091f::t_181edf10eee92f 1-12
+android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
+  s_995f1e3ac5091f::t_17818e48bf78b4 1-5
+android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml
+  s_995f1e3ac5091f::t_6630a3215f90da 1-5
+android/app/src/main/res/values/ic_launcher_background.xml
+  s_995f1e3ac5091f::t_49e7024d976f83 1-4
+android/app/src/main/res/values/strings.xml
+  s_995f1e3ac5091f::t_fec725a18a4da8 1-7
+android/app/src/main/res/values/styles.xml
+  s_995f1e3ac5091f::t_46cb4a51f3f93b 1-22
+android/app/src/main/res/xml/file_paths.xml
+  s_995f1e3ac5091f::t_62353d5301a129 1-5
+android/app/src/test/java/com/getcapacitor/myapp/ExampleUnitTest.java
+  s_995f1e3ac5091f::t_dab1050cc494a2 1-18
+android/build.gradle
+  s_995f1e3ac5091f::t_0f7c0596fdc35b 1-29
+android/capacitor.settings.gradle
+  s_995f1e3ac5091f::t_8b452328af189e 1-3
+android/gradle.properties
+  s_995f1e3ac5091f::t_f358081f547a2f 1-22
+android/gradle/wrapper/gradle-wrapper.properties
+  s_995f1e3ac5091f::t_69ad575795c823 1-7
+android/gradlew
+  s_995f1e3ac5091f::t_69c1f5980e6daf 1-251
+android/gradlew.bat
+  s_995f1e3ac5091f::t_44147cac2a700c 1-94
+android/settings.gradle
+  s_995f1e3ac5091f::t_fa19d9f2cd6d2a 1-5
+android/variables.gradle
+  s_995f1e3ac5091f::t_05db98e520873b 1-16
+ios/.gitignore
+  s_995f1e3ac5091f::t_7f2d5b4eeb73f0 1-13
+ios/App/App.xcodeproj/project.pbxproj
+  s_995f1e3ac5091f::t_c8abb4cc690567 1-376
+ios/App/App.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
+  s_995f1e3ac5091f::t_5350b437cf0b06 1-8
+ios/App/App/AppDelegate.swift
+  s_995f1e3ac5091f::t_7e8d7dccf39e75 1-49
+ios/App/App/Assets.xcassets/AppIcon.appiconset/Contents.json
+  s_995f1e3ac5091f::t_0797f023cb6cf8 1-14
+ios/App/App/Assets.xcassets/Contents.json
+  s_995f1e3ac5091f::t_2c63b493e370c4 2-6
+ios/App/App/Assets.xcassets/Splash.imageset/Contents.json
+  s_995f1e3ac5091f::t_ba4482665a9b4f 1-23
+ios/App/App/Base.lproj/LaunchScreen.storyboard
+  s_995f1e3ac5091f::t_1010bbc6928e95 1-32
+ios/App/App/Base.lproj/Main.storyboard
+  s_995f1e3ac5091f::t_a1a99bdfef97b8 1-19
+ios/App/App/Info.plist
+  s_995f1e3ac5091f::t_7605d6ed0c2a6f 1-51
+ios/App/CapApp-SPM/.gitignore
+  s_995f1e3ac5091f::t_80d243e4cc9585 1-9
+ios/App/CapApp-SPM/Package.swift
+  s_995f1e3ac5091f::t_6452e25a8c310e 1-25
+ios/App/CapApp-SPM/README.md
+  s_995f1e3ac5091f::t_fc17332e31d4cf 1-5
+ios/App/CapApp-SPM/Sources/CapApp-SPM/CapApp-SPM.swift
+  s_995f1e3ac5091f::t_446b3fa5074efd 1
+ios/debug.xcconfig
+  s_995f1e3ac5091f::t_f39ed4c3779d47 1
+tsconfig.json
+  s_995f1e3ac5091f::t_e866e95a35f785 4-8,18,20-24,26-28,31-40
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "a18eb88c138ef581532e0234eae1c8c7b43a7673",
+  "prompts": {},
+  "humans": {
+    "h_a373eedd7fd2e3": {
+      "author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  },
+  "sessions": {
+    "s_995f1e3ac5091f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2cfe14fe-abca-475a-b90e-25b3e200ffb2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  }
+}
