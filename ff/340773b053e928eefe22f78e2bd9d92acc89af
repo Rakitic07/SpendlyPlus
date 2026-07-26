@@ -1,0 +1,73 @@
+src/app/api/auth/login/route.ts
+  s_995f1e3ac5091f::t_5dcdc97ab37790 45-48
+.gitignore
+  s_995f1e3ac5091f::t_a8c2b2c76af0ba 41-45
+  s_995f1e3ac5091f::t_503f42048b60dd 10-12
+src/middleware.ts
+  s_995f1e3ac5091f::t_d989128fefaea6 1-48
+src/app/manifest.ts
+  s_995f1e3ac5091f::t_0d82360479d50a 3-6
+next.config.mjs
+  s_995f1e3ac5091f::t_afcb5ae57a8de3 2-9,12-18
+Makefile
+  s_995f1e3ac5091f::t_0804854cb42a29 77-78,80-81,87-88,98-99
+  s_995f1e3ac5091f::t_8e3e0bf4cb8f77 131-132,139-140,144-145,149
+src/components/AdminDashboard.tsx
+  s_995f1e3ac5091f::t_35b52d7d0c101d 30
+  s_995f1e3ac5091f::t_3d651163b39e0a 170
+  s_995f1e3ac5091f::t_9b4f4461109d7b 245
+package.json
+  s_995f1e3ac5091f::t_005ec3391c0f87 10
+scripts/build-native.mjs
+  s_995f1e3ac5091f::t_c7fad235f69799 1-55,61-75
+  s_995f1e3ac5091f::t_ef56925bb07286 56-60
+src/app/globals.css
+  s_995f1e3ac5091f::t_b1be622ee5e61f 165-217
+  s_995f1e3ac5091f::t_5b39f16e8044d6 164
+src/app/layout.tsx
+  s_995f1e3ac5091f::t_6f326ae4c25d73 40-53
+src/lib/auth.ts
+  s_995f1e3ac5091f::t_0a8f47cf4da16d 1
+  s_995f1e3ac5091f::t_032df93d0ee23a 23-26,41-42,46-55,57
+src/components/ServiceWorkerRegister.tsx
+  s_995f1e3ac5091f::t_62ae4778043e3d 15-21
+  s_995f1e3ac5091f::t_55e6670052c3de 4,11-14,22
+src/lib/api.ts
+  s_995f1e3ac5091f::t_f5e9b298e108f3 2-3,13-19,22,28,38,43,52,57-63,69,83,93,102,111,116-118,122-128,132,137,146,155
+src/components/Background.tsx
+  s_995f1e3ac5091f::t_01c2064c4d5874 13-15
+src/lib/http.ts
+  s_995f1e3ac5091f::t_f6a73d0eba7abe 1-70
+src/components/UpdatePrompt.tsx
+  s_995f1e3ac5091f::t_a7bcde617035b9 27-30,41
+  s_995f1e3ac5091f::t_e42b3f461c9694 120,123,125,129,133
+  s_995f1e3ac5091f::t_2a38466ba6f81c 5,7
+  s_995f1e3ac5091f::t_ae405f3f650d31 106
+src/app/api/auth/register/route.ts
+  s_995f1e3ac5091f::t_4d472f18addb67 52-58
+tsconfig.json
+  s_995f1e3ac5091f::t_16bf64097c6dfb 39-40
+capacitor.config.ts
+  s_995f1e3ac5091f::t_3d8f94977a549b 4,6-10,12-13,18,20-28
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "ff340773b053e928eefe22f78e2bd9d92acc89af",
+  "prompts": {},
+  "humans": {
+    "h_a373eedd7fd2e3": {
+      "author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  },
+  "sessions": {
+    "s_995f1e3ac5091f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2cfe14fe-abca-475a-b90e-25b3e200ffb2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  }
+}
