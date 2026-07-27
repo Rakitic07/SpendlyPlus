@@ -1,0 +1,44 @@
+android/app/build.gradle
+  s_995f1e3ac5091f::t_97f619afd5d766 19-36,39-41,44
+src/components/UpdateDebugBadge.tsx
+  s_995f1e3ac5091f::t_8788dcf10264cd 47,49,51
+src/components/Dashboard.tsx
+  s_995f1e3ac5091f::t_995df157e7de0b 179-185
+  s_995f1e3ac5091f::t_dfe965018aceec 247-255,257-265
+  s_995f1e3ac5091f::t_7795051caf7ba4 499,503-504
+  s_995f1e3ac5091f::t_53008945c2e34a 460,464-465
+  s_995f1e3ac5091f::t_95eceb2103f5cb 586
+  s_995f1e3ac5091f::t_4a458a7676d255 370-371
+Makefile
+  s_995f1e3ac5091f::t_9138cdbfc7b944 142-143
+  s_995f1e3ac5091f::t_5dd1bd4e2565b1 41-43
+  s_995f1e3ac5091f::t_6e012a96692464 95-114,121,123-124
+  s_995f1e3ac5091f::t_5ef44fd1f2a1ea 35
+src/app/globals.css
+  s_995f1e3ac5091f::t_21bcf1ec6f3e08 219-228,231,238,243-265
+src/components/Spendly.tsx
+  s_995f1e3ac5091f::t_b7827e862993cd 489-530
+src/components/Background.tsx
+  s_995f1e3ac5091f::t_f36c741c9e9ad5 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "e0d1b7fee22f29316a26ef5e2259e1b382612cc4",
+  "prompts": {},
+  "humans": {
+    "h_a373eedd7fd2e3": {
+      "author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  },
+  "sessions": {
+    "s_995f1e3ac5091f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2cfe14fe-abca-475a-b90e-25b3e200ffb2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  }
+}
