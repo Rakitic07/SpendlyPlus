@@ -1,0 +1,85 @@
+src/components/CheckUpdatesButton.tsx
+  s_995f1e3ac5091f::t_aeb071a2e2bc23 13,18
+  s_995f1e3ac5091f::t_32f6ad7f048593 56-64
+Makefile
+  s_995f1e3ac5091f::t_5ef44fd1f2a1ea 35
+  s_995f1e3ac5091f::t_5dd1bd4e2565b1 41-43
+  s_995f1e3ac5091f::t_6e012a96692464 95-114,121,123-124
+  s_995f1e3ac5091f::t_9138cdbfc7b944 142-143
+src/components/UpdateDebugBadge.tsx
+  s_995f1e3ac5091f::t_8788dcf10264cd 47,49,51
+src/lib/perf.ts
+  s_995f1e3ac5091f::t_9daf9644b56bbe 1-25,63-71,109-229
+  s_995f1e3ac5091f::t_64d9a04d603cdc 26-42,53-62,72-108
+  s_995f1e3ac5091f::t_0c42450a661310 43-52
+android/app/src/main/java/app/spendlyplus/mobile/MainActivity.java
+  s_995f1e3ac5091f::t_2ef3164e0f5a58 12-21
+  s_995f1e3ac5091f::t_2ad9552ed1c6c0 39-44,60-63,67-71
+src/components/Background.tsx
+  s_995f1e3ac5091f::t_f36c741c9e9ad5 3
+src/lib/appUpdate.ts
+  s_995f1e3ac5091f::t_fbeb4855738652 33-34
+  s_995f1e3ac5091f::t_252929f3612450 35-36
+  s_995f1e3ac5091f::t_dea93d695a3ab7 88-128
+src/components/DownloadLogsButton.tsx
+  s_995f1e3ac5091f::t_c807a99e447fa0 1-72
+src/app/globals.css
+  s_995f1e3ac5091f::t_c7a332c90887f0 278
+  s_995f1e3ac5091f::t_ba6e0e18a9f9e7 229-236,240,245
+  s_995f1e3ac5091f::t_21bcf1ec6f3e08 219-228,239,244,247-268
+  s_995f1e3ac5091f::t_b1be622ee5e61f 246
+android/app/src/main/java/app/spendlyplus/mobile/AppUpdaterPlugin.java
+  s_995f1e3ac5091f::t_77aeb876a33678 24,31
+  s_995f1e3ac5091f::t_ab46fe0d4184f5 3-4,10-11,27,30
+  s_995f1e3ac5091f::t_dd8fd6373c1832 74-100
+  s_995f1e3ac5091f::t_0368b7540bdc81 144-193
+  s_995f1e3ac5091f::t_181842edf18c16 73
+src/components/ExpenseList.tsx
+  s_995f1e3ac5091f::t_163079ab7070ac 68,71
+  s_995f1e3ac5091f::t_d706bf046b67cb 94
+src/components/Spendly.tsx
+  s_995f1e3ac5091f::t_b7827e862993cd 494,503-529,531-541
+  s_995f1e3ac5091f::t_821a5ee8f5b42a 38
+  s_995f1e3ac5091f::t_ffbe40c7defd6a 237-239
+  s_995f1e3ac5091f::t_f13e917331e3af 10
+  s_995f1e3ac5091f::t_fb9bc8e7a02a03 495-502
+  s_995f1e3ac5091f::t_489712a84e6623 530
+tailwind.config.ts
+  s_995f1e3ac5091f::t_9bb15a9136d026 7-16
+android/app/build.gradle
+  s_995f1e3ac5091f::t_97f619afd5d766 19-36,39-41,44
+src/components/UpdatePrompt.tsx
+  s_995f1e3ac5091f::t_eadf722b34907c 9
+  s_995f1e3ac5091f::t_54d85d509d6678 33-34
+src/components/Dashboard.tsx
+  s_995f1e3ac5091f::t_7795051caf7ba4 495,499-500
+  s_995f1e3ac5091f::t_95eceb2103f5cb 582
+  s_995f1e3ac5091f::t_53008945c2e34a 456,460-461
+  s_995f1e3ac5091f::t_dfe965018aceec 243-251,253-261
+  s_995f1e3ac5091f::t_d13e2385c9a860 111,120
+  s_995f1e3ac5091f::t_4a458a7676d255 366-367
+  s_995f1e3ac5091f::t_995df157e7de0b 175-181
+capacitor.config.ts
+  s_995f1e3ac5091f::t_79f8d6be632f02 28-31,33-35
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "c86de09d9bfba7b347f9949f97dd1c7ddd5bfc6f",
+  "prompts": {},
+  "humans": {
+    "h_a373eedd7fd2e3": {
+      "author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  },
+  "sessions": {
+    "s_995f1e3ac5091f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2cfe14fe-abca-475a-b90e-25b3e200ffb2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": null
+    }
+  }
+}
