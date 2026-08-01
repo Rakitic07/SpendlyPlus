@@ -1,0 +1,195 @@
+mobile/src/components/BudgetRing.tsx
+  s_995f1e3ac5091f::t_6ddb875218d3b0 41
+  s_995f1e3ac5091f::t_63e2d825960845 38-40
+  s_995f1e3ac5091f::t_c8b9feecf4a3de 42-44
+mobile/src/screens/OverviewScreen.tsx
+  s_995f1e3ac5091f::t_db1b374e14b348 159
+  s_995f1e3ac5091f::t_fdd4d02b1e1bf7 20
+  s_995f1e3ac5091f::t_f8274dc40326b9 134-135
+  s_995f1e3ac5091f::t_78e890f8085c4a 17-19
+  s_995f1e3ac5091f::t_866dcd549db7ab 21-23,131-133
+  s_995f1e3ac5091f::t_51c9d2f0cf1041 136-138,156-158
+  s_995f1e3ac5091f::t_04e6d650088d32 160-162
+mobile/src/theme.ts
+  s_995f1e3ac5091f::t_afad22066072ac 1-6,11-34
+  s_995f1e3ac5091f::t_c80a0a701eb5b7 9-10
+  s_995f1e3ac5091f::t_b82c98cbc60040 7-8
+  s_995f1e3ac5091f::t_f81edc8da1fe95 35-37
+mobile/src/screens/ActivityScreen.tsx
+  s_995f1e3ac5091f::t_0cb92eaf17a059 48,50,106-107,109-132,135-151,153,158,162-163,167,170-173
+  s_995f1e3ac5091f::t_6e96b48399c03a 2-42
+  s_995f1e3ac5091f::t_18c851b2baf4a8 68-92
+  s_995f1e3ac5091f::t_a173e6629eb05a 134
+  s_995f1e3ac5091f::t_8c1398f7750cea 1
+  s_995f1e3ac5091f::t_5b25429cd6e066 43-47
+  s_995f1e3ac5091f::t_1ba8c222d8dcb9 49
+  s_995f1e3ac5091f::t_d92d9eeee24d96 51-53,65-67
+  s_995f1e3ac5091f::t_619042367069ef 93-95,103-105
+  s_995f1e3ac5091f::t_e8384518c003d5 108
+  s_995f1e3ac5091f::t_061c407ff71763 133
+  s_995f1e3ac5091f::t_72261a00895522 152
+  s_995f1e3ac5091f::t_f92c785dca1409 154-157
+  s_995f1e3ac5091f::t_301e9abe7eece4 159-161
+  s_995f1e3ac5091f::t_fada08496ac703 164-166
+  s_995f1e3ac5091f::t_3dc0e69a695f57 168-169
+  s_995f1e3ac5091f::t_4d4aa3dcd1fadc 174-176
+mobile/src/components/ui.tsx
+  s_995f1e3ac5091f::t_33bb5cb7f93a20 119-126
+  s_995f1e3ac5091f::t_0042798498b311 116-118
+  s_995f1e3ac5091f::t_871ca79f01b985 127-129
+mobile/src/components/Footer.tsx
+  s_995f1e3ac5091f::t_54385339a6775f 3
+  s_995f1e3ac5091f::t_84010b37780f2d 1-2,4-48,50-73
+  s_995f1e3ac5091f::t_b18bd05c7d0545 49
+mobile/README.md
+  s_995f1e3ac5091f::t_6a976f00105ef7 1-181
+tsconfig.json
+  s_995f1e3ac5091f::t_b7109f8a197a24 40-41
+eslint.config.mjs
+  s_995f1e3ac5091f::t_fb56e5f3aa2c5b 12
+mobile/src/lib/update.ts
+  s_995f1e3ac5091f::t_bba66c32ae07a5 1-54
+mobile/RELEASE_NOTES.md
+  s_995f1e3ac5091f::t_ca767881278b84 1-35
+mobile/src/components/Background.tsx
+  s_995f1e3ac5091f::t_258ce80145b310 3-8,11-16,21-32,35-37,40-44
+  s_995f1e3ac5091f::t_34db93115f11e8 1-2,9-10,17-20,33-34,38-39,45-54
+mobile/src/screens/ChartsScreen.tsx
+  s_995f1e3ac5091f::t_1f5cc3b8e4cebb 4-149,152-153
+  s_995f1e3ac5091f::t_d269af627de901 156
+  s_995f1e3ac5091f::t_e80b49c1897f88 1-3
+  s_995f1e3ac5091f::t_8889d3967c092f 150-151
+  s_995f1e3ac5091f::t_86ae29bf79b61d 154-155
+  s_995f1e3ac5091f::t_adfe07d9467ad4 157-159
+mobile/android/gradle.properties
+  s_995f1e3ac5091f::t_83d28e9f7bfd7e 25-29
+  s_995f1e3ac5091f::t_870308745e6614 13-18
+  s_995f1e3ac5091f::t_ca3176488f4d65 12
+  s_995f1e3ac5091f::t_c76658577512ad 24
+  s_995f1e3ac5091f::t_c677ba9387f56a 30-32
+mobile/App.tsx
+  s_995f1e3ac5091f::t_eeac80462275a9 33-42,51
+  s_995f1e3ac5091f::t_bcae3d5075f050 94-95
+  s_995f1e3ac5091f::t_ce38193deb4d08 17
+  s_995f1e3ac5091f::t_5bb5e54877fbd5 79-87
+  s_995f1e3ac5091f::t_08081e657f87a2 18-28
+  s_995f1e3ac5091f::t_60ebab11244331 14-16
+  s_995f1e3ac5091f::t_031745b9bf02af 29-32
+  s_995f1e3ac5091f::t_b4b795aeeaab68 43-45,48-50
+  s_995f1e3ac5091f::t_647e7eaac5685e 52-54,76-78
+  s_995f1e3ac5091f::t_f1bc012d2b3367 88-93
+  s_995f1e3ac5091f::t_caee58bad7c083 96-97
+mobile/scripts/gen_icons.py
+  s_995f1e3ac5091f::t_c32ef02cca863f 1-92
+mobile/src/screens/AuthScreen.tsx
+  s_995f1e3ac5091f::t_03758005d93507 165
+  s_995f1e3ac5091f::t_775aa7a3c715cc 162-164
+  s_995f1e3ac5091f::t_c4567ebe2a4114 166-168
+mobile/src/components/TabBar.tsx
+  s_995f1e3ac5091f::t_c810914e0e88bf 5-68
+  s_995f1e3ac5091f::t_72143f9d192592 2-4
+  s_995f1e3ac5091f::t_ad2974cdbf9743 69-71
+mobile/src/screens/ExpenseFormScreen.tsx
+  s_995f1e3ac5091f::t_7ee239a5f14bf5 25
+  s_995f1e3ac5091f::t_674b8f71c76668 111
+  s_995f1e3ac5091f::t_848222d9efb150 261
+  s_995f1e3ac5091f::t_59cfaf31d34f8e 22-24
+  s_995f1e3ac5091f::t_98ef798be754a5 26-28,108-110
+  s_995f1e3ac5091f::t_0147839d9cd0c9 112-114,258-260
+  s_995f1e3ac5091f::t_f5255712d2e5aa 262-264
+mobile/src/components/FloatingAddButton.tsx
+  s_995f1e3ac5091f::t_4e35f56ba73744 1-57
+mobile/Makefile
+  s_995f1e3ac5091f::t_e365201fc755c9 86-87
+  s_995f1e3ac5091f::t_77d7e9a8ecd32b 104
+  s_995f1e3ac5091f::t_a520dfc3b0db25 83-85
+  s_995f1e3ac5091f::t_44e97fe61bdc76 88-90,101-103
+  s_995f1e3ac5091f::t_a4b3aeda2319c9 105
+mobile/.bundle/config
+  s_995f1e3ac5091f::t_7e2ae265c9828a 1-2
+mobile/.eslintrc.js
+  s_995f1e3ac5091f::t_a72e1231410add 1-4
+mobile/.prettierrc.js
+  s_995f1e3ac5091f::t_f147245521c87f 1-5
+mobile/.watchmanconfig
+  s_995f1e3ac5091f::t_7da1208b7df8a6 1
+mobile/Gemfile
+  s_995f1e3ac5091f::t_98da78c98c7cf1 1-17
+mobile/__tests__/App.test.tsx
+  s_995f1e3ac5091f::t_81ef2d5796312a 1-13
+mobile/android/app/build.gradle
+  s_995f1e3ac5091f::t_f82b95f87a19eb 1-73,76-80,82,89-93,97-99,101-105,111-112,114-117
+mobile/android/app/proguard-rules.pro
+  s_995f1e3ac5091f::t_bbdf0d7f99c40f 2-5,10
+mobile/android/app/src/main/AndroidManifest.xml
+  s_995f1e3ac5091f::t_39e08f78f13dc1 2-4,6-15,17-25
+mobile/android/app/src/main/java/com/spendlynative/MainActivity.kt
+  s_995f1e3ac5091f::t_d4f47fd1519ebd 1-22
+mobile/android/app/src/main/res/drawable/rn_edit_text_material.xml
+  s_995f1e3ac5091f::t_68c0b45b291648 2-37
+mobile/android/app/src/main/res/values/colors.xml
+  s_995f1e3ac5091f::t_9a8c6b3f9bfafa 3
+mobile/android/app/src/main/res/values/styles.xml
+  s_995f1e3ac5091f::t_bf02c71e809547 4,6,9
+mobile/android/build.gradle
+  s_995f1e3ac5091f::t_4a5f0d32cd21d4 2-9,15-17,21
+mobile/android/gradle/wrapper/gradle-wrapper.properties
+  s_995f1e3ac5091f::t_faa64cb2943005 3
+mobile/android/gradlew
+  s_995f1e3ac5091f::t_ce4bee31e1e65d 4
+mobile/android/gradlew.bat
+  s_995f1e3ac5091f::t_002304ca7bb5c7 1-5,81
+mobile/android/settings.gradle
+  s_995f1e3ac5091f::t_4b21042d54599e 1-4,6
+mobile/app.json
+  s_995f1e3ac5091f::t_4cf2aa21f92068 1-4
+mobile/ios/.xcode.env
+  s_995f1e3ac5091f::t_00f170e5bf1467 1-11
+mobile/ios/Podfile
+  s_995f1e3ac5091f::t_3195a2a3339c0c 1-34
+mobile/ios/SpendlyNative.xcodeproj/project.pbxproj
+  s_995f1e3ac5091f::t_b5b5af8fc31d71 6,10-13,17-26,30,34,41,44-48,50,53,56-86,91,94-95,97,103,105,107-113,119-121,127,130,132-133,137-138,145-146,150,156,160-161,167-169,172-178,181-182,184-187,189-199,201-204,206-221,223-251,254-312,316-317,325,332,335,341,345-346,354,361-370,373-380,385,389-390,398,405,408,414-415,418-419,427,429,432-435,437-447,454,457-458,463,466-467,474
+mobile/ios/SpendlyNative.xcodeproj/xcshareddata/xcschemes/SpendlyNative.xcscheme
+  s_995f1e3ac5091f::t_1d5616c2414a11 2-88
+mobile/ios/SpendlyNative/AppDelegate.swift
+  s_995f1e3ac5091f::t_e783b25efbf30b 2-4,6,8,10-11,13-19,21-22,24,26-30,32-34,36-47
+mobile/ios/SpendlyNative/Images.xcassets/AppIcon.appiconset/Contents.json
+  s_995f1e3ac5091f::t_35fbcc1128c231 4-45
+mobile/ios/SpendlyNative/Images.xcassets/Contents.json
+  s_995f1e3ac5091f::t_7a94213de87a5d 6
+mobile/ios/SpendlyNative/Info.plist
+  s_995f1e3ac5091f::t_a1f7400a186ba6 5-6,10,23-24,29-38,43,53-54,57
+mobile/ios/SpendlyNative/LaunchScreen.storyboard
+  s_995f1e3ac5091f::t_e0b69173e1a975 2,6-7,15,17-40,44
+mobile/ios/SpendlyNative/PrivacyInfo.xcprivacy
+  s_995f1e3ac5091f::t_3c0b02addf852a 5-35
+mobile/jest.config.js
+  s_995f1e3ac5091f::t_159672035fe2f3 1-3
+mobile/metro.config.js
+  s_995f1e3ac5091f::t_6081af3027557b 1,4-5,7,9,11
+mobile/package.json
+  s_995f1e3ac5091f::t_a6b8c8df7e761f 1-54
+mobile/tsconfig.json
+  s_995f1e3ac5091f::t_bd69d37e90dab2 1-8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "edd41edbb9d37284a0ce8a3f062a358be10fc648",
+  "prompts": {},
+  "humans": {
+    "h_a373eedd7fd2e3": {
+      "author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  },
+  "sessions": {
+    "s_995f1e3ac5091f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2cfe14fe-abca-475a-b90e-25b3e200ffb2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  }
+}
