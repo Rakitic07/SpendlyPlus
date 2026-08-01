@@ -1,0 +1,61 @@
+src/components/Spendly.tsx
+  s_995f1e3ac5091f::t_a68fa698528f55 210-212,214,218
+  s_995f1e3ac5091f::t_7f48e44bb07df6 79-82,86-88
+src/lib/payments.ts
+  s_995f1e3ac5091f::t_ca1b0c935475c6 1-93
+src/lib/types.ts
+  s_995f1e3ac5091f::t_b9d1268f5b8f0f 9-10,22-23
+src/lib/validation.ts
+  s_995f1e3ac5091f::t_0dec75933c6779 22-28
+  s_995f1e3ac5091f::t_a4b5c42e1e07b0 34-37
+src/components/ExpenseList.tsx
+  s_995f1e3ac5091f::t_0d406f7a9147ca 7
+  s_995f1e3ac5091f::t_78530fad5eca37 88-90
+src/lib/offline.ts
+  s_995f1e3ac5091f::t_22b9acb0a396c2 165-166
+prisma/schema.prisma
+  s_995f1e3ac5091f::t_422a53dad62341 61-64
+src/app/api/expenses/[id]/route.ts
+  s_995f1e3ac5091f::t_c995875aa0e8aa 43-44,54-55
+src/app/api/expenses/route.ts
+  s_995f1e3ac5091f::t_e9bff202e44501 44-45,55-56
+src/components/Dashboard.tsx
+  s_995f1e3ac5091f::t_caebe0ec66f2f6 273-275
+prisma/schema.sqlite.prisma
+  s_995f1e3ac5091f::t_d00dd4a71fad21 53-54
+src/components/ExpenseForm.tsx
+  s_995f1e3ac5091f::t_695c4bff574128 151-158,168-169
+  s_995f1e3ac5091f::t_6371ef7c8350b6 3
+  s_995f1e3ac5091f::t_8531fc2d032642 142-147
+  s_995f1e3ac5091f::t_5a6e93491c295f 27-33
+  s_995f1e3ac5091f::t_c73f70a46207b3 82
+  s_995f1e3ac5091f::t_9c6f6f8a545066 103-104
+  s_995f1e3ac5091f::t_b00753eddf4193 21
+  s_995f1e3ac5091f::t_b1208d1a250f6c 98-102,105-113,122-124,126,128
+  s_995f1e3ac5091f::t_3c83115913eb4f 66-72,76-81
+  s_995f1e3ac5091f::t_f39c8b1f22fdc4 222,227-228
+  s_995f1e3ac5091f::t_9ece3f0e35d778 256-264
+  s_995f1e3ac5091f::t_a26224f6e9badb 380,382-397,399-400,409-450
+  s_995f1e3ac5091f::t_13ff1b59ae85ce 398,401-408
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "61ccbad55ad7150acaceb06a3a1e2f18a0b0d8f1",
+  "prompts": {},
+  "humans": {
+    "h_a373eedd7fd2e3": {
+      "author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  },
+  "sessions": {
+    "s_995f1e3ac5091f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2cfe14fe-abca-475a-b90e-25b3e200ffb2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": null
+    }
+  }
+}
