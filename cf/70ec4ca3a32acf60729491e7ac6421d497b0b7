@@ -1,0 +1,160 @@
+mobile/src/screens/OverviewScreen.tsx
+  s_995f1e3ac5091f::t_cf2918ac5229b6 14,18
+  s_995f1e3ac5091f::t_a987a3a39d395d 107-117
+  s_995f1e3ac5091f::t_c8fb64f2b098df 205-217
+  s_995f1e3ac5091f::t_1375f3339097f4 43
+src/lib/smolllm.ts
+  s_995f1e3ac5091f::t_33f1255e56385e 1-220
+src/components/Dashboard.tsx
+  s_995f1e3ac5091f::t_703c60fd9bd58f 23
+  s_995f1e3ac5091f::t_bbc95f2dee1df2 42
+  s_995f1e3ac5091f::t_610fab13036926 95
+  s_995f1e3ac5091f::t_30b23240000a6b 193,196
+  s_995f1e3ac5091f::t_a664b334644f33 206
+  s_995f1e3ac5091f::t_403f195308742e 455-478
+mobile/src/lib/report/chartImage.ts
+  s_995f1e3ac5091f::t_c6cb593e3981b3 1-159
+src/components/SettingsSheet.tsx
+  s_995f1e3ac5091f::t_a2bb818f049e13 1-275
+package-lock.json
+  s_995f1e3ac5091f::t_dbd6021b928242 15,19,943-970,2043-2099,3164-3172,3692-3698,4825-4830,5194-5199,5827-5832,6357-6373,6429-6434,7527-7532,7578-7589,8353-8395,8713-8718,9085-9107,10008-10024,10136-10168,10536-10541
+src/lib/scanBill.ts
+  s_995f1e3ac5091f::t_174e7caf8398c9 213-221,224-236,240,242-244
+  s_995f1e3ac5091f::t_1841c007fd16e9 237-239,241
+  s_995f1e3ac5091f::t_6736620639b22d 2-3
+  s_995f1e3ac5091f::t_25f9996b626b80 40
+  s_995f1e3ac5091f::t_130cc2fae09a9e 41,43-45
+  s_995f1e3ac5091f::t_ad7dc398c32c34 14,18-39
+  s_995f1e3ac5091f::t_412d87f5b6b8bd 75-77,79
+mobile/src/screens/ExpenseFormScreen.tsx
+  s_995f1e3ac5091f::t_06b7a6f026bdca 182,185,190-199
+  s_995f1e3ac5091f::t_8709ad78708a36 14
+  s_995f1e3ac5091f::t_45f6e4c831dc9e 233,235
+  s_995f1e3ac5091f::t_8ca0e2815280ff 174
+  s_995f1e3ac5091f::t_26104184a05fe3 29
+  s_995f1e3ac5091f::t_bba0a059484323 56,61
+  s_995f1e3ac5091f::t_9b0e0f31b8631c 407
+  s_995f1e3ac5091f::t_88baf47798ac62 200-201
+mobile/src/components/ReportModal.tsx
+  s_995f1e3ac5091f::t_bd977206ed9d05 1
+  s_995f1e3ac5091f::t_7b7a18f84193c4 242
+  s_995f1e3ac5091f::t_c8cdfb36e27541 258
+  s_995f1e3ac5091f::t_78f25dc37660fe 292,294
+  s_995f1e3ac5091f::t_31aced85808241 104-145
+  s_995f1e3ac5091f::t_f38b0c92fae115 336-338,342
+mobile/App.tsx
+  s_995f1e3ac5091f::t_69b535709cbfc0 90
+  s_995f1e3ac5091f::t_f9f751bcdf3e33 13
+  s_995f1e3ac5091f::t_2935fa978fc193 101
+mobile/src/lib/scan.ts
+  s_995f1e3ac5091f::t_950afe524ae55d 40-43,45-50
+  s_995f1e3ac5091f::t_7da4fbeeed3f89 10,14-17
+mobile/src/components/AppHeader.tsx
+  s_995f1e3ac5091f::t_f803a0034b6026 27-29
+  s_995f1e3ac5091f::t_ba9c1e60f16c92 60-61
+  s_995f1e3ac5091f::t_cab8da279804bd 3,6,13
+mobile/src/components/SettingsModal.tsx
+  s_995f1e3ac5091f::t_5e57af557ef83c 1,3-5,7,9,12-24,26-31,33-36,39-42,45-53,58-59,61,64-170,175-231,233-256,259-271
+src/lib/report/chartImage.ts
+  s_995f1e3ac5091f::t_fc987996406f51 1-149,152-157,159-165,168-170
+  s_995f1e3ac5091f::t_8f3f003eeb607a 150-151,158,166-167
+src/app/globals.css
+  s_995f1e3ac5091f::t_38860c087ed6ea 149-181
+src/components/ExpenseList.tsx
+  s_995f1e3ac5091f::t_e1e37874052d33 45
+  s_995f1e3ac5091f::t_7f61a98770fcde 80
+  s_995f1e3ac5091f::t_b0f9c94ae66e75 7
+mobile/src/screens/ActivityScreen.tsx
+  s_995f1e3ac5091f::t_ad46580b85dc9c 1,6
+  s_995f1e3ac5091f::t_a1904436b08d87 55-79
+  s_995f1e3ac5091f::t_d0a94220c50881 131,133,138-140,144-180
+  s_995f1e3ac5091f::t_84d0fa55df06d2 132
+  s_995f1e3ac5091f::t_8c6c5c1a43769d 252-253,255-279
+src/lib/settings.tsx
+  s_995f1e3ac5091f::t_9c7c43da081ca8 1-183
+mobile/src/components/AdminDashboard.tsx
+  s_995f1e3ac5091f::t_ed8ad2d39bbc1c 499
+mobile/package-lock.json
+  s_995f1e3ac5091f::t_259cebc17b6e38 20,7049-7054
+mobile/src/state/store.tsx
+  s_995f1e3ac5091f::t_0dd2c18fb0cb51 266
+  s_995f1e3ac5091f::t_dad5171b7c18f0 253
+  s_995f1e3ac5091f::t_7404393529f9e7 22
+  s_995f1e3ac5091f::t_e7f8ca256345b4 223
+mobile/package.json
+  s_995f1e3ac5091f::t_93339d0fb099d2 22
+src/components/ExpenseForm.tsx
+  s_995f1e3ac5091f::t_94addbffea43ae 158
+  s_995f1e3ac5091f::t_27dca5c19e551b 669-674
+  s_995f1e3ac5091f::t_862dfbfa5ff0c0 61
+  s_995f1e3ac5091f::t_19ddf2eb656b9a 9
+  s_995f1e3ac5091f::t_d12cb2a867f694 229
+  s_995f1e3ac5091f::t_963a91282736d3 84-85
+  s_995f1e3ac5091f::t_74742f302c6a9d 147
+  s_995f1e3ac5091f::t_d5ab6592f67cb0 169,172-175
+  s_995f1e3ac5091f::t_a57c836cc67963 310-312
+  s_995f1e3ac5091f::t_fd9bdb892cf709 371,373
+  s_995f1e3ac5091f::t_adcbca5d2f5bed 703
+  s_995f1e3ac5091f::t_c6d48712d5fb37 412
+src/components/Spendly.tsx
+  s_995f1e3ac5091f::t_248014643114c1 410-416
+  s_995f1e3ac5091f::t_e3de439381485a 60
+  s_995f1e3ac5091f::t_72513ae9c28ac3 646,648
+  s_995f1e3ac5091f::t_764fc3596b0b54 364
+  s_995f1e3ac5091f::t_9d2efee617dfca 5,9
+  s_995f1e3ac5091f::t_f3a81897df7239 40
+  s_995f1e3ac5091f::t_ae531021e9e6d9 409
+  s_995f1e3ac5091f::t_1b56565832974c 386
+mobile/src/lib/settings.tsx
+  s_995f1e3ac5091f::t_e39bb6d14116e2 1-166
+mobile/src/lib/report/excel.ts
+  s_995f1e3ac5091f::t_3f3f27329f2caf 3-4
+  s_995f1e3ac5091f::t_0099b34db6bbb7 32-34
+  s_995f1e3ac5091f::t_3599fb118212be 53,57,59-60,68,70-71,76-77,79
+  s_995f1e3ac5091f::t_8e266ddd5f435d 157-176
+  s_995f1e3ac5091f::t_2660fff4f73bef 37-52,54-56,58,61-67,69,72-75,80
+mobile/src/components/ExpenseRow.tsx
+  s_995f1e3ac5091f::t_7b2b1fb19f1aa8 7,12
+  s_995f1e3ac5091f::t_ef3c924d5104de 29
+mobile/src/lib/report/xlsxImage.ts
+  s_995f1e3ac5091f::t_7c22525ea8e16b 1-97,99-161
+  s_995f1e3ac5091f::t_b7890325da42da 98
+src/lib/report/xlsxImage.ts
+  s_995f1e3ac5091f::t_3d931c4d27a9c0 1-79,82-158
+  s_995f1e3ac5091f::t_594c497d00fcec 80-81
+package.json
+  s_995f1e3ac5091f::t_7e0d79cdcc42d5 30
+  s_995f1e3ac5091f::t_4c30d0779cbe65 26
+mobile/src/state/period.tsx
+  s_995f1e3ac5091f::t_4daa0212f63b06 3
+  s_995f1e3ac5091f::t_8354ad3c986b0d 20-22
+src/lib/report/excel.ts
+  s_995f1e3ac5091f::t_e5570ee1db42e6 71,74-78,80,83-88,90,93-94,102
+  s_995f1e3ac5091f::t_edf184259f099c 95
+  s_995f1e3ac5091f::t_9e13fc950b891b 3-4
+  s_995f1e3ac5091f::t_cf349995d09e0f 176
+  s_995f1e3ac5091f::t_3f75e0e561c6b7 72-73,79,81-82,89,91-92,96-98,100
+  s_995f1e3ac5091f::t_bede90ddf05b66 173-175,177-178
+  s_995f1e3ac5091f::t_4a0a6ad6c6fa3b 179-195
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "cf70ec4ca3a32acf60729491e7ac6421d497b0b7",
+  "prompts": {},
+  "humans": {
+    "h_a373eedd7fd2e3": {
+      "author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  },
+  "sessions": {
+    "s_995f1e3ac5091f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2cfe14fe-abca-475a-b90e-25b3e200ffb2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": null
+    }
+  }
+}
