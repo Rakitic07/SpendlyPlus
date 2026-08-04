@@ -1,0 +1,157 @@
+src/lib/api.ts
+  s_995f1e3ac5091f::t_e45ad99961cb7e 5-16,20-23
+src/components/Spendly.tsx
+  s_995f1e3ac5091f::t_6fe55df88c92e6 425-426
+  s_995f1e3ac5091f::t_29221572474d8b 69,78-88,90-91,95
+  s_995f1e3ac5091f::t_c2255501d4fb47 39
+  s_995f1e3ac5091f::t_af8be36979ec69 89,92-94
+  s_995f1e3ac5091f::t_83571ee43ef90a 437-438
+mobile/src/state/updates.tsx
+  s_995f1e3ac5091f::t_bc7b2bac5902df 138-152,166-168
+  s_995f1e3ac5091f::t_0a216c6b3e9eae 15
+  s_995f1e3ac5091f::t_3c06538f5bbe98 37-40,42
+  s_995f1e3ac5091f::t_d85f2bf4293832 137
+mobile/src/state/store.tsx
+  s_995f1e3ac5091f::t_e7104b5d50ad0c 124-126,128-134,153-164,169
+  s_995f1e3ac5091f::t_bf6b51f0a02fe2 11
+src/lib/report/excel.ts
+  s_995f1e3ac5091f::t_1c6428c8f32ad3 1-147
+src/components/charts/Bars.tsx
+  s_995f1e3ac5091f::t_a3637a065f9c13 28
+  s_995f1e3ac5091f::t_56632531d32271 13
+  s_995f1e3ac5091f::t_8c5da02896f920 41-42
+src/lib/offline.ts
+  s_995f1e3ac5091f::t_3a8633044dffaf 334
+  s_995f1e3ac5091f::t_80b6afe8b8212d 349
+  s_995f1e3ac5091f::t_2b8c2bab59c78f 2
+  s_995f1e3ac5091f::t_09971799b89ef6 370,372
+  s_995f1e3ac5091f::t_d4f04309ef5146 246-248,252,254-255,258-270,273-275,279,300-310,312,317
+src/lib/report/types.ts
+  s_995f1e3ac5091f::t_5747091c58b492 1-66
+mobile/src/components/RecoverModal.tsx
+  s_995f1e3ac5091f::t_7419da5c805092 1-700
+src/components/ExpenseForm.tsx
+  s_995f1e3ac5091f::t_29706b0b161ebc 300-301
+  s_995f1e3ac5091f::t_2e77bc14b7c1e9 25
+src/components/Shimmer.tsx
+  s_995f1e3ac5091f::t_3c841b07c27d79 1-46
+src/lib/report/data.ts
+  s_995f1e3ac5091f::t_2d0076ed75ff8d 1-150
+mobile/empty-module.js
+  s_995f1e3ac5091f::t_aec1f4a7123ffd 1-5
+mobile/metro.config.js
+  s_995f1e3ac5091f::t_83581c7b95fc11 1,10-24
+src/lib/utils.ts
+  s_995f1e3ac5091f::t_aaa0e4780c83aa 26-38
+mobile/src/lib/report/pdf.ts
+  s_995f1e3ac5091f::t_a91ad8e699d7e6 1-440
+mobile/src/screens/AuthScreen.tsx
+  s_995f1e3ac5091f::t_eb817aa6c7c1c2 179-186,195
+  s_995f1e3ac5091f::t_75e44a72d34dfd 54
+  s_995f1e3ac5091f::t_e17135c8a411f8 53
+  s_995f1e3ac5091f::t_7fd4e6bbff1361 164-170,172-178,189-194
+  s_995f1e3ac5091f::t_fd8a8eb417a1fc 14,19
+  s_995f1e3ac5091f::t_849ee69f5521f0 235-236,252-259
+  s_995f1e3ac5091f::t_ac91eafa8b9675 5,17-18
+  s_995f1e3ac5091f::t_a06c3546236d46 237-251
+src/lib/report/index.ts
+  s_995f1e3ac5091f::t_b347b979f17836 1-4,12-55
+  s_995f1e3ac5091f::t_275a0510514504 5-11
+src/components/ReportModal.tsx
+  s_995f1e3ac5091f::t_e274f7d34d2230 1-330
+mobile/src/components/Shimmer.tsx
+  s_995f1e3ac5091f::t_216fc1d4d7cd95 1-149
+src/app/globals.css
+  s_995f1e3ac5091f::t_8d95fad34981f5 125-180
+src/components/Dashboard.tsx
+  s_995f1e3ac5091f::t_ad6c2441d08966 21
+  s_995f1e3ac5091f::t_577831ba96f9ec 22
+  s_995f1e3ac5091f::t_1320934a4fdcf0 164-165,179-182
+  s_995f1e3ac5091f::t_8e686d03f1299f 204-206
+  s_995f1e3ac5091f::t_d67af844525e54 628-657
+  s_995f1e3ac5091f::t_b3059da400e5df 51
+  s_995f1e3ac5091f::t_77a9f6cffacd7f 199-203
+  s_995f1e3ac5091f::t_31cc6152d8f424 333-369
+  s_995f1e3ac5091f::t_1403928e864121 419-432,435-447
+  s_995f1e3ac5091f::t_cb4a1415ad1230 45
+  s_995f1e3ac5091f::t_abccb17cae2d12 448
+src/components/charts/TrendArea.tsx
+  s_995f1e3ac5091f::t_27c0efd08c6115 12,21
+  s_995f1e3ac5091f::t_eb60966a2011cc 34-35
+mobile/App.tsx
+  s_995f1e3ac5091f::t_c6e4f492c8dd83 49-60,63-68,75-82,84
+  s_995f1e3ac5091f::t_7ee7f306de7bad 1-2
+  s_995f1e3ac5091f::t_b9387f0a7fc8d1 126-127
+mobile/src/lib/report/data.ts
+  s_995f1e3ac5091f::t_12517bdc84d23d 1-174
+mobile/src/screens/ChartsScreen.tsx
+  s_995f1e3ac5091f::t_cb79cd13311d29 82
+  s_995f1e3ac5091f::t_cecd327f0b2685 1-10,14
+  s_995f1e3ac5091f::t_886c98098d65d6 30,32
+  s_995f1e3ac5091f::t_c550af4ab426d1 182-188
+  s_995f1e3ac5091f::t_e58a63b78a74c4 248-249
+  s_995f1e3ac5091f::t_e682dec3252fdf 257-275
+mobile/src/lib/api.ts
+  s_995f1e3ac5091f::t_bc3bb546e8da5d 13-24,28-31
+  s_995f1e3ac5091f::t_cfa80d65b35a5c 95-120
+  s_995f1e3ac5091f::t_4709c46663b3e2 167-196
+mobile/src/components/ReportModal.tsx
+  s_995f1e3ac5091f::t_4ed4dd8fe895dd 1-255,257-289,298-380
+  s_995f1e3ac5091f::t_aaacd8067d050a 256
+  s_995f1e3ac5091f::t_01dcdbaabfc36a 290-297
+src/components/AdminDashboard.tsx
+  s_995f1e3ac5091f::t_724d8f1859a384 34
+  s_995f1e3ac5091f::t_7a8557a74d7fa7 501-502
+mobile/src/screens/OverviewScreen.tsx
+  s_995f1e3ac5091f::t_6d9f313e6aab88 168-169
+  s_995f1e3ac5091f::t_30437d809bea97 199-217
+  s_995f1e3ac5091f::t_9756cb7c7ee813 45
+  s_995f1e3ac5091f::t_efacabbb3445b5 14,24
+  s_995f1e3ac5091f::t_6700c93d5852fd 134-137
+mobile/src/components/AdminDashboard.tsx
+  s_995f1e3ac5091f::t_049ce0ffcd37ce 500
+  s_995f1e3ac5091f::t_7ff91725d2b892 1-40,42-499,501-1238
+  s_995f1e3ac5091f::t_34b83d84333f2e 41
+mobile/src/screens/ExpenseFormScreen.tsx
+  s_995f1e3ac5091f::t_513a5e621894d1 391
+  s_995f1e3ac5091f::t_57b8aad4923322 30
+mobile/src/lib/report/index.ts
+  s_995f1e3ac5091f::t_f9dea275106f6a 1-19,36-45,48-79,81-82,86-88
+  s_995f1e3ac5091f::t_04e0937178c7cc 80,83-85
+  s_995f1e3ac5091f::t_38ec1c9a55172b 20-35
+  s_995f1e3ac5091f::t_37edfadd4b28da 46-47
+mobile/src/lib/report/excel.ts
+  s_995f1e3ac5091f::t_d4b47bf170f025 1-123
+src/lib/report/pdf.ts
+  s_995f1e3ac5091f::t_330533140ee687 1-4,10-370
+  s_995f1e3ac5091f::t_c4a4b1c002b8ce 5-9
+mobile/package-lock.json
+  s_995f1e3ac5091f::t_e12600e987ab8e 21,29,32-33,2827-2844,4160-4168,4983-4995,5160-5168,5413-5424,7188-7196,10515-10520,10597-10608,11135-11143,12069-12080,12585-12590,13084-13101,13160-13180
+mobile/package.json
+  s_995f1e3ac5091f::t_94c749da52738a 23,31,34-35
+package-lock.json
+  s_995f1e3ac5091f::t_2946920c14332b 20-21,30,2361-2366,2377-2383,2409-2415,3070-3078,3511-3520,3810-3842,3936-3944,4284-4295,4303-4314,4364-4373,4801-4810,5634-5644,5661-5666,5741-5749,6473-6486,6588-6593,7227-7252,8305-8320,8410-8416,8947-8956,9668-9677,10267-10278,10284-10293,10563-10572,10776-10785,11231-11240,11414-11431,11484-11504
+package.json
+  s_995f1e3ac5091f::t_ad4838c9b6a074 31-32,41
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "351b363643fc51d3636517baba4108e045c851e2",
+  "prompts": {},
+  "humans": {
+    "h_a373eedd7fd2e3": {
+      "author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  },
+  "sessions": {
+    "s_995f1e3ac5091f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2cfe14fe-abca-475a-b90e-25b3e200ffb2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  }
+}
