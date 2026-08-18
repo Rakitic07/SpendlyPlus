@@ -1,0 +1,108 @@
+prisma/schema.prisma
+  s_995f1e3ac5091f::t_14967f0c9b5ce5 23-25
+src/components/ExpenseList.tsx
+  s_995f1e3ac5091f::t_972c08f159966d 10-28
+  s_995f1e3ac5091f::t_e30d9a707a5db0 75
+mobile/src/screens/ChartsScreen.tsx
+  s_995f1e3ac5091f::t_f3d1adfd43cafe 79
+  s_995f1e3ac5091f::t_8eb7de6f397a70 272-273
+  s_995f1e3ac5091f::t_c5ac487985e2ee 311-312
+  s_995f1e3ac5091f::t_41e6a002d05a30 31
+  s_995f1e3ac5091f::t_a45e581566f6f8 216-217
+  s_995f1e3ac5091f::t_c41800faefd62c 179,195-214
+  s_995f1e3ac5091f::t_a84b214ea2c41c 215
+prisma/schema.sqlite.prisma
+  s_995f1e3ac5091f::t_1acb1ed8e1942b 22-23
+mobile/android/app/src/main/AndroidManifest.xml
+  s_995f1e3ac5091f::t_1b120a33086605 4-6
+src/app/api/settings/route.ts
+  s_995f1e3ac5091f::t_17861ca207dbb4 1-83
+mobile/src/screens/ActivityScreen.tsx
+  s_995f1e3ac5091f::t_1aa9fdf79bddf0 20
+  s_995f1e3ac5091f::t_5da6d8a7daf55b 263
+  s_995f1e3ac5091f::t_69ddf303efe37a 11
+  s_995f1e3ac5091f::t_2ace43f5b8e1b4 143-151
+mobile/src/components/AdminDashboard.tsx
+  s_995f1e3ac5091f::t_c377b3f9aa22c0 1411-1425
+  s_995f1e3ac5091f::t_16b21df5fb4d52 374-406
+  s_995f1e3ac5091f::t_327eb2b2e189d9 22,30,34
+  s_995f1e3ac5091f::t_668008f4ee2f58 123
+  s_995f1e3ac5091f::t_bd79b825eca56f 339-342
+  s_995f1e3ac5091f::t_c9ae773578c2da 113-122
+  s_995f1e3ac5091f::t_cefcaa2af49aea 547-579
+  s_995f1e3ac5091f::t_aa95ab204be9be 778-946
+  s_995f1e3ac5091f::t_3f402df3d2e723 259-272
+  s_995f1e3ac5091f::t_89564ccc48d9bf 298-300
+src/lib/api.ts
+  s_995f1e3ac5091f::t_84e2df9383cf0e 66-79
+mobile/src/lib/api.ts
+  s_995f1e3ac5091f::t_e6b3b20c014f6d 66-79
+src/lib/settings.tsx
+  s_995f1e3ac5091f::t_505cd8e8bb03ec 129-131,136-157,165-166,175-177
+  s_995f1e3ac5091f::t_ee809d84ee51c7 7,11
+mobile/src/state/store.tsx
+  s_995f1e3ac5091f::t_f52eda92d6d53e 74-81,83-87
+mobile/src/screens/ExpenseFormScreen.tsx
+  s_995f1e3ac5091f::t_66a2e547ff5f53 43-52
+  s_995f1e3ac5091f::t_5d1a63b2de9364 184
+  s_995f1e3ac5091f::t_120a6527c686ab 195
+src/components/AdminDashboard.tsx
+  s_995f1e3ac5091f::t_44e63924b1c4af 307-333
+  s_995f1e3ac5091f::t_e83f40f3c3a4e2 270-273
+  s_995f1e3ac5091f::t_418c478392299c 32-34
+  s_995f1e3ac5091f::t_a0642df4a5c6d5 216-217
+  s_995f1e3ac5091f::t_2ecf916d7ea004 541-573
+  s_995f1e3ac5091f::t_a9f78c7317beab 631-680
+  s_995f1e3ac5091f::t_88fd1db6cf31e4 176-188
+  s_995f1e3ac5091f::t_bc6b47656c505e 215
+  s_995f1e3ac5091f::t_176a8dc5cb7a2f 744-881
+  s_995f1e3ac5091f::t_ed1bebdb1b74e1 174
+  s_995f1e3ac5091f::t_1c3c8b0d802312 65-73
+  s_995f1e3ac5091f::t_02f6c31a4d10d8 175
+mobile/src/screens/OverviewScreen.tsx
+  s_995f1e3ac5091f::t_d4af134ebf981c 155-159
+  s_995f1e3ac5091f::t_0335c6f0957d93 41
+  s_995f1e3ac5091f::t_7b5172b360a042 26
+src/app/api/admin/stats/route.ts
+  s_995f1e3ac5091f::t_eaba793c0629f1 320
+  s_995f1e3ac5091f::t_575a2c3847d9c0 20-30,33-36
+  s_995f1e3ac5091f::t_7ad8422b7eea2f 301-305
+  s_995f1e3ac5091f::t_90f70da8db53f9 262
+  s_995f1e3ac5091f::t_f3a278ec8d5260 306
+  s_995f1e3ac5091f::t_cda60db3601637 1
+  s_995f1e3ac5091f::t_947a5a3d65a8ae 172-245
+  s_995f1e3ac5091f::t_4f603ee88686b0 284-296,307,310-319
+mobile/src/components/BudgetRing.tsx
+  s_995f1e3ac5091f::t_aa7be0b9708f50 57-75
+mobile/src/components/Shimmer.tsx
+  s_995f1e3ac5091f::t_0774e1cfd4786e 1-113
+mobile/src/lib/settings.tsx
+  s_995f1e3ac5091f::t_0eca3b2b88910d 102-117
+  s_995f1e3ac5091f::t_1ae1825521a2ec 141-142,145-147,161-162,171-173
+  s_995f1e3ac5091f::t_e63842febb0756 11
+mobile/src/lib/storage.ts
+  s_995f1e3ac5091f::t_e940d844cd63f1 137,145
+  s_995f1e3ac5091f::t_41de77690ae97c 111-114,116
+  s_995f1e3ac5091f::t_3fa44d618a50aa 82-100,106-110,115,117-119,127-136,138-144
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "e43998274f8f349d01f74d208b8290f8dafe06bc",
+  "prompts": {},
+  "humans": {
+    "h_a373eedd7fd2e3": {
+      "author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  },
+  "sessions": {
+    "s_995f1e3ac5091f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2cfe14fe-abca-475a-b90e-25b3e200ffb2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": null
+    }
+  }
+}
