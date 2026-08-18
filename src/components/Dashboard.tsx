@@ -265,24 +265,33 @@ export default function Dashboard({
           ? "avg / txn"
           : "avg / year";
 
-  const trendData = useMemo(
+  // Charts are collapsed by default on web/PWA, so only build the (relatively
+  // heavy) trend/bar series when the charts are actually on screen. This skips
+  // the work entirely on every view/filter/page change while charts are hidden.
+  const chartsVisible = show("charts") && (tabbed || chartsOpen);
+
+  const trendData = useMemo<{ month: string; total: number }[]>(
     () =>
-      view === "month"
-        ? dailyTotals(filtered, year, month).map((d) => ({ month: d.day, total: d.total }))
-        : view === "year"
-          ? monthlyTrend(filtered, year)
-          : monthlyTrend(expenses.filter((e) => inYear(e, year)), year),
-    [view, filtered, year, month, expenses]
+      !chartsVisible
+        ? []
+        : view === "month"
+          ? dailyTotals(filtered, year, month).map((d) => ({ month: d.day, total: d.total }))
+          : view === "year"
+            ? monthlyTrend(filtered, year)
+            : monthlyTrend(expenses.filter((e) => inYear(e, year)), year),
+    [chartsVisible, view, filtered, year, month, expenses]
   );
 
-  const barData = useMemo(
+  const barData = useMemo<{ label: string; total: number }[]>(
     () =>
-      view === "all"
-        ? yearlyTotals(expenses).map((y) => ({ label: y.year, total: y.total }))
-        : view === "year"
-          ? monthlyTrend(filtered, year).map((m) => ({ label: m.month, total: m.total }))
-          : dailyTotals(filtered, year, month).map((d) => ({ label: d.day, total: d.total })),
-    [view, expenses, filtered, year, month]
+      !chartsVisible
+        ? []
+        : view === "all"
+          ? yearlyTotals(expenses).map((y) => ({ label: y.year, total: y.total }))
+          : view === "year"
+            ? monthlyTrend(filtered, year).map((m) => ({ label: m.month, total: m.total }))
+            : dailyTotals(filtered, year, month).map((d) => ({ label: d.day, total: d.total })),
+    [chartsVisible, view, expenses, filtered, year, month]
   );
 
   // Transactions list: apply search + category filter on top of the period.

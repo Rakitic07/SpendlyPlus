@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { X, Check, Trash2, ChevronDown, ChevronUp, Camera, Image as ImageIcon } from "lucide-react";
 import { CATEGORIES, CATEGORY_NAMES } from "@/lib/categories";
+import { api } from "@/lib/api";
 import { scanBillFromFile } from "@/lib/scanBill";
 import { isMobileDevice } from "@/lib/platform";
 import { useSettings } from "@/lib/settings";
@@ -79,6 +80,10 @@ export default function ExpenseForm({
   const [error, setError] = useState<string | null>(null);
   // Bill scanning (camera → OCR → prefill). Thumbnail is a tiny (~10KB) JPEG.
   const [thumbnail, setThumbnail] = useState<string | null>(null);
+  // The server keeps the stored bill unless we send an explicit value, so a
+  // quick save before a lazy-loaded thumbnail arrives can't wipe it. This flag
+  // records a deliberate "remove bill" so we send "" (clear) rather than omit.
+  const [thumbCleared, setThumbCleared] = useState(false);
   const [scanning, setScanning] = useState(false);
   const [scanNote, setScanNote] = useState<string | null>(null);
   // Full-size lightbox for the (tiny) bill thumbnail — scans and edits alike.
@@ -153,7 +158,31 @@ export default function ExpenseForm({
     setScanNote(null);
     setHi({});
     setError(null);
+    setThumbCleared(false);
   }, [open, editing, currency.code, settings.defaultPayer]);
+
+  // The list/bootstrap payloads omit thumbnails to stay light. If we're editing a
+  // row the server says has a bill but this device hasn't cached the image (e.g.
+  // it was scanned on another device), pull just that one thumbnail on demand.
+  useEffect(() => {
+    if (!open || !editing) return;
+    if (editing.thumbnail || !editing.hasThumbnail) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const { thumbnail: t } = await api.getThumbnail(editing.id);
+        if (!cancelled && t) {
+          setThumbnail(t);
+          setThumbCleared(false);
+        }
+      } catch {
+        /* offline / not found — keep showing the category icon */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [open, editing]);
 
   // Apply a scanned bill: prefill whatever we could read. The form is the
   // editable preview, so the user completes anything missing before saving.
@@ -263,7 +292,9 @@ export default function ExpenseForm({
           date,
           paymentMode: paymentMode || undefined,
           paymentDetail: finalDetail,
-          thumbnail: thumbnail || undefined,
+          // Omit when unknown (leave the stored bill untouched); "" only when the
+          // user explicitly removed it; the string when we have an image.
+          thumbnail: thumbnail ? thumbnail : thumbCleared ? "" : undefined,
         },
         editing?.id
       );
@@ -374,7 +405,10 @@ export default function ExpenseForm({
                       />
                       <button
                         type="button"
-                        onClick={() => setThumbnail(null)}
+                        onClick={() => {
+                          setThumbnail(null);
+                          setThumbCleared(true);
+                        }}
                         className="absolute -right-1.5 -top-1.5 grid h-5 w-5 place-items-center rounded-full bg-red-500 text-white"
                         aria-label="Remove bill preview"
                       >

@@ -179,6 +179,14 @@ export const api = {
     return handle<{ ok: boolean }>(res);
   },
 
+  // Lazily fetch one bill's thumbnail. The list payload omits thumbnails to stay
+  // small; this pulls a single preview on demand (e.g. a receipt scanned on
+  // another device that this phone hasn't cached).
+  async getThumbnail(id: string) {
+    const res = await apiFetch(`/api/expenses/${id}`);
+    return handle<{ thumbnail: string | null }>(res);
+  },
+
   // ── Admin (owner-only) ────────────────────────────────────────────────
   // The admin endpoints authenticate with DATABASE_URL + AUTH_SECRET posted in
   // the body (NOT the bearer token), and are read-only aside from reset actions.

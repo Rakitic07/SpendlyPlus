@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -26,6 +26,7 @@ import {
   paymentProviders,
 } from '../lib/payments';
 import { scanBill } from '../lib/scan';
+import { api } from '../lib/api';
 import { useSettings, getSettingsSync } from '../lib/settings';
 import type { Expense } from '../lib/types';
 import { Button, Label } from '../components/ui';
@@ -76,6 +77,9 @@ export function ExpenseFormScreen({ route, navigation }: Props) {
   const [provider, setProvider] = useState(editing?.paymentDetail ?? '');
   const [customProvider, setCustomProvider] = useState('');
   const [thumbnail, setThumbnail] = useState<string | null>(editing?.thumbnail ?? null);
+  // Records a deliberate "remove bill" so we send "" (clear) instead of omitting
+  // the field — which the server treats as "leave the stored bill unchanged".
+  const [thumbCleared, setThumbCleared] = useState(false);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const [scanning, setScanning] = useState(false);
@@ -87,6 +91,28 @@ export function ExpenseFormScreen({ route, navigation }: Props) {
   const [hi, setHi] = useState<Record<string, boolean>>({});
 
   const clearHi = (k: string) => setHi(h => (h[k] ? { ...h, [k]: false } : h));
+
+  // The list payload omits thumbnails to stay light. If we're editing a row the
+  // server has a bill for but this phone hasn't cached the image (scanned on
+  // another device), pull just that one thumbnail on demand.
+  useEffect(() => {
+    if (!editing || editing.thumbnail || !editing.hasThumbnail) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const { thumbnail: t } = await api.getThumbnail(editing.id);
+        if (!cancelled && t) {
+          setThumbnail(t);
+          setThumbCleared(false);
+        }
+      } catch {
+        /* offline / not found — keep showing the category icon */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [editing]);
 
   const providers = useMemo(
     () => paymentProviders(paymentMode, currency.code),
@@ -177,7 +203,9 @@ export function ExpenseFormScreen({ route, navigation }: Props) {
         date,
         paymentMode: paymentMode || undefined,
         paymentDetail: finalDetail || undefined,
-        thumbnail: thumbnail || undefined,
+        // Omit when unknown (leave the stored bill untouched); "" only when the
+        // user explicitly removed it; the string when we have an image.
+        thumbnail: thumbnail ? thumbnail : thumbCleared ? '' : undefined,
       };
       if (editing) await editExpense(editing.id, draft);
       else await addExpense(draft);
@@ -250,7 +278,10 @@ export function ExpenseFormScreen({ route, navigation }: Props) {
                   <Pressable
                     style={styles.thumbRemove}
                     hitSlop={8}
-                    onPress={() => setThumbnail(null)}>
+                    onPress={() => {
+                      setThumbnail(null);
+                      setThumbCleared(true);
+                    }}>
                     <X size={14} color="#fff" />
                   </Pressable>
                 </View>

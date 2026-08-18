@@ -4,7 +4,14 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  // Pooled (PgBouncer) connection for the app at runtime — must include
+  // `pgbouncer=true` so Prisma disables prepared statements that transaction-mode
+  // pooling can't keep (otherwise you get intermittent "prepared statement
+  // already exists" errors on serverless).
   url      = env("DATABASE_URL")
+  // Direct (non-pooled) connection used ONLY by `prisma migrate` / `db push`.
+  // PgBouncer can't run DDL reliably, so migrations bypass the pooler.
+  directUrl = env("DIRECT_URL")
 }
 
 // A Ledger is one person's private space, unlocked by a passphrase.

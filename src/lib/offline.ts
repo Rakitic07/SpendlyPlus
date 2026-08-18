@@ -109,9 +109,20 @@ function backfillThumbnails(
   }
   return server.map((e) => {
     if (e.thumbnail) return e;
+    // The server explicitly reports no bill for this row (e.g. it was removed) —
+    // don't resurrect a stale cached preview.
+    if (e.hasThumbnail === false) return e;
     const t = byId.get(e.id);
     return t ? { ...e, thumbnail: t } : e;
   });
+}
+
+// Public wrapper: re-attach cached thumbnails to any freshly pulled server list
+// (e.g. the startup bootstrap payload, which omits the heavy base64 to stay
+// small). Same-device previews survive without a refetch; cross-device ones are
+// fetched lazily when a bill is opened.
+export function mergeCachedThumbnails(space: string, server: Expense[]): Expense[] {
+  return backfillThumbnails(space, server);
 }
 
 function setLastSync(space: string, ts: number): void {
@@ -187,7 +198,13 @@ export function draftToExpense(draft: ExpenseDraft, base?: Expense): Expense {
     notes: draft.notes ? draft.notes : null,
     paymentMode: draft.paymentMode ? draft.paymentMode : null,
     paymentDetail: draft.paymentDetail ? draft.paymentDetail : null,
-    thumbnail: draft.thumbnail ? draft.thumbnail : (base?.thumbnail ?? null),
+    // undefined = "leave as-is" (keep the base row's bill); "" = explicit remove;
+    // a string = new/updated image. Mirrors the server's PATCH semantics so an
+    // optimistic edit shows the same result the DB will settle on.
+    thumbnail:
+      draft.thumbnail !== undefined
+        ? draft.thumbnail || null
+        : (base?.thumbnail ?? null),
     createdAt: base?.createdAt ?? now,
     updatedAt: now,
   };

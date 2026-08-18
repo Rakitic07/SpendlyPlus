@@ -101,6 +101,9 @@ function backfillThumbs(server: Expense[], prev: Expense[]): Expense[] {
   for (const e of prev) if (e.thumbnail) byId.set(e.id, e.thumbnail);
   return server.map(e => {
     if (e.thumbnail) return e;
+    // Server explicitly reports no bill (e.g. removed) — don't resurrect a stale
+    // cached preview.
+    if (e.hasThumbnail === false) return e;
     const t = byId.get(e.id);
     return t ? { ...e, thumbnail: t } : e;
   });
@@ -339,7 +342,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         const { expense } = await api.updateExpense(id, draft);
         setExpenses(prev => {
           const merged = sortByDate(
-            prev.map(e => (e.id === id ? keepThumb(expense, draft.thumbnail ?? null) : e)),
+            prev.map(e => (e.id === id ? keepThumb(expense, draft.thumbnail || null) : e)),
           );
           if (spaceRef.current) void writeCache(spaceRef.current, merged);
           return merged;

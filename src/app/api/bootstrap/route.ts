@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession, clearSession } from "@/lib/auth";
+import { EXPENSE_LIST_SELECT } from "@/lib/expenseSelect";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -15,15 +16,26 @@ export async function GET() {
     return NextResponse.json({ authenticated: false });
   }
 
-  const ledger = await prisma.ledger.findUnique({
-    where: { id: session.ledgerId },
-    select: {
-      id: true,
-      name: true,
-      monthlyBudget: true,
-      expenses: { orderBy: { date: "desc" } },
-    },
-  });
+  // Fetch the ledger + its expenses WITHOUT the heavy base64 thumbnails (see
+  // EXPENSE_LIST_SELECT), alongside a tiny id-only query of which rows have a
+  // bill image, so the startup payload stays small even for spaces with many
+  // scanned receipts. The client re-attaches previews from its cache and lazily
+  // fetches any it doesn't have.
+  const [ledger, withThumbs] = await Promise.all([
+    prisma.ledger.findUnique({
+      where: { id: session.ledgerId },
+      select: {
+        id: true,
+        name: true,
+        monthlyBudget: true,
+        expenses: { orderBy: { date: "desc" }, select: EXPENSE_LIST_SELECT },
+      },
+    }),
+    prisma.expense.findMany({
+      where: { ledgerId: session.ledgerId, thumbnail: { not: null } },
+      select: { id: true },
+    }),
+  ]);
 
   // Stale cookie (e.g. ledger deleted): drop it and fall back to guest.
   if (!ledger) {
@@ -31,10 +43,16 @@ export async function GET() {
     return NextResponse.json({ authenticated: false });
   }
 
+  const thumbIds = new Set(withThumbs.map((e) => e.id));
+  const expenses = ledger.expenses.map((e) => ({
+    ...e,
+    hasThumbnail: thumbIds.has(e.id),
+  }));
+
   return NextResponse.json({
     authenticated: true,
     name: ledger.name,
     budget: ledger.monthlyBudget ?? null,
-    expenses: ledger.expenses,
+    expenses,
   });
 }

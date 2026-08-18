@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getActiveLedger } from "@/lib/auth";
 import { expenseSchema } from "@/lib/validation";
+import { EXPENSE_LIST_SELECT } from "@/lib/expenseSelect";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -12,10 +13,22 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const expenses = await prisma.expense.findMany({
-    where: { ledgerId: session.ledgerId },
-    orderBy: { date: "desc" },
-  });
+  // Pull the list WITHOUT the heavy base64 thumbnails, plus a tiny id-only query
+  // for which rows have one, so the client can show a "has bill" hint and fetch
+  // the actual image lazily. Keeps the list payload small (see EXPENSE_LIST_SELECT).
+  const [rows, withThumbs] = await Promise.all([
+    prisma.expense.findMany({
+      where: { ledgerId: session.ledgerId },
+      orderBy: { date: "desc" },
+      select: EXPENSE_LIST_SELECT,
+    }),
+    prisma.expense.findMany({
+      where: { ledgerId: session.ledgerId, thumbnail: { not: null } },
+      select: { id: true },
+    }),
+  ]);
+  const thumbIds = new Set(withThumbs.map((e) => e.id));
+  const expenses = rows.map((e) => ({ ...e, hasThumbnail: thumbIds.has(e.id) }));
 
   return NextResponse.json({ expenses });
 }

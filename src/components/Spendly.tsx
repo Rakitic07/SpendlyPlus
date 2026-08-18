@@ -22,6 +22,7 @@ import {
   rememberSpace,
   getLastSpace,
   forgetSpace,
+  mergeCachedThumbnails,
   readBudget,
   setBudgetLocal,
   adoptServerBudget,
@@ -217,8 +218,11 @@ export default function Spendly() {
             // Unsynced local writes exist — flush them, then refresh.
             void runSync(space);
           } else if (boot.expenses) {
-            setExpenses(boot.expenses);
-            writeCache(space, boot.expenses);
+            // The bootstrap payload omits the heavy base64 thumbnails; re-attach
+            // any this device already cached so previews don't flicker away.
+            const merged = mergeCachedThumbnails(space, boot.expenses);
+            setExpenses(merged);
+            writeCache(space, merged);
           }
         } else if (!hasLocal) {
           // Genuinely logged out with nothing cached → show the landing screen.

@@ -184,4 +184,11 @@ export const api = {
     const res = await apiFetch(`/api/expenses/${id}`, { method: "DELETE" });
     return handle<{ ok: boolean }>(res);
   },
+
+  // Lazily fetch one bill's thumbnail (kept out of the list payload to keep it
+  // small). Used when opening a receipt this device hasn't cached yet.
+  async getThumbnail(id: string) {
+    const res = await apiFetch(`/api/expenses/${id}`, { cache: "no-store" });
+    return handle<{ thumbnail: string | null }>(res);
+  },
 };

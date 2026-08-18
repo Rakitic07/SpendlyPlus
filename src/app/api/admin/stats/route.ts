@@ -181,15 +181,19 @@ type SystemStats = {
   region: string | null;
 };
 
-// Free disk space of the writable filesystem. `statfs` exists on Node 18.15+,
-// but isn't reported on every runtime — return null (UI shows "n/a") on failure.
+// Free space of the *writable* filesystem. We probe os.tmpdir() (the ephemeral
+// scratch dir) rather than "/", because on serverless (Vercel/Lambda) the root
+// image is a packed, read-only filesystem that always reports ~100% used —
+// measuring it would be a meaningless "disk full" false alarm. The temp dir is
+// the only place the app can write, so its headroom is what actually matters.
+// `statfs` exists on Node 18.15+; return null (UI shows "n/a") on failure.
 async function diskStats(): Promise<Meter | null> {
   try {
     const fs = (await import("node:fs/promises")) as unknown as {
       statfs?: (p: string) => Promise<{ bsize: number; blocks: number; bavail: number }>;
     };
     if (!fs.statfs) return null;
-    const s = await fs.statfs("/");
+    const s = await fs.statfs(os.tmpdir());
     const totalBytes = s.blocks * s.bsize;
     const freeBytes = s.bavail * s.bsize; // available to unprivileged processes
     const usedBytes = Math.max(0, totalBytes - freeBytes);
