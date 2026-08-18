@@ -71,8 +71,20 @@ function draftToExpense(draft: ExpenseDraft, id: string): Expense {
   };
 }
 
+function dayStart(iso: string): number {
+  const d = new Date(iso);
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+}
+
+// Newest day first; within the same day the most recently added entry on top.
+// Same-day rows carry an identical date-only value, so `createdAt` breaks the
+// tie and keeps the latest entry at the top of the list.
 function sortByDate(list: Expense[]): Expense[] {
-  return [...list].sort((a, b) => +new Date(b.date) - +new Date(a.date));
+  return [...list].sort((a, b) => {
+    const dayDiff = dayStart(b.date) - dayStart(a.date);
+    if (dayDiff !== 0) return dayDiff;
+    return (+new Date(b.createdAt) || 0) - (+new Date(a.createdAt) || 0);
+  });
 }
 
 // The backend may not echo `thumbnail` back yet (older deploy / column not

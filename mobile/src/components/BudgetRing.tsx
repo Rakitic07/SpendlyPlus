@@ -54,10 +54,25 @@ export function BudgetRing({
           transform={`rotate(-90 ${size / 2} ${size / 2})`}
         />
       </Svg>
-      <View style={styles.center}>
-        {centerTop ? <Text style={styles.top}>{centerTop}</Text> : null}
-        <Text style={[styles.main, { color: ringColor }]}>{centerMain}</Text>
-        {centerSub ? <Text style={styles.sub}>{centerSub}</Text> : null}
+      <View style={[styles.center, { paddingHorizontal: stroke + 6 }]}>
+        {centerTop ? (
+          <Text style={styles.top} numberOfLines={1}>
+            {centerTop}
+          </Text>
+        ) : null}
+        <Text
+          style={[styles.main, { color: ringColor }]}
+          numberOfLines={1}
+          adjustsFontSizeToFit
+          minimumFontScale={0.5}
+        >
+          {centerMain}
+        </Text>
+        {centerSub ? (
+          <Text style={styles.sub} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.6}>
+            {centerSub}
+          </Text>
+        ) : null}
       </View>
     </View>
   );

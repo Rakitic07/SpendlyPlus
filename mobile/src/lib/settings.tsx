@@ -8,6 +8,7 @@ import React, {
 } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { PeriodView } from './analytics';
+import { api } from './api';
 
 // Per-space preferences, persisted as a single JSON blob in AsyncStorage. Every
 // field has a default, so a missing/old blob still yields a complete object.
@@ -98,6 +99,22 @@ async function persist(space: string, value: SpaceSettings): Promise<void> {
   }
 }
 
+// Pull the shared, cross-device settings from the server and merge them over
+// the local copy. Returns null when unavailable (offline / not signed in) so
+// callers keep the local values.
+export async function syncSettingsFromServer(space: string): Promise<SpaceSettings | null> {
+  if (!space) return null;
+  try {
+    const { settings } = await api.getSettings();
+    if (!settings || Object.keys(settings).length === 0) return null;
+    const merged = normalize({ ...cache, ...settings });
+    await persist(space, merged);
+    return merged;
+  } catch {
+    return null;
+  }
+}
+
 // -- React context ----------------------------------------------------------
 
 type Ctx = {
@@ -121,8 +138,13 @@ export function SettingsProvider({
 
   useEffect(() => {
     let alive = true;
+    // Instant paint from the local cache, then hydrate from the server so
+    // preferences follow the space across devices.
     loadSettings(space).then(s => {
       if (alive) setSettings(s);
+      return syncSettingsFromServer(space);
+    }).then(remote => {
+      if (alive && remote) setSettings(remote);
     });
     return () => {
       alive = false;
@@ -136,6 +158,8 @@ export function SettingsProvider({
         void persist(space, next);
         return next;
       });
+      // Push just the changed keys; the server merges them into the shared blob.
+      void api.patchSettings(patch as Record<string, unknown>).catch(() => {});
     },
     [space],
   );
@@ -144,6 +168,9 @@ export function SettingsProvider({
     const next = { ...DEFAULT_SETTINGS };
     void persist(space, next);
     setSettings(next);
+    void api
+      .patchSettings(next as unknown as Record<string, unknown>)
+      .catch(() => {});
   }, [space]);
 
   const value = useMemo<Ctx>(() => ({ settings, update, reset }), [settings, update, reset]);

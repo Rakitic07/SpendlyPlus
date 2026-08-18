@@ -19,6 +19,7 @@ import {
   ChevronRight,
   Clock,
   Coins,
+  Cpu,
   Database,
   Eye,
   EyeOff,
@@ -26,9 +27,11 @@ import {
   KeyRound,
   Layers,
   LifeBuoy,
+  MemoryStick,
   Paperclip,
   Receipt,
   ScanLine,
+  Server,
   ShieldCheck,
   Tag,
   TrendingDown,
@@ -107,7 +110,17 @@ type ResetItem = {
 };
 type Tab = 'spaces' | 'categories' | 'payers' | 'activity' | 'resets';
 type Creds = { databaseUrl: string; authSecret: string };
-type Overview = { totals: Totals; storage: Storage | null; ocr: Ocr | null };
+type Overview = { totals: Totals };
+type Meter = { usedBytes: number; totalBytes: number; usedPct: number };
+type System = {
+  cpu: { cores: number; load1: number; loadPct: number | null };
+  memory: Meter & { basis: 'process' | 'host' };
+  disk: Meter | null;
+  uptimeSec: number;
+  node: string;
+  region: string | null;
+};
+type PanelKind = 'storage' | 'ocr' | 'system';
 
 /* ---------- helpers ---------- */
 
@@ -243,6 +256,20 @@ export function AdminDashboard({ open, onClose }: { open: boolean; onClose: () =
   const [totals, setTotals] = useState<Totals | null>(null);
   const [storage, setStorage] = useState<Storage | null>(null);
   const [ocr, setOcr] = useState<Ocr | null>(null);
+  const [system, setSystem] = useState<System | null>(null);
+
+  // Collapsible detail panels — closed by default. Data is fetched on expand and
+  // cleared on collapse so nothing heavy lingers in device memory.
+  const [openPanel, setOpenPanel] = useState<Record<PanelKind, boolean>>({
+    storage: false,
+    ocr: false,
+    system: false,
+  });
+  const [panelLoading, setPanelLoading] = useState<Record<PanelKind, boolean>>({
+    storage: false,
+    ocr: false,
+    system: false,
+  });
 
   const [tab, setTab] = useState<Tab>('spaces');
   const [spaces, setSpaces] = useState<Paged<Space> | null>(null);
@@ -268,6 +295,9 @@ export function AdminDashboard({ open, onClose }: { open: boolean; onClose: () =
       setTotals(null);
       setStorage(null);
       setOcr(null);
+      setSystem(null);
+      setOpenPanel({ storage: false, ocr: false, system: false });
+      setPanelLoading({ storage: false, ocr: false, system: false });
       setTab('spaces');
       setSpaces(null);
       setCategories(null);
@@ -306,10 +336,11 @@ export function AdminDashboard({ open, onClose }: { open: boolean; onClose: () =
     setError(null);
     try {
       const c: Creds = { databaseUrl: dbUrl.trim(), authSecret: secret.trim() };
-      const ov = await api.adminSection<Overview>(c, 'overview');
+      // Light unlock: only the cheap totals. The storage / OCR / host panels stay
+      // collapsed and each fetches its own slice on expand, so unlocking is fast
+      // and the screen stays light on the phone.
+      const ov = await api.adminSection<Overview>(c, 'overview', { light: true });
       setTotals(ov.totals);
-      setStorage(ov.storage ?? null);
-      setOcr(ov.ocr ?? null);
       setCreds(c);
       setTab('spaces');
       const sp = await api.adminSection<Paged<Space>>(c, 'spaces', { page: 0 });
@@ -337,6 +368,39 @@ export function AdminDashboard({ open, onClose }: { open: boolean; onClose: () =
       setTabError(e instanceof Error ? e.message : 'Failed to load.');
     } finally {
       setTabLoading(false);
+    }
+  }
+
+  // Expand/collapse a detail panel. Expanding fetches only that panel's slice;
+  // collapsing clears its data so nothing heavy sits in memory (re-expanding
+  // refetches). Keeps the admin screen light on the phone.
+  async function togglePanel(kind: PanelKind) {
+    if (openPanel[kind]) {
+      setOpenPanel(p => ({ ...p, [kind]: false }));
+      if (kind === 'storage') setStorage(null);
+      else if (kind === 'ocr') setOcr(null);
+      else setSystem(null);
+      return;
+    }
+
+    setOpenPanel(p => ({ ...p, [kind]: true }));
+    if (!creds) return;
+    setPanelLoading(p => ({ ...p, [kind]: true }));
+    try {
+      if (kind === 'storage') {
+        const d = await api.adminSection<{ storage: Storage | null }>(creds, 'storage');
+        setStorage(d.storage ?? null);
+      } else if (kind === 'ocr') {
+        const d = await api.adminSection<{ ocr: Ocr | null }>(creds, 'ocr');
+        setOcr(d.ocr ?? null);
+      } else {
+        const d = await api.adminSection<{ system: System | null }>(creds, 'system');
+        setSystem(d.system ?? null);
+      }
+    } catch {
+      // Leave the panel open but empty; a re-toggle retries.
+    } finally {
+      setPanelLoading(p => ({ ...p, [kind]: false }));
     }
   }
 
@@ -480,8 +544,39 @@ export function AdminDashboard({ open, onClose }: { open: boolean; onClose: () =
                 Amounts are currency-agnostic — currency is a per-device display setting and isn't stored.
               </Text>
 
-              {storage ? <StoragePanel s={storage} /> : null}
-              {ocr ? <OcrPanel o={ocr} /> : null}
+              {/* Detail panels — collapsed by default, each loads on expand and
+                  clears on collapse to keep the screen light. */}
+              <View style={{ gap: spacing.xs }}>
+                <CollapseCard
+                  icon={<HardDrive size={13} color={colors.textDim} />}
+                  title="Database storage"
+                  open={openPanel.storage}
+                  loading={panelLoading.storage}
+                  onToggle={() => togglePanel('storage')}
+                >
+                  {storage ? <StoragePanel s={storage} /> : null}
+                </CollapseCard>
+
+                <CollapseCard
+                  icon={<ScanLine size={13} color={colors.accent} />}
+                  title="Bill scanning (OCR.space)"
+                  open={openPanel.ocr}
+                  loading={panelLoading.ocr}
+                  onToggle={() => togglePanel('ocr')}
+                >
+                  {ocr ? <OcrPanel o={ocr} /> : null}
+                </CollapseCard>
+
+                <CollapseCard
+                  icon={<Server size={13} color={colors.textDim} />}
+                  title="Host runtime (CPU / memory / disk)"
+                  open={openPanel.system}
+                  loading={panelLoading.system}
+                  onToggle={() => togglePanel('system')}
+                >
+                  {system ? <HostPanel s={system} /> : null}
+                </CollapseCard>
+              </View>
 
               {/* tab bar */}
               <View style={styles.tabBar}>
@@ -676,6 +771,175 @@ function OcrPanel({ o }: { o: Ocr }) {
           </Text>
         </>
       )}
+    </View>
+  );
+}
+
+/* ---------- collapsible detail panels ---------- */
+
+function CollapseCard({
+  icon,
+  title,
+  open,
+  loading,
+  onToggle,
+  children,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  open: boolean;
+  loading: boolean;
+  onToggle: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <View style={styles.collapseCard}>
+      <Pressable onPress={onToggle} style={styles.collapseHead}>
+        <View style={styles.collapseHeadLeft}>
+          {icon}
+          <Text style={styles.cardHeadText}>{title}</Text>
+        </View>
+        <View style={styles.collapseHeadRight}>
+          {loading ? <ActivityIndicator size="small" color={colors.textDim} /> : null}
+          <ChevronDown
+            size={18}
+            color={colors.textDim}
+            style={{ transform: [{ rotate: open ? '180deg' : '0deg' }] }}
+          />
+        </View>
+      </Pressable>
+      {open ? (
+        <View style={styles.collapseBody}>
+          {children ? (
+            children
+          ) : (
+            <View style={styles.collapseLoading}>
+              <ActivityIndicator color={colors.primary} />
+            </View>
+          )}
+        </View>
+      ) : null}
+    </View>
+  );
+}
+
+/* ---------- host runtime (CPU / memory / disk) ---------- */
+
+function meterColor(pct: number): string {
+  if (pct >= 90) return colors.red;
+  if (pct >= 75) return colors.amber;
+  return colors.primary;
+}
+
+function meterTextColor(pct: number): string {
+  if (pct >= 90) return colors.red;
+  if (pct >= 75) return colors.amber;
+  return colors.textDim;
+}
+
+function fmtUptime(sec: number): string {
+  const d = Math.floor(sec / 86400);
+  const h = Math.floor((sec % 86400) / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+  if (d) return `${d}d ${h}h`;
+  if (h) return `${h}h ${m}m`;
+  return `${m}m`;
+}
+
+function MeterCard({
+  icon,
+  label,
+  used,
+  total,
+  pct,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  used: number;
+  total: number;
+  pct: number;
+}) {
+  return (
+    <View style={styles.card}>
+      <View style={styles.cardHead}>
+        {icon}
+        <Text style={styles.cardHeadText}>{label}</Text>
+      </View>
+      <Text style={styles.bigNum}>
+        {fmtBytes(used)}
+        <Text style={styles.bigNumSub}> / {fmtBytes(total)}</Text>
+      </Text>
+      <Bar ratio={pct / 100} colorA={meterColor(pct)} />
+      <Text style={[styles.tinyDim, { color: meterTextColor(pct) }]}>
+        {pct >= 90 ? 'Almost full — ' : pct >= 75 ? 'Filling up — ' : ''}
+        {fmtBytes(Math.max(0, total - used))} free · {pct.toFixed(0)}% used
+      </Text>
+    </View>
+  );
+}
+
+function HostPanel({ s }: { s: System }) {
+  return (
+    <View style={{ gap: spacing.sm }}>
+      {s.region ? (
+        <Text style={styles.tinyFaint}>Region: {s.region}</Text>
+      ) : null}
+
+      <MeterCard
+        icon={<MemoryStick size={13} color={colors.textDim} />}
+        label={s.memory.basis === 'process' ? 'Function memory' : 'Host memory'}
+        used={s.memory.usedBytes}
+        total={s.memory.totalBytes}
+        pct={s.memory.usedPct}
+      />
+
+      {s.disk ? (
+        <MeterCard
+          icon={<HardDrive size={13} color={colors.textDim} />}
+          label="Disk"
+          used={s.disk.usedBytes}
+          total={s.disk.totalBytes}
+          pct={s.disk.usedPct}
+        />
+      ) : (
+        <View style={styles.card}>
+          <View style={styles.cardHead}>
+            <HardDrive size={13} color={colors.textDim} />
+            <Text style={styles.cardHeadText}>Disk</Text>
+          </View>
+          <Text style={styles.bigNum}>n/a</Text>
+          <Text style={styles.tinyFaint}>Not reported on this runtime.</Text>
+        </View>
+      )}
+
+      <View style={styles.card}>
+        <View style={styles.cardHead}>
+          <Cpu size={13} color={colors.textDim} />
+          <Text style={styles.cardHeadText}>CPU load</Text>
+        </View>
+        <Text style={styles.bigNum}>
+          {s.cpu.loadPct !== null ? `${s.cpu.loadPct.toFixed(0)}%` : 'n/a'}
+          <Text style={styles.bigNumSub}>
+            {' '}
+            · {s.cpu.cores} {s.cpu.cores === 1 ? 'core' : 'cores'}
+          </Text>
+        </Text>
+        {s.cpu.loadPct !== null ? (
+          <>
+            <Bar ratio={s.cpu.loadPct / 100} colorA={meterColor(s.cpu.loadPct)} />
+            <Text style={[styles.tinyDim, { color: meterTextColor(s.cpu.loadPct) }]}>
+              load {s.cpu.load1.toFixed(2)} across {s.cpu.cores}
+            </Text>
+          </>
+        ) : (
+          <Text style={styles.tinyDim}>Load average isn't exposed on serverless runtimes.</Text>
+        )}
+      </View>
+
+      <Text style={styles.tinyFaint}>
+        Read live at request time · uptime {fmtUptime(s.uptimeSec)} · Node {s.node}
+        {s.memory.basis === 'process' ? ' · serverless instance — resets when it recycles' : ''}
+      </Text>
     </View>
   );
 }
@@ -1143,6 +1407,21 @@ const styles = StyleSheet.create({
 
   barTrack: { height: 8, borderRadius: radius.pill, backgroundColor: 'rgba(255,255,255,0.08)', overflow: 'hidden', marginTop: 8 },
   barFill: { height: '100%', borderRadius: radius.pill },
+
+  collapseCard: {
+    backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border,
+    borderRadius: radius.md, overflow: 'hidden',
+  },
+  collapseHead: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    paddingHorizontal: spacing.md, paddingVertical: spacing.sm, gap: spacing.sm,
+  },
+  collapseHeadLeft: { flexDirection: 'row', alignItems: 'center', gap: 6, flexShrink: 1 },
+  collapseHeadRight: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  collapseBody: {
+    borderTopWidth: 1, borderTopColor: colors.border, padding: spacing.sm, gap: spacing.sm,
+  },
+  collapseLoading: { paddingVertical: spacing.lg, alignItems: 'center' },
 
   rowBetween: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: spacing.sm },
   rowLabel: { color: colors.textDim, fontSize: font.small, flexShrink: 1 },

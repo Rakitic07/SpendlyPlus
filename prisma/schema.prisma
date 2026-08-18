@@ -20,6 +20,9 @@ model Ledger {
   recoveryHash String?
   // Optional recurring monthly budget goal, synced across devices.
   monthlyBudget Float?
+  // Per-space UI preferences (JSON blob), synced across devices. Null until the
+  // owner changes any setting; clients fall back to defaults when absent.
+  settings  Json?
   createdAt DateTime  @default(now())
   expenses  Expense[]
   resetRequests ResetRequest[]

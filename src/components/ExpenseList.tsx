@@ -7,6 +7,25 @@ import { useCurrency } from "@/lib/currency";
 import { useSettings } from "@/lib/settings";
 import { paymentLabel } from "@/lib/payments";
 
+function dayStart(iso: string): number {
+  const d = new Date(iso);
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+}
+
+// Newest day first, and within a day the most recently added entry on top.
+// Same-calendar-day rows share a date-only value, so `createdAt` is the
+// tiebreaker that puts the latest entry first.
+function orderForDisplay(expenses: Expense[]): Expense[] {
+  return [...expenses].sort((a, b) => {
+    const dayDiff = dayStart(b.date) - dayStart(a.date);
+    if (dayDiff !== 0) return dayDiff;
+    return (
+      (new Date(b.createdAt).getTime() || 0) -
+      (new Date(a.createdAt).getTime() || 0)
+    );
+  });
+}
+
 function groupByDay(expenses: Expense[]): [string, Expense[]][] {
   const map = new Map<string, Expense[]>();
   for (const e of expenses) {
@@ -53,7 +72,7 @@ export default function ExpenseList({
     );
   }
 
-  const groups = groupByDay(expenses);
+  const groups = groupByDay(orderForDisplay(expenses));
 
   return (
     <div className="space-y-6">

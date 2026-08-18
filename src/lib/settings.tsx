@@ -4,9 +4,11 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from "react";
+import { api } from "./api";
 
 // Per-space preferences. Persisted to localStorage under a single JSON blob so
 // adding new options later never needs a migration. Everything has a sensible
@@ -124,11 +126,34 @@ export function SettingsProvider({
   space: string;
   children: React.ReactNode;
 }) {
-  // Lazy init reads localStorage synchronously. The Dashboard only mounts on
-  // the client (after the auth bootstrap), so there's no SSR/hydration mismatch.
+  // Lazy init reads localStorage synchronously for an instant, flicker-free
+  // paint. The Dashboard only mounts on the client (after the auth bootstrap),
+  // so there's no SSR/hydration mismatch.
   const [settings, setSettings] = useState<SpaceSettings>(() =>
     readSettings(space)
   );
+
+  // Then hydrate from the server so preferences follow the space across every
+  // device. Local values win for the first paint; the server copy overrides
+  // once it arrives (and is written back to the local cache).
+  useEffect(() => {
+    if (!space) return;
+    let alive = true;
+    api
+      .getSettings()
+      .then(({ settings: remote }) => {
+        if (!alive || !remote || Object.keys(remote).length === 0) return;
+        const merged = normalize({ ...readSettings(space), ...remote });
+        writeSettings(space, merged);
+        setSettings(merged);
+      })
+      .catch(() => {
+        /* offline / guest — keep the local copy */
+      });
+    return () => {
+      alive = false;
+    };
+  }, [space]);
 
   const update = useCallback(
     (patch: Partial<SpaceSettings>) => {
@@ -137,6 +162,8 @@ export function SettingsProvider({
         writeSettings(space, next);
         return next;
       });
+      // Push just the changed keys; the server merges them into the shared blob.
+      void api.patchSettings(patch as Record<string, unknown>).catch(() => {});
     },
     [space]
   );
@@ -145,6 +172,9 @@ export function SettingsProvider({
     const next = { ...DEFAULT_SETTINGS };
     writeSettings(space, next);
     setSettings(next);
+    void api
+      .patchSettings(next as unknown as Record<string, unknown>)
+      .catch(() => {});
   }, [space]);
 
   const value = useMemo<Ctx>(

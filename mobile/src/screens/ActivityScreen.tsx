@@ -8,6 +8,7 @@ import { useStore } from '../state/store';
 import { usePeriod } from '../state/period';
 import { useCurrency } from '../lib/currency';
 import { ExpenseRow } from '../components/ExpenseRow';
+import { SkeletonRows } from '../components/Shimmer';
 import { PeriodBar } from '../components/PeriodBar';
 import { categoryColor } from '../lib/categories';
 import { filterByPeriod } from '../lib/analytics';
@@ -16,7 +17,7 @@ import type { RootStackParamList } from '../navigation';
 import type { Expense } from '../lib/types';
 
 export function ActivityScreen() {
-  const { expenses } = useStore();
+  const { expenses, syncing } = useStore();
   const { view, year, month, day } = usePeriod();
   const { format } = useCurrency();
   const nav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -139,7 +140,15 @@ export function ActivityScreen() {
         maxToRenderPerBatch={PAGE_SIZE}
         windowSize={5}
         removeClippedSubviews
-        ListEmptyComponent={<Text style={styles.empty}>Nothing here yet.</Text>}
+        ListEmptyComponent={
+          expenses.length === 0 && syncing ? (
+            <View style={styles.skeletonWrap}>
+              <SkeletonRows count={7} />
+            </View>
+          ) : (
+            <Text style={styles.empty}>Nothing here yet.</Text>
+          )
+        }
       />
 
       {pageCount > 1 && (
@@ -251,6 +260,7 @@ const styles = StyleSheet.create({
   search: { flex: 1, color: colors.text, fontSize: font.body },
   listFlex: { flex: 1 },
   list: { paddingHorizontal: spacing.md, paddingBottom: spacing.md },
+  skeletonWrap: { paddingHorizontal: spacing.xs, paddingTop: spacing.sm },
   empty: { color: colors.textFaint, textAlign: 'center', padding: spacing.xl },
   pager: {
     flexDirection: 'row',

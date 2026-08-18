@@ -1,6 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Haptic feedback on save/delete. Without this, Vibration.vibrate()
+         throws a SecurityException and crashes the app. -->
+    <uses-permission android:name="android.permission.VIBRATE" />
     <!-- Bill scanning: capture a photo (react-native-image-picker requests this
          at runtime). The photo is only used transiently for on-device OCR. -->
     <uses-permission android:name="android.permission.CAMERA" />

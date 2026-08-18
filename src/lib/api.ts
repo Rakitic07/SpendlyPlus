@@ -63,6 +63,20 @@ export const api = {
     return handle<{ budget: number | null }>(res);
   },
 
+  async getSettings() {
+    const res = await apiFetch("/api/settings", { cache: "no-store" });
+    return handle<{ settings: Record<string, unknown> }>(res);
+  },
+
+  async patchSettings(patch: Record<string, unknown>) {
+    const res = await apiFetch("/api/settings", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(patch),
+    });
+    return handle<{ settings: Record<string, unknown> }>(res);
+  },
+
   async register(name: string, passphrase: string) {
     const res = await apiFetch("/api/auth/register", {
       method: "POST",

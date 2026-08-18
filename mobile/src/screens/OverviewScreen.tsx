@@ -23,6 +23,7 @@ import { BudgetRing } from '../components/BudgetRing';
 import { ExpenseRow } from '../components/ExpenseRow';
 import { Footer } from '../components/Footer';
 import { ReportModal } from '../components/ReportModal';
+import { SkeletonRows } from '../components/Shimmer';
 import { Button, Card } from '../components/ui';
 import { colors, font, radius, spacing } from '../theme';
 import type { RootStackParamList } from '../navigation';
@@ -37,7 +38,7 @@ function StatCard({ label, value, accent }: { label: string; value: string; acce
 }
 
 export function OverviewScreen() {
-  const { expenses, budget, name, saveBudget } = useStore();
+  const { expenses, budget, name, saveBudget, syncing } = useStore();
   const { view, year, month, day } = usePeriod();
   const { format } = useCurrency();
   const { settings } = useSettings();
@@ -151,7 +152,11 @@ export function OverviewScreen() {
         </View>
         <Card style={{ paddingVertical: spacing.xs, paddingHorizontal: spacing.xs }}>
           {recent.length === 0 ? (
-            <Text style={styles.empty}>No expenses yet. Tap + to add one.</Text>
+            expenses.length === 0 && syncing ? (
+              <SkeletonRows count={4} />
+            ) : (
+              <Text style={styles.empty}>No expenses yet. Tap + to add one.</Text>
+            )
           ) : (
             recent.map(e => (
               <ExpenseRow key={e.id} e={e} onPress={ex => nav.navigate('ExpenseForm', { expense: ex })} />

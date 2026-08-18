@@ -1,3 +1,4 @@
+import os from "os";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { adminGate, makeAdminPool } from "@/lib/admin";
@@ -16,9 +17,23 @@ const PAGE_SIZE = 5;
 const bodySchema = z.object({
   databaseUrl: z.string().min(1, "DATABASE_URL is required"),
   authSecret: z.string().min(1, "AUTH_SECRET is required"),
-  section: z.enum(["overview", "spaces", "categories", "payers", "activity", "resets"]),
+  section: z.enum([
+    "overview",
+    "storage",
+    "ocr",
+    "system",
+    "spaces",
+    "categories",
+    "payers",
+    "activity",
+    "resets",
+  ]),
   page: z.number().int().min(0).max(100_000).optional(),
   bucket: z.enum(["day", "week", "month", "year"]).optional(),
+  // When true, "overview" returns only the cheap totals and skips the heavy
+  // storage/OCR/system probes. The web panel uses this so the initial unlock is
+  // light and each detail panel fetches its own section lazily on expand.
+  light: z.boolean().optional(),
 });
 
 function json(body: unknown, status = 200) {
@@ -154,6 +169,80 @@ async function ocrUsage(): Promise<OcrUsage> {
   }
 }
 
+// -- Host runtime metrics ---------------------------------------------------
+
+type Meter = { usedBytes: number; totalBytes: number; usedPct: number };
+type SystemStats = {
+  cpu: { cores: number; load1: number; loadPct: number | null };
+  memory: Meter & { basis: "process" | "host" };
+  disk: Meter | null;
+  uptimeSec: number;
+  node: string;
+  region: string | null;
+};
+
+// Free disk space of the writable filesystem. `statfs` exists on Node 18.15+,
+// but isn't reported on every runtime — return null (UI shows "n/a") on failure.
+async function diskStats(): Promise<Meter | null> {
+  try {
+    const fs = (await import("node:fs/promises")) as unknown as {
+      statfs?: (p: string) => Promise<{ bsize: number; blocks: number; bavail: number }>;
+    };
+    if (!fs.statfs) return null;
+    const s = await fs.statfs("/");
+    const totalBytes = s.blocks * s.bsize;
+    const freeBytes = s.bavail * s.bsize; // available to unprivileged processes
+    const usedBytes = Math.max(0, totalBytes - freeBytes);
+    if (!(totalBytes > 0)) return null;
+    return { usedBytes, totalBytes, usedPct: Math.min(100, (usedBytes / totalBytes) * 100) };
+  } catch {
+    return null;
+  }
+}
+
+// Live CPU / memory / disk of the deployment host, read fresh on each request.
+// On Vercel (AWS Lambda) the meaningful memory ceiling is the function's
+// configured size, so we measure process RSS against it; elsewhere we fall back
+// to OS total/free. loadavg is 0 on serverless, reported as null → "n/a".
+async function systemStats(): Promise<SystemStats> {
+  const cpus = os.cpus() ?? [];
+  const cores = cpus.length || 1;
+  const loadArr = os.loadavg();
+  const load1 = Array.isArray(loadArr) ? loadArr[0] : 0;
+  const loadPct = load1 > 0 ? Math.min(100, (load1 / cores) * 100) : null;
+
+  const rss = process.memoryUsage().rss;
+  const lambdaMb = Number(process.env.AWS_LAMBDA_FUNCTION_MEMORY_SIZE ?? "");
+  let memory: SystemStats["memory"];
+  if (Number.isFinite(lambdaMb) && lambdaMb > 0) {
+    const totalBytes = lambdaMb * 1024 * 1024;
+    memory = {
+      basis: "process",
+      usedBytes: rss,
+      totalBytes,
+      usedPct: Math.min(100, (rss / totalBytes) * 100),
+    };
+  } else {
+    const totalBytes = os.totalmem();
+    const usedBytes = Math.max(0, totalBytes - os.freemem());
+    memory = {
+      basis: "host",
+      usedBytes,
+      totalBytes,
+      usedPct: totalBytes > 0 ? Math.min(100, (usedBytes / totalBytes) * 100) : 0,
+    };
+  }
+
+  return {
+    cpu: { cores, load1, loadPct },
+    memory,
+    disk: await diskStats(),
+    uptimeSec: Math.round(process.uptime()),
+    node: process.version,
+    region: process.env.VERCEL_REGION ?? process.env.AWS_REGION ?? null,
+  };
+}
+
 export async function POST(req: Request) {
   let raw: unknown;
   try {
@@ -170,6 +259,7 @@ export async function POST(req: Request) {
   const { databaseUrl, authSecret, section } = parsed.data;
   const page = parsed.data.page ?? 0;
   const bucket = parsed.data.bucket ?? "week";
+  const light = parsed.data.light ?? false;
 
   const gate = adminGate(databaseUrl, authSecret);
   if (!gate.ok) return json({ error: gate.error }, gate.status);
@@ -191,24 +281,42 @@ export async function POST(req: Request) {
         const spaces = Number(led.rows[0]?.count ?? 0);
         const grandTotal = Number(exp.rows[0]?.total ?? 0);
 
+        const totals = {
+          spaces,
+          expenses: Number(exp.rows[0]?.count ?? 0),
+          grandTotal,
+          avgExpense: Number(exp.rows[0]?.avg ?? 0),
+          avgPerSpace: spaces ? grandTotal / spaces : 0,
+        };
+
+        // Light mode (web): only the cheap totals — the storage/OCR/system
+        // panels are fetched lazily when the owner expands them. Full mode
+        // (mobile, backward-compatible) still bundles everything in one call.
+        if (light) return json({ totals });
+
         // Storage footprint — best-effort. pg_database_size needs connect
         // rights (fine for the app's own role) and octet_length(thumbnail)
         // needs the column to exist (older DBs won't have it yet). Either
         // failure just omits the panel rather than breaking the overview.
-        const [storage, ocr] = await Promise.all([storageStats(pool), ocrUsage()]);
+        const [storage, ocr, system] = await Promise.all([
+          storageStats(pool),
+          ocrUsage(),
+          systemStats(),
+        ]);
 
-        return json({
-          totals: {
-            spaces,
-            expenses: Number(exp.rows[0]?.count ?? 0),
-            grandTotal,
-            avgExpense: Number(exp.rows[0]?.avg ?? 0),
-            avgPerSpace: spaces ? grandTotal / spaces : 0,
-          },
-          storage,
-          ocr,
-        });
+        return json({ totals, storage, ocr, system });
       }
+
+      // Lazily-loaded detail panels for the web dashboard. Each returns only its
+      // own slice so expanding a panel does the minimum work.
+      case "storage":
+        return json({ storage: await storageStats(pool) });
+
+      case "ocr":
+        return json({ ocr: await ocrUsage() });
+
+      case "system":
+        return json({ system: await systemStats() });
 
       case "spaces": {
         const [countRes, rowsRes] = await Promise.all([

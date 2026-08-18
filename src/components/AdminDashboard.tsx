@@ -29,6 +29,9 @@ import {
   HardDrive,
   Paperclip,
   ScanLine,
+  Cpu,
+  MemoryStick,
+  Server,
 } from "lucide-react";
 import { apiFetch } from "@/lib/http";
 import { ShimmerText } from "./Shimmer";
@@ -58,6 +61,15 @@ type Ocr = {
   monthlyLimit: number;
   engine3MonthlyLimit: number;
   dailyRateLimit: number;
+};
+type Meter = { usedBytes: number; totalBytes: number; usedPct: number };
+type System = {
+  cpu: { cores: number; load1: number; loadPct: number | null };
+  memory: Meter & { basis: "process" | "host" };
+  disk: Meter | null;
+  uptimeSec: number;
+  node: string;
+  region: string | null;
 };
 type Space = {
   id: string;
@@ -159,6 +171,21 @@ export default function AdminDashboard({ open, onClose }: { open: boolean; onClo
   const [totals, setTotals] = useState<Totals | null>(null);
   const [storage, setStorage] = useState<Storage | null>(null);
   const [ocr, setOcr] = useState<Ocr | null>(null);
+  const [system, setSystem] = useState<System | null>(null);
+
+  // Collapsible detail panels — all closed by default. Data is fetched on
+  // expand and cleared on collapse so nothing heavy lingers in memory.
+  type PanelKind = "storage" | "ocr" | "system";
+  const [openPanel, setOpenPanel] = useState<Record<PanelKind, boolean>>({
+    storage: false,
+    ocr: false,
+    system: false,
+  });
+  const [panelLoading, setPanelLoading] = useState<Record<PanelKind, boolean>>({
+    storage: false,
+    ocr: false,
+    system: false,
+  });
 
   // per-tab lazy data
   const [tab, setTab] = useState<Tab>("spaces");
@@ -185,6 +212,9 @@ export default function AdminDashboard({ open, onClose }: { open: boolean; onClo
       setTotals(null);
       setStorage(null);
       setOcr(null);
+      setSystem(null);
+      setOpenPanel({ storage: false, ocr: false, system: false });
+      setPanelLoading({ storage: false, ocr: false, system: false });
       setTab("spaces");
       setSpaces(null);
       setCategories(null);
@@ -237,10 +267,11 @@ export default function AdminDashboard({ open, onClose }: { open: boolean; onClo
     setError(null);
     try {
       const c: Creds = { databaseUrl: dbUrl, authSecret: secret };
-      const ov = await runSection(c, "overview");
+      // Light unlock: fetch only the cheap totals. The storage / OCR / host
+      // panels stay collapsed and each loads its own data when expanded, so the
+      // page isn't heavy on first paint.
+      const ov = await runSection(c, "overview", { light: true });
       setTotals(ov.totals as Totals);
-      setStorage((ov.storage ?? null) as Storage | null);
-      setOcr((ov.ocr ?? null) as Ocr | null);
       setCreds(c);
       setTab("spaces");
       // Load the first tab immediately; other tabs load on demand.
@@ -270,6 +301,33 @@ export default function AdminDashboard({ open, onClose }: { open: boolean; onClo
       setTabError(err instanceof Error ? err.message : "Failed to load.");
     } finally {
       setTabLoading(false);
+    }
+  }
+
+  // Expand/collapse a detail panel. Expanding fetches just that panel's slice;
+  // collapsing clears the data so it doesn't sit in memory (re-expanding
+  // refetches). Keeps the page light on browsers and phones.
+  async function togglePanel(kind: PanelKind) {
+    if (openPanel[kind]) {
+      setOpenPanel((p) => ({ ...p, [kind]: false }));
+      if (kind === "storage") setStorage(null);
+      else if (kind === "ocr") setOcr(null);
+      else setSystem(null);
+      return;
+    }
+
+    setOpenPanel((p) => ({ ...p, [kind]: true }));
+    if (!creds) return;
+    setPanelLoading((p) => ({ ...p, [kind]: true }));
+    try {
+      const data = await runSection(creds, kind);
+      if (kind === "storage") setStorage((data.storage ?? null) as Storage | null);
+      else if (kind === "ocr") setOcr((data.ocr ?? null) as Ocr | null);
+      else setSystem((data.system ?? null) as System | null);
+    } catch {
+      // Leave the panel open but empty; a re-toggle retries.
+    } finally {
+      setPanelLoading((p) => ({ ...p, [kind]: false }));
     }
   }
 
@@ -480,11 +538,39 @@ export default function AdminDashboard({ open, onClose }: { open: boolean; onClo
                   Amounts are currency-agnostic — currency is a per-device display setting and isn&apos;t stored.
                 </p>
 
-                {/* storage: DB usage + bill-thumbnail footprint */}
-                {storage && <StoragePanel s={storage} />}
+                {/* Detail panels — collapsed by default, each loads on expand
+                    and clears on collapse to keep the page light. */}
+                <div className="space-y-2">
+                  <CollapseCard
+                    icon={<HardDrive className="h-3.5 w-3.5" />}
+                    title="Database storage"
+                    open={openPanel.storage}
+                    loading={panelLoading.storage}
+                    onToggle={() => togglePanel("storage")}
+                  >
+                    {storage ? <StoragePanel s={storage} /> : null}
+                  </CollapseCard>
 
-                {/* OCR.space usage — how much of the free scanning quota is left */}
-                {ocr && <OcrPanel o={ocr} />}
+                  <CollapseCard
+                    icon={<ScanLine className="h-3.5 w-3.5" />}
+                    title="Bill scanning (OCR.space)"
+                    open={openPanel.ocr}
+                    loading={panelLoading.ocr}
+                    onToggle={() => togglePanel("ocr")}
+                  >
+                    {ocr ? <OcrPanel o={ocr} /> : null}
+                  </CollapseCard>
+
+                  <CollapseCard
+                    icon={<Server className="h-3.5 w-3.5" />}
+                    title="Host runtime (CPU / memory / disk)"
+                    open={openPanel.system}
+                    loading={panelLoading.system}
+                    onToggle={() => togglePanel("system")}
+                  >
+                    {system ? <HostPanel s={system} /> : null}
+                  </CollapseCard>
+                </div>
 
                 {/* tab bar */}
                 <div className="flex flex-wrap gap-1 rounded-2xl border border-white/10 bg-white/5 p-1 text-sm">
@@ -538,6 +624,56 @@ function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string
         {label}
       </div>
       <p className="text-xl font-semibold tabular-nums">{value}</p>
+    </div>
+  );
+}
+
+// Collapsible wrapper for the heavy detail panels. Header toggles open/closed;
+// the body only mounts while open, and a spinner shows while its section loads.
+function CollapseCard({
+  icon,
+  title,
+  open,
+  loading,
+  onToggle,
+  children,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  open: boolean;
+  loading: boolean;
+  onToggle: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+      <button
+        type="button"
+        onClick={onToggle}
+        className="flex w-full items-center justify-between gap-2 px-4 py-3 text-left transition-colors hover:bg-white/5"
+      >
+        <span className="flex items-center gap-1.5 text-[11px] uppercase tracking-wide text-white/50">
+          {icon}
+          {title}
+        </span>
+        <span className="flex items-center gap-2">
+          {loading && <Loader2 className="h-3.5 w-3.5 animate-spin text-white/50" />}
+          <ChevronDown
+            className={`h-4 w-4 text-white/50 transition-transform ${open ? "rotate-180" : ""}`}
+          />
+        </span>
+      </button>
+      {open && (
+        <div className="border-t border-white/10 p-3">
+          {children ? (
+            children
+          ) : (
+            <div className="grid h-16 place-items-center">
+              <ShimmerText>Loading…</ShimmerText>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
@@ -600,6 +736,144 @@ function StorageBreakdown({ s }: { s: Storage }) {
       <p className="mt-3 text-[11px] text-white/35">
         A fresh Postgres database uses several MB for system catalogs and write-ahead logs even with
         little data — so most of a small DB is baseline overhead, not your rows.
+      </p>
+    </div>
+  );
+}
+
+/* ---------- host runtime (CPU / memory / disk) ---------- */
+
+function meterFill(pct: number): string {
+  if (pct >= 90) return "bg-gradient-to-r from-[#ff6b6b] to-[#ff8787]";
+  if (pct >= 75) return "bg-gradient-to-r from-[#ffd43b] to-[#ffa94d]";
+  return "bg-gradient-to-r from-[#7c8cff] to-[#ff6bd0]";
+}
+
+function meterText(pct: number): string {
+  if (pct >= 90) return "text-[#ffb3b3]";
+  if (pct >= 75) return "text-[#ffe08a]";
+  return "text-white/45";
+}
+
+function fmtUptime(sec: number): string {
+  const d = Math.floor(sec / 86400);
+  const h = Math.floor((sec % 86400) / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+  if (d) return `${d}d ${h}h`;
+  if (h) return `${h}h ${m}m`;
+  return `${m}m`;
+}
+
+function MeterBar({ pct }: { pct: number }) {
+  return (
+    <div className="mt-2 h-2 overflow-hidden rounded-full bg-white/5">
+      <div
+        className={`h-full rounded-full ${meterFill(pct)}`}
+        style={{ width: `${Math.min(100, Math.max(2, pct))}%` }}
+      />
+    </div>
+  );
+}
+
+function MeterCard({
+  icon,
+  label,
+  used,
+  total,
+  pct,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  used: number;
+  total: number;
+  pct: number;
+}) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+      <div className="mb-2 flex items-center gap-1.5 text-[11px] uppercase tracking-wide text-white/45">
+        {icon}
+        {label}
+      </div>
+      <p className="text-xl font-semibold tabular-nums">
+        {fmtBytes(used)}
+        <span className="text-sm font-normal text-white/45"> / {fmtBytes(total)}</span>
+      </p>
+      <MeterBar pct={pct} />
+      <p className={`mt-1.5 text-[11px] ${meterText(pct)}`}>
+        {pct >= 90 ? "Almost full — " : pct >= 75 ? "Filling up — " : ""}
+        {fmtBytes(Math.max(0, total - used))} free · {pct.toFixed(0)}% used
+      </p>
+    </div>
+  );
+}
+
+function HostPanel({ s }: { s: System }) {
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-wide text-white/45">
+        <Server className="h-3.5 w-3.5" />
+        Host runtime{s.region ? ` · ${s.region}` : ""}
+      </div>
+      <div className="grid gap-3 sm:grid-cols-3">
+        <MeterCard
+          icon={<MemoryStick className="h-3.5 w-3.5" />}
+          label={s.memory.basis === "process" ? "Function memory" : "Host memory"}
+          used={s.memory.usedBytes}
+          total={s.memory.totalBytes}
+          pct={s.memory.usedPct}
+        />
+
+        {s.disk ? (
+          <MeterCard
+            icon={<HardDrive className="h-3.5 w-3.5" />}
+            label="Disk"
+            used={s.disk.usedBytes}
+            total={s.disk.totalBytes}
+            pct={s.disk.usedPct}
+          />
+        ) : (
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+            <div className="mb-2 flex items-center gap-1.5 text-[11px] uppercase tracking-wide text-white/45">
+              <HardDrive className="h-3.5 w-3.5" />
+              Disk
+            </div>
+            <p className="text-xl font-semibold tabular-nums text-white/60">n/a</p>
+            <p className="mt-1.5 text-[11px] text-white/35">Not reported on this runtime.</p>
+          </div>
+        )}
+
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+          <div className="mb-2 flex items-center gap-1.5 text-[11px] uppercase tracking-wide text-white/45">
+            <Cpu className="h-3.5 w-3.5" />
+            CPU load
+          </div>
+          <p className="text-xl font-semibold tabular-nums">
+            {s.cpu.loadPct !== null ? `${s.cpu.loadPct.toFixed(0)}%` : "n/a"}
+            <span className="text-sm font-normal text-white/45">
+              {" "}
+              · {s.cpu.cores} {s.cpu.cores === 1 ? "core" : "cores"}
+            </span>
+          </p>
+          {s.cpu.loadPct !== null ? (
+            <>
+              <MeterBar pct={s.cpu.loadPct} />
+              <p className={`mt-1.5 text-[11px] ${meterText(s.cpu.loadPct)}`}>
+                {s.cpu.loadPct >= 90 ? "Overloaded — " : s.cpu.loadPct >= 75 ? "Busy — " : ""}
+                load {s.cpu.load1.toFixed(2)} across {s.cpu.cores}
+              </p>
+            </>
+          ) : (
+            <p className="mt-1.5 text-[11px] text-white/40">
+              Load average isn&apos;t exposed on serverless runtimes.
+            </p>
+          )}
+        </div>
+      </div>
+      <p className="text-[11px] text-white/35">
+        Read live at request time · uptime {fmtUptime(s.uptimeSec)} · Node {s.node}
+        {s.memory.basis === "process"
+          ? " · serverless instance — values reset when it recycles"
+          : ""}
       </p>
     </div>
   );

@@ -40,6 +40,16 @@ const MODE_COLORS: Record<string, string> = {
   Card: colors.primary2,
 };
 
+// Guarded haptic tap. On Android, Vibration.vibrate() throws (and crashes the
+// app) if the VIBRATE permission is missing/denied, so never let it bubble up.
+function tap(): void {
+  try {
+    Vibration.vibrate(15);
+  } catch {
+    /* haptics unavailable — ignore */
+  }
+}
+
 function todayISO(): string {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(
@@ -171,7 +181,7 @@ export function ExpenseFormScreen({ route, navigation }: Props) {
       };
       if (editing) await editExpense(editing.id, draft);
       else await addExpense(draft);
-      if (settings.haptics) Vibration.vibrate(15);
+      if (settings.haptics) tap();
       navigation.goBack();
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Could not save');
@@ -182,7 +192,7 @@ export function ExpenseFormScreen({ route, navigation }: Props) {
   const doDelete = async () => {
     if (!editing) return;
     setBusy(true);
-    if (settings.haptics) Vibration.vibrate(15);
+    if (settings.haptics) tap();
     await removeExpense(editing.id);
     navigation.goBack();
   };

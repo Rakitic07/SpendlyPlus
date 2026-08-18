@@ -28,6 +28,7 @@ import {
 } from '../lib/analytics';
 import { PeriodBar } from '../components/PeriodBar';
 import { ReportModal } from '../components/ReportModal';
+import { Skeleton } from '../components/Shimmer';
 import { Card } from '../components/ui';
 import { colors, font, radius, spacing } from '../theme';
 
@@ -75,7 +76,7 @@ function DonutCard({ title, data, total }: { title: string; data: DonutDatum[]; 
 }
 
 export function ChartsScreen() {
-  const { expenses } = useStore();
+  const { expenses, syncing } = useStore();
   const { view, year, month, day } = usePeriod();
   const { width } = useWindowDimensions();
   const chartWidth = width - spacing.lg * 4;
@@ -175,6 +176,7 @@ export function ChartsScreen() {
 
   const hasBars = bars.some(b => b.y > 0);
   const showTrend = view !== 'day';
+  const firstLoading = expenses.length === 0 && syncing;
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
@@ -190,6 +192,29 @@ export function ChartsScreen() {
           <PeriodBar />
         </View>
 
+        {firstLoading ? (
+          <>
+            <Card strong style={{ marginTop: spacing.md }}>
+              <Skeleton width="55%" height={13} />
+              <View style={styles.skelDonutRow}>
+                <Skeleton width={140} height={140} radius={70} />
+                <View style={styles.skelLegend}>
+                  <Skeleton width="80%" height={12} />
+                  <Skeleton width="65%" height={12} />
+                  <Skeleton width="72%" height={12} />
+                  <Skeleton width="50%" height={12} />
+                </View>
+              </View>
+            </Card>
+            <Card strong style={{ marginTop: spacing.md }}>
+              <Skeleton width="45%" height={13} />
+              <Skeleton width="100%" height={200} radius={radius.md} style={{ marginTop: spacing.md }} />
+            </Card>
+          </>
+        ) : null}
+
+        {!firstLoading && (
+          <>
         <DonutCard title={`Spending by category · ${label}`} data={cats} total={total} />
 
         {showTrend && (
@@ -244,6 +269,8 @@ export function ChartsScreen() {
         )}
 
         <DonutCard title={`Who paid · ${label}`} data={payers} total={total} />
+          </>
+        )}
       </ScrollView>
 
       <ReportModal open={reportOpen} onClose={() => setReportOpen(false)} />
@@ -281,4 +308,6 @@ const styles = StyleSheet.create({
   legendLabel: { color: colors.textDim, fontSize: font.small, flex: 1 },
   legendVal: { color: colors.text, fontSize: font.small, fontWeight: '700' },
   empty: { color: colors.textFaint, textAlign: 'center', padding: spacing.lg },
+  skelDonutRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.lg, marginTop: spacing.md },
+  skelLegend: { flex: 1, gap: 12 },
 });

@@ -19,6 +19,8 @@ model Ledger {
   passHash  String
   recoveryHash String?
   monthlyBudget Float?
+  // Per-space UI preferences (JSON blob), synced across devices.
+  settings  Json?
   createdAt DateTime  @default(now())
   expenses  Expense[]
   resetRequests ResetRequest[]
