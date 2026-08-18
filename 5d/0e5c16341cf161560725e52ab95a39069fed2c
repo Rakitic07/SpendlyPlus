@@ -1,0 +1,26 @@
+src/lib/admin.ts
+  s_995f1e3ac5091f::t_1bc5254b7f89db 16-48
+  s_995f1e3ac5091f::t_e5b20a2d1640b8 71-84,87
+  s_995f1e3ac5091f::t_d561215d1d4d23 65
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "5d0e5c16341cf161560725e52ab95a39069fed2c",
+  "prompts": {},
+  "humans": {
+    "h_a373eedd7fd2e3": {
+      "author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  },
+  "sessions": {
+    "s_995f1e3ac5091f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2cfe14fe-abca-475a-b90e-25b3e200ffb2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  }
+}
