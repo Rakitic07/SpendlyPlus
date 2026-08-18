@@ -1,0 +1,73 @@
+src/components/ExpenseForm.tsx
+  s_995f1e3ac5091f::t_391be11c946d3a 164-173,178-186
+  s_995f1e3ac5091f::t_e445a8b7ddd494 408-411
+  s_995f1e3ac5091f::t_e5454b70654035 161
+  s_995f1e3ac5091f::t_a06f7e8d011572 174-177
+  s_995f1e3ac5091f::t_c3e9eab82a27f8 83-86
+  s_995f1e3ac5091f::t_52f6d7e8a07884 295-297
+  s_995f1e3ac5091f::t_ffef6605067e89 7
+.env.example
+  s_995f1e3ac5091f::t_e9326c4e1baabf 13-27
+src/app/api/expenses/[id]/route.ts
+  s_995f1e3ac5091f::t_b4f35c1202d898 87-91
+  s_995f1e3ac5091f::t_8269ad74a951ab 11-32
+mobile/src/state/store.tsx
+  s_995f1e3ac5091f::t_0ea910feab2277 104-106
+  s_995f1e3ac5091f::t_ab4e5ce52baa93 345
+mobile/src/screens/ExpenseFormScreen.tsx
+  s_995f1e3ac5091f::t_071850ee455ff6 206-208
+  s_995f1e3ac5091f::t_86c89cb38d77f7 281-284
+  s_995f1e3ac5091f::t_9e9596c0ad5dd3 80-82
+  s_995f1e3ac5091f::t_6e12f75a63f977 29
+  s_995f1e3ac5091f::t_1b6bf94291f7b3 1
+  s_995f1e3ac5091f::t_7067a0bd5c63e8 95-116
+src/app/api/expenses/route.ts
+  s_995f1e3ac5091f::t_76902c0b0fda81 5,16-31
+src/lib/expenseSelect.ts
+  s_995f1e3ac5091f::t_623b03aae138f0 1-28
+src/app/api/bootstrap/route.ts
+  s_995f1e3ac5091f::t_9935547e31c8b8 4
+  s_995f1e3ac5091f::t_1d039c27dff0b5 19-38,46-51,56
+mobile/src/lib/types.ts
+  s_995f1e3ac5091f::t_fe9f6f5c785f1d 12-13,15-17
+src/lib/types.ts
+  s_995f1e3ac5091f::t_85f67aff743c52 12-13,15-18
+prisma/schema.prisma
+  s_995f1e3ac5091f::t_e1a61b17153494 7-10,12-14
+src/lib/api.ts
+  s_995f1e3ac5091f::t_638f6285ef6a57 187-193
+src/components/Dashboard.tsx
+  s_995f1e3ac5091f::t_de58f139052e85 268-273,275-282,285,287-294
+mobile/src/lib/api.ts
+  s_995f1e3ac5091f::t_24916eba91fa80 182-189
+src/app/api/admin/stats/route.ts
+  s_995f1e3ac5091f::t_82037357ebe1d6 184-189,196
+src/components/Spendly.tsx
+  s_995f1e3ac5091f::t_0cd4f021774718 221-225
+  s_995f1e3ac5091f::t_1815aa78d94dff 25
+src/lib/offline.ts
+  s_995f1e3ac5091f::t_76804f95de075e 112-114
+  s_995f1e3ac5091f::t_39e7f4296d18f5 120-127
+  s_995f1e3ac5091f::t_b0eb12d5ec8f28 201-207
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "941a92ebe9cfbe70973ac905b26f81afc663bf8e",
+  "prompts": {},
+  "humans": {
+    "h_a373eedd7fd2e3": {
+      "author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  },
+  "sessions": {
+    "s_995f1e3ac5091f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2cfe14fe-abca-475a-b90e-25b3e200ffb2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  }
+}
