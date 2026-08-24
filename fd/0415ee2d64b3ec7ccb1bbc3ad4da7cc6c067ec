@@ -1,0 +1,40 @@
+src/lib/api.ts
+  s_cb0fba85de97fe::t_67a258c144573f 41-43,50
+src/components/Spendly.tsx
+  s_cb0fba85de97fe::t_55726c44b04d00 384-388
+  s_cb0fba85de97fe::t_199afac0547597 196
+  s_cb0fba85de97fe::t_784f9341069159 55
+  s_cb0fba85de97fe::t_9aab2167749a31 56-61
+  s_cb0fba85de97fe::t_b7c40f85e5b88d 197
+src/lib/settings.tsx
+  s_cb0fba85de97fe::t_4d01db1162c6ec 124,128-133,143-150,153-161,177
+vercel.json
+  s_cb0fba85de97fe::t_81c8f7adc52c4b 1-4
+src/app/api/bootstrap/route.ts
+  s_cb0fba85de97fe::t_fae3a0e1eb0381 39
+  s_cb0fba85de97fe::t_8a39c836a0283b 65
+  s_cb0fba85de97fe::t_95adb1ab6a3ee8 9-20
+src/app/api/health/route.ts
+  s_cb0fba85de97fe::t_95ea1a2dc025fb 1-28
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "fd0415ee2d64b3ec7ccb1bbc3ad4da7cc6c067ec",
+  "prompts": {},
+  "humans": {
+    "h_a373eedd7fd2e3": {
+      "author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  },
+  "sessions": {
+    "s_cb0fba85de97fe": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "734c7345-66fa-44f9-a3c2-de3b88fff4a0",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  }
+}
