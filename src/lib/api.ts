@@ -38,13 +38,16 @@ export const api = {
     return handle<{ authenticated: boolean; name?: string }>(res);
   },
 
-  // Auth state + budget + expenses in a single round trip (used on app startup).
+  // Auth state + budget + settings + expenses in a single round trip (used on
+  // app startup). Bundling settings here lets the client skip a separate
+  // /api/settings call, saving a round trip + cold start.
   async bootstrap() {
     const res = await apiFetch("/api/bootstrap", { cache: "no-store" });
     return handle<{
       authenticated: boolean;
       name?: string;
       budget?: number | null;
+      settings?: Record<string, unknown>;
       expenses?: Expense[];
     }>(res);
   },

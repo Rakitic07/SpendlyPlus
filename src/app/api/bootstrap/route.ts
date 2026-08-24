@@ -6,10 +6,18 @@ import { EXPENSE_LIST_SELECT } from "@/lib/expenseSelect";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-// One-shot startup endpoint: returns auth state AND the expense list in a single
-// request. This halves the app's initial latency versus calling /api/auth/me
-// and /api/expenses separately (one round trip + one cold start instead of two),
-// and it fetches the ledger and its expenses in a single database query.
+// A JSON blob (the ledger's cross-device UI settings) coerced to a plain object.
+function asObject(value: unknown): Record<string, unknown> {
+  return value && typeof value === "object" && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : {};
+}
+
+// One-shot startup endpoint: returns auth state AND the expense list AND the
+// per-space settings in a single request. This halves the app's initial latency
+// versus calling /api/auth/me, /api/expenses and /api/settings separately (one
+// round trip + one cold start instead of three), and it fetches the ledger, its
+// expenses and settings in a single database query.
 export async function GET() {
   const session = await getSession();
   if (!session) {
@@ -28,6 +36,7 @@ export async function GET() {
         id: true,
         name: true,
         monthlyBudget: true,
+        settings: true,
         expenses: { orderBy: { date: "desc" }, select: EXPENSE_LIST_SELECT },
       },
     }),
@@ -53,6 +62,7 @@ export async function GET() {
     authenticated: true,
     name: ledger.name,
     budget: ledger.monthlyBudget ?? null,
+    settings: asObject(ledger.settings),
     expenses,
   });
 }

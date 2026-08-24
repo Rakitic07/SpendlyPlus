@@ -52,6 +52,13 @@ export default function Spendly() {
   const [name, setName] = useState<string>("");
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [budget, setBudget] = useState<number | null>(null);
+  // Per-space UI settings the startup /api/bootstrap call already fetched, handed
+  // to SettingsProvider so it can skip a separate /api/settings round trip. Tied
+  // to the space name so a different space never gets seeded with stale settings.
+  const [bootSettings, setBootSettings] = useState<{
+    space: string;
+    settings: Record<string, unknown>;
+  } | null>(null);
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Expense | null>(null);
   const [toast, setToast] = useState<string | null>(null);
@@ -186,6 +193,8 @@ export default function Spendly() {
           setName(space);
           setStatus("authed");
           rememberSpace(space);
+          // Seed settings from the same startup payload (skips /api/settings).
+          if (boot.settings) setBootSettings({ space, settings: boot.settings });
           if (!hasLocal) {
             const cached = readCache(space);
             if (cached.length) setExpenses(cached);
@@ -372,7 +381,11 @@ export default function Spendly() {
 
   return (
     <CurrencyProvider space={name}>
-    <SettingsProvider key={name || "guest"} space={name}>
+    <SettingsProvider
+      key={name || "guest"}
+      space={name}
+      seed={bootSettings && bootSettings.space === name ? bootSettings.settings : null}
+    >
     <main className="relative min-h-screen">
       <Background />
 

@@ -121,9 +121,16 @@ const SettingsContext = createContext<Ctx | null>(null);
 
 export function SettingsProvider({
   space,
+  seed,
   children,
 }: {
   space: string;
+  /**
+   * Server settings already fetched by the app's startup /api/bootstrap call.
+   * When provided (non-empty), we hydrate from it and skip the separate
+   * /api/settings request — one fewer round trip + cold start on launch.
+   */
+  seed?: Record<string, unknown> | null;
   children: React.ReactNode;
 }) {
   // Lazy init reads localStorage synchronously for an instant, flicker-free
@@ -133,11 +140,25 @@ export function SettingsProvider({
     readSettings(space)
   );
 
-  // Then hydrate from the server so preferences follow the space across every
-  // device. Local values win for the first paint; the server copy overrides
-  // once it arrives (and is written back to the local cache).
+  // Serialize the seed so the effect only re-runs when its contents actually
+  // change (the parent may hand us a fresh object reference each render).
+  const seedKey = seed && Object.keys(seed).length > 0 ? JSON.stringify(seed) : "";
+
+  // Hydrate from the server so preferences follow the space across every device.
+  // Local values win for the first paint; the server copy overrides once it's
+  // available. Prefer the bootstrap `seed` (already fetched) and only fall back
+  // to a dedicated /api/settings request when no seed was supplied.
   useEffect(() => {
     if (!space) return;
+
+    if (seedKey) {
+      const remote = JSON.parse(seedKey) as Record<string, unknown>;
+      const merged = normalize({ ...readSettings(space), ...remote });
+      writeSettings(space, merged);
+      setSettings(merged);
+      return;
+    }
+
     let alive = true;
     api
       .getSettings()
@@ -153,7 +174,7 @@ export function SettingsProvider({
     return () => {
       alive = false;
     };
-  }, [space]);
+  }, [space, seedKey]);
 
   const update = useCallback(
     (patch: Partial<SpaceSettings>) => {
