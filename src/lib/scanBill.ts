@@ -4,21 +4,25 @@ import { parseBill, type ParsedBill } from "@/lib/billParser";
  * Browser bill scanner for the PWA. Relays a compressed copy to /api/ocr
  * (OCR.space) for accurate text, falling back to on-device tesseract.js (WASM)
  * when the server has no key / is offline, then reuses the shared heuristic
- * parser. Produces a ~100–300KB JPEG thumbnail via <canvas>; the full photo is
+ * parser. Produces a ~100–500KB JPEG thumbnail via <canvas>; the full photo is
  * discarded. Mirrors the native flow (mobile/src/lib/scan.ts).
  */
 
 export type ScanResult = {
   parsed: ParsedBill;
-  thumbnail: string | null; // base64 JPEG data URL, ~100–300KB
+  thumbnail: string | null; // base64 JPEG data URL, ~100–500KB
   rawText: string;
 };
 
-// Target a 100–300KB thumbnail: crisp when enlarged, still modest for the DB.
-// base64 grows ~4/3, so chars ≈ bytes * 4/3.
-const THUMB_MAX_CHARS = 410000; // ~300KB hard cap
-const THUMB_MIN_CHARS = 137000; // ~100KB preferred floor (best-effort)
-const THUMB_MAX_DIM = 1400;
+// Target a 100–500KB thumbnail: crisp when enlarged, still modest for the DB.
+// base64 grows ~4/3, so chars ≈ bytes * 4/3. THUMB_MAX_CHARS must stay under the
+// server's validation cap (validation.ts, 700k) so a generated thumbnail always
+// saves.
+const THUMB_MAX_CHARS = 683000; // ~500KB hard cap
+// Dimension ladder (longest side, px). We start large/crisp and shrink until the
+// JPEG fits under the cap, so ANY image — however huge — always converts to a
+// valid thumbnail instead of being dropped for being too big.
+const THUMB_DIMS = [1400, 1200, 1000, 800, 640, 480, 360];
 
 function loadImage(file: Blob): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
@@ -39,28 +43,33 @@ function loadImage(file: Blob): Promise<HTMLImageElement> {
 async function makeThumbnail(file: Blob): Promise<string | null> {
   try {
     const img = await loadImage(file);
-    const scale = Math.min(1, THUMB_MAX_DIM / Math.max(img.width, img.height));
-    const w = Math.max(1, Math.round(img.width * scale));
-    const h = Math.max(1, Math.round(img.height * scale));
     const canvas = document.createElement("canvas");
-    canvas.width = w;
-    canvas.height = h;
     const ctx = canvas.getContext("2d");
     if (!ctx) return null;
-    ctx.drawImage(img, 0, 0, w, h);
-    // Step quality high→low; the first render under the ~300KB cap is the
-    // largest (clearest) allowed and usually clears the ~100KB floor. Fall back
-    // to that largest under-cap result if we dip below the floor.
-    let best: string | null = null;
-    for (const q of [0.92, 0.86, 0.78, 0.7, 0.62, 0.54, 0.46, 0.38, 0.3]) {
-      const dataUrl = canvas.toDataURL("image/jpeg", q);
-      if (dataUrl.length <= THUMB_MAX_CHARS) {
-        if (!best) best = dataUrl;
-        if (dataUrl.length >= THUMB_MIN_CHARS) return dataUrl;
-        return best;
+    // Walk the dimension ladder large→small. At each size, step quality high→low
+    // and take the FIRST (highest-quality) render that fits under the ~500KB cap.
+    // Because we start at the largest size, the first size that produces any
+    // under-cap render gives the crispest thumbnail overall — return it. We only
+    // shrink to a smaller size when NO quality fits at the current one (a very
+    // large/detailed photo). This guarantees ANY image converts: it just keeps
+    // shrinking until it fits, so the add is never blocked for being too big.
+    for (const dim of THUMB_DIMS) {
+      const scale = Math.min(1, dim / Math.max(img.width, img.height));
+      const w = Math.max(1, Math.round(img.width * scale));
+      const h = Math.max(1, Math.round(img.height * scale));
+      canvas.width = w;
+      canvas.height = h;
+      ctx.clearRect(0, 0, w, h);
+      ctx.drawImage(img, 0, 0, w, h);
+      for (const q of [0.92, 0.86, 0.78, 0.7, 0.62, 0.54, 0.46, 0.38, 0.3]) {
+        const dataUrl = canvas.toDataURL("image/jpeg", q);
+        if (dataUrl.length <= THUMB_MAX_CHARS) return dataUrl;
       }
     }
-    return best; // couldn't get under the cap — skip rather than bloat the DB
+    // Every rung was still over the cap (effectively impossible for a real photo
+    // — a 360px JPEG is a few tens of KB). Skip the thumbnail rather than block
+    // the add; the expense still saves fine without it.
+    return null;
   } catch {
     return null;
   }
@@ -189,7 +198,13 @@ async function runOcr(file: Blob): Promise<string> {
 // Scan a bill image File (from a camera-capture / file input) → parsed fields +
 // tiny thumbnail. The form is the editable preview; the user fills the rest.
 export async function scanBillFromFile(file: File): Promise<ScanResult> {
-  const [rawText, thumbnail] = await Promise.all([runOcr(file), makeThumbnail(file)]);
+  // OCR and thumbnailing are independent: a failed/empty OCR must never lose the
+  // thumbnail (or block the add). runOcr() can't reject here — we swallow errors
+  // to "" so the user still gets the converted bill image and can type the rest.
+  const [rawText, thumbnail] = await Promise.all([
+    runOcr(file).catch(() => ""),
+    makeThumbnail(file),
+  ]);
   const parsed = parseBill(rawText);
   return { parsed, thumbnail, rawText };
 }

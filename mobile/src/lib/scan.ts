@@ -7,13 +7,15 @@ import { parseBill, type ParsedBill } from './billParser';
 
 export type ScanResult = {
   parsed: ParsedBill;
-  thumbnail: string | null; // base64 JPEG data URL, ~100–300KB
+  thumbnail: string | null; // base64 JPEG data URL, ~100–500KB
   rawText: string;
 };
 
-// Target a 100–300KB thumbnail: crisp enough to read the whole receipt when
+// Target a 100–500KB thumbnail: crisp enough to read the whole receipt when
 // enlarged, still modest for the DB. base64 grows ~4/3, so chars ≈ bytes * 4/3.
-const THUMB_MAX_CHARS = 410000; // ~300KB — hard cap; a full photo never reaches DB
+// THUMB_MAX_CHARS must stay under the server's validation cap (validation.ts,
+// 700k) so a generated thumbnail always saves.
+const THUMB_MAX_CHARS = 683000; // ~500KB — hard cap; a full photo never reaches DB
 const THUMB_MIN_CHARS = 137000; // ~100KB — preferred floor (best-effort)
 
 function stripScheme(uri: string): string {
@@ -37,7 +39,7 @@ async function ensureCameraPermission(): Promise<boolean> {
 
 async function makeThumbnail(uri: string): Promise<string | null> {
   // Keep the dimension generous and step DOWN quality in fine increments. We
-  // pick the highest-quality render that still fits under the ~300KB cap —
+  // pick the highest-quality render that still fits under the ~500KB cap —
   // which is the largest (clearest) image allowed and normally lands above the
   // ~100KB floor. `best` remembers the largest under-cap result as a safety net
   // if a later (smaller) attempt is all that succeeds.
@@ -116,9 +118,19 @@ export async function scanBill(source: 'camera' | 'library'): Promise<ScanResult
   const uri = res.assets?.[0]?.uri;
   if (!uri) throw new Error('No image captured.');
 
-  const ocr = await TextRecognition.recognize(uri);
-  const parsed = parseBill(ocr.text ?? '');
+  // OCR is best-effort and must never lose the thumbnail (or block the add): if
+  // ML Kit fails on a particular image we swallow the error, keep an empty
+  // rawText, and still convert the photo so the user gets a preview and can type
+  // the details in manually.
+  let rawText = '';
+  try {
+    const ocr = await TextRecognition.recognize(uri);
+    rawText = ocr.text ?? '';
+  } catch {
+    rawText = '';
+  }
+  const parsed = parseBill(rawText);
   const thumbnail = await makeThumbnail(uri);
 
-  return { parsed, thumbnail, rawText: ocr.text ?? '' };
+  return { parsed, thumbnail, rawText };
 }

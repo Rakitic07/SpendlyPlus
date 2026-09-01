@@ -35,14 +35,14 @@ export const expenseSchema = z.object({
   // is a free-ish provider/bank label (or a custom "Other" value).
   paymentMode: z.enum(["Cash", "UPI", "Card"]).optional().or(z.literal("")),
   paymentDetail: z.string().trim().max(40).optional().or(z.literal("")),
-  // Tiny base64 JPEG data URL of a scanned bill (preview only). Hard-capped so a
-  // full-resolution photo can never be smuggled into the DB. ~20k chars ≈ 15KB.
-  // Base64 JPEG data URL of a scanned bill (preview only). Hard-capped so a
-  // full-resolution photo can never be smuggled into the DB. base64 grows ~4/3,
-  // so ~140k chars ≈ 105KB of image bytes (target thumbnail is 50–100KB).
+  // Base64 JPEG data URL of a scanned-bill thumbnail (preview only). Hard-capped
+  // so a full-resolution photo can never be smuggled into the DB. base64 grows
+  // ~4/3, so ~700k chars ≈ 500KB of image bytes — the max thumbnail size. This
+  // must stay >= the clients' THUMB_MAX_CHARS (scanBill.ts / scan.ts) so a
+  // legitimately-generated thumbnail is never rejected on save.
   thumbnail: z
     .string()
-    .max(140000, "Thumbnail too large")
+    .max(700000, "Thumbnail too large")
     .optional()
     .or(z.literal("")),
 });

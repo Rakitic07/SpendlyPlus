@@ -91,7 +91,7 @@ function thumbKey(space: string, id: string): string {
 // thumbnail. The image itself lives in its own AsyncStorage row.
 const THUMB_REF = '\u0000thumb';
 
-// IMPORTANT: bill thumbnails can be 100-300KB of base64. Android's AsyncStorage
+// IMPORTANT: bill thumbnails can be 100-500KB of base64. Android's AsyncStorage
 // is SQLite-backed and a single row must fit into a ~2MB CursorWindow — packing
 // every thumbnail into the one cache blob quickly blows past that and crashes
 // the app with "Row too big to fit into CursorWindow" on the next read. So we
