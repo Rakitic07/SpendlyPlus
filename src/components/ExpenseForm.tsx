@@ -8,6 +8,7 @@ import { api } from "@/lib/api";
 import { scanBillFromFile } from "@/lib/scanBill";
 import { isMobileDevice } from "@/lib/platform";
 import { useSettings } from "@/lib/settings";
+import { useEscape } from "@/lib/useEscape";
 
 // On phones we show only the first TOP_COUNT categories + "Other" by default;
 // the rest live behind a "More categories" toggle. The web app shows them all.
@@ -95,6 +96,10 @@ export default function ExpenseForm({
   useEffect(() => {
     setShowCamera(isMobileDevice());
   }, []);
+  useEscape(open, () => {
+    if (viewer) setViewer(false);
+    else if (!busy) onClose();
+  });
   // Fields the scan auto-filled, highlighted so the user knows what to verify.
   const [hi, setHi] = useState<Record<string, boolean>>({});
   const cameraInputRef = useRef<HTMLInputElement>(null);
@@ -326,7 +331,12 @@ export default function ExpenseForm({
               animating a blurred element re-rasterizes it every frame, which was
               the real cause of the slow, laggy open. A single quick fade on the
               wrapper above is all the motion we need. */}
-          <div className="glass-strong relative z-10 max-h-[92vh] w-full overflow-y-auto rounded-t-4xl p-6 sm:max-w-lg sm:rounded-4xl">
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label={editing ? "Edit expense" : "Add expense"}
+            className="glass-strong relative z-10 max-h-[92dvh] w-full overflow-y-auto overscroll-contain rounded-t-4xl p-6 pb-[calc(env(safe-area-inset-bottom)+1.5rem)] sm:max-w-lg sm:rounded-4xl sm:pb-6"
+          >
             {scanning && (
               <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-2 rounded-t-4xl bg-black/70 sm:rounded-4xl">
                 <div className="h-9 w-9 animate-spin rounded-full border-2 border-white/30 border-t-white" />
@@ -409,7 +419,7 @@ export default function ExpenseForm({
                           setThumbnail(null);
                           setThumbCleared(true);
                         }}
-                        className="absolute -right-1.5 -top-1.5 grid h-5 w-5 place-items-center rounded-full bg-red-500 text-white"
+                        className="absolute -right-2 -top-2 grid h-6 w-6 place-items-center rounded-full bg-red-500 text-white"
                         aria-label="Remove bill preview"
                       >
                         <X className="h-3 w-3" />
@@ -708,6 +718,7 @@ export default function ExpenseForm({
                       }
                     }}
                     className="glass-btn border-red-400/30 bg-red-500/15 text-red-100 hover:bg-red-500/25"
+                    aria-label="Delete expense"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>

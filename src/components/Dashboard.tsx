@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   TrendingUp,
-  CalendarDays,
   Wallet,
   Layers,
   PieChart as PieIcon,
@@ -41,7 +40,7 @@ import { categoryMeta, CATEGORY_NAMES } from "@/lib/categories";
 import { useCurrency } from "@/lib/currency";
 import { useSettings } from "@/lib/settings";
 import dynamic from "next/dynamic";
-import ExpenseList from "./ExpenseList";
+import ExpenseList, { orderForDisplay, totalsByDay } from "./ExpenseList";
 import BudgetRing from "./BudgetRing";
 import DatePicker from "./DatePicker";
 // The report modal pulls in the PDF/Excel export libs, so it's split out of the
@@ -68,6 +67,10 @@ const Bars = dynamic(() => import("./charts/Bars"), {
 });
 
 type View = "day" | "month" | "year" | "all";
+
+function plural(n: number, word: string): string {
+  return `${n} ${word}${n === 1 ? "" : "s"}`;
+}
 
 function toDayValue(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
@@ -115,15 +118,17 @@ function Stat({
   accent: string;
 }) {
   return (
-    <div className="glass rounded-3xl p-4">
-      <div className="mb-3 flex items-center justify-between">
-        <span className="text-xs text-white/55">{label}</span>
-        <span className="grid h-8 w-8 place-items-center rounded-xl" style={{ background: accent + "33" }}>
+    <div className="glass min-w-0 rounded-3xl p-4">
+      <div className="mb-3 flex items-center justify-between gap-2">
+        <span className="truncate text-xs text-white/55">{label}</span>
+        <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl" style={{ background: accent + "33" }}>
           {icon}
         </span>
       </div>
-      <p className="text-2xl font-semibold tracking-tight">{value}</p>
-      {sub && <div className="mt-0.5 text-xs text-white/50">{sub}</div>}
+      <p className="min-w-0 truncate text-xl font-semibold tabular-nums tracking-tight sm:text-2xl" title={value}>
+        {value}
+      </p>
+      {sub && <div className="mt-0.5 truncate text-xs text-white/50">{sub}</div>}
     </div>
   );
 }
@@ -157,7 +162,9 @@ function InsightCard({
 
 type MobileTab = "overview" | "charts" | "activity";
 
-export default function Dashboard({
+export default memo(Dashboard);
+
+function Dashboard({
   expenses,
   readOnly,
   onEdit,
@@ -294,10 +301,11 @@ export default function Dashboard({
     [chartsVisible, view, expenses, filtered, year, month]
   );
 
-  // Transactions list: apply search + category filter on top of the period.
+  // Transactions list: apply search + category filter on top of the period,
+  // then order the whole set once so pagination keeps the true newest-first order.
   const listExpenses = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return filtered.filter((e) => {
+    return orderForDisplay(filtered.filter((e) => {
       if (catFilter && e.category !== catFilter) return false;
       if (!q) return true;
       return (
@@ -308,8 +316,9 @@ export default function Dashboard({
         (e.paymentMode ?? "").toLowerCase().includes(q) ||
         (e.paymentDetail ?? "").toLowerCase().includes(q)
       );
-    });
+    }));
   }, [filtered, query, catFilter]);
+  const listDayTotals = useMemo(() => totalsByDay(listExpenses), [listExpenses]);
 
   // Paginate the transaction list: 5 per page with a sliding transition.
   const PAGE_SIZE = 5;
@@ -360,12 +369,12 @@ export default function Dashboard({
             view === "month"
               ? "Daily spending"
               : view === "year"
-                ? "Monthly trend"
+                ? "Monthly totals"
                 : "Yearly totals"
           }
           icon={<BarChart3 className="h-4 w-4" />}
         >
-          {view === "year" ? <TrendArea data={trendData} /> : <Bars data={barData} />}
+          <Bars data={barData} />
         </ChartCard>
       )}
 
@@ -513,7 +522,7 @@ export default function Dashboard({
           value={formatCurrency(total)}
           sub={
             delta == null ? (
-              `${filtered.length} transactions`
+              plural(filtered.length, "transaction")
             ) : (
               <span className={cn("inline-flex items-center gap-1", delta > 0 ? "text-red-300" : "text-emerald-300")}>
                 {delta > 0 ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />}
@@ -527,7 +536,7 @@ export default function Dashboard({
         <Stat
           label={avgLabel}
           value={formatCurrency(total / periodDivisor)}
-          sub={`${filtered.length} transactions`}
+          sub={plural(filtered.length, "transaction")}
           icon={<TrendingUp className="h-4 w-4 text-[#38d9a9]" />}
           accent="#38d9a9"
         />
@@ -541,8 +550,8 @@ export default function Dashboard({
         <Stat
           label="Categories used"
           value={String(cats.length)}
-          sub={payers.length ? `${payers.length} payer(s)` : undefined}
-          icon={<CalendarDays className="h-4 w-4 text-[#ffd43b]" />}
+          sub={payers.length ? plural(payers.length, "payer") : undefined}
+          icon={<PieIcon className="h-4 w-4 text-[#ffd43b]" />}
           accent="#ffd43b"
         />
       </div>
@@ -637,7 +646,29 @@ export default function Dashboard({
               exit="exit"
               transition={{ duration: 0.22, ease: "easeOut" }}
             >
-              <ExpenseList expenses={pageItems} onEdit={onEdit} readOnly={readOnly} />
+              <ExpenseList
+                expenses={pageItems}
+                onEdit={onEdit}
+                readOnly={readOnly}
+                dayTotals={listDayTotals}
+                emptyMessage={
+                  query.trim() || catFilter ? (
+                    <>
+                      No expenses match your search.{" "}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setQuery("");
+                          setCatFilter("");
+                        }}
+                        className="font-semibold text-white/80 underline underline-offset-2"
+                      >
+                        Clear filters
+                      </button>
+                    </>
+                  ) : undefined
+                }
+              />
             </motion.div>
           </AnimatePresence>
         </div>

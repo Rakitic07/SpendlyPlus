@@ -1,5 +1,7 @@
 import type { Expense, ExpenseDraft } from "./types";
 import { api, ApiError } from "./api";
+import { forgetThumb, loadThumbs, memThumb, rememberThumb } from "./thumbStore";
+import { parseExpenseDate } from "./utils";
 
 /*
  * Offline-first store (cache + queued writes).
@@ -76,14 +78,50 @@ function write(key: string, value: unknown): void {
 
 /* ---------- cache ---------- */
 
+// The list cache never stores base64 thumbnails (see thumbStore.ts); rows keep
+// `hasThumbnail` and the images are re-attached from memory / IndexedDB.
 export function readCache(space: string): Expense[] {
   if (!space) return [];
-  return read<Expense[]>(cacheKey(space), []);
+  const rows = read<Expense[]>(cacheKey(space), []);
+  let legacy = false;
+  const out = rows.map((e) => {
+    if (e.thumbnail) {
+      // Older caches embedded the image; move it to the thumb store once.
+      legacy = true;
+      rememberThumb(e.id, e.thumbnail);
+      return { ...e, hasThumbnail: true };
+    }
+    const t = e.hasThumbnail ? memThumb(e.id) : undefined;
+    return t ? { ...e, thumbnail: t } : e;
+  });
+  if (legacy) writeCache(space, out);
+  return out;
 }
 
 export function writeCache(space: string, expenses: Expense[]): void {
   if (!space) return;
-  write(cacheKey(space), expenses);
+  const slim = expenses.map((e) => {
+    if (e.thumbnail) {
+      rememberThumb(e.id, e.thumbnail);
+      return { ...e, thumbnail: null, hasThumbnail: true };
+    }
+    if (e.hasThumbnail === false) forgetThumb(e.id);
+    return e;
+  });
+  write(cacheKey(space), slim);
+}
+
+/**
+ * Rows that have a bill but no image loaded yet, resolved from IndexedDB.
+ * Returns null when nothing new was found (so callers can skip a re-render).
+ */
+export async function hydrateThumbnails(
+  expenses: Expense[]
+): Promise<Map<string, string> | null> {
+  const ids = expenses.filter((e) => e.hasThumbnail && !e.thumbnail).map((e) => e.id);
+  if (!ids.length) return null;
+  const found = await loadThumbs(ids);
+  return found.size ? found : null;
 }
 
 export function getLastSync(space: string): number {
@@ -96,23 +134,23 @@ export function getLastSync(space: string): number {
 // yet. `mapped` (tempId→realId) carries a brand-new row's thumbnail across its
 // id remap, since the cache still holds it under the temp id.
 function backfillThumbnails(
-  space: string,
+  _space: string,
   server: Expense[],
   mapped: Record<string, string> = {}
 ): Expense[] {
-  const prev = readCache(space);
-  const byId = new Map<string, string>();
-  for (const e of prev) if (e.thumbnail) byId.set(e.id, e.thumbnail);
   for (const [temp, real] of Object.entries(mapped)) {
-    const t = byId.get(temp);
-    if (t) byId.set(real, t);
+    const t = memThumb(temp);
+    if (t) {
+      rememberThumb(real, t);
+      forgetThumb(temp);
+    }
   }
   return server.map((e) => {
     if (e.thumbnail) return e;
     // The server explicitly reports no bill for this row (e.g. it was removed) —
     // don't resurrect a stale cached preview.
     if (e.hasThumbnail === false) return e;
-    const t = byId.get(e.id);
+    const t = memThumb(e.id);
     return t ? { ...e, thumbnail: t } : e;
   });
 }
@@ -194,7 +232,7 @@ export function draftToExpense(draft: ExpenseDraft, base?: Expense): Expense {
     category: draft.category,
     amount: draft.amount,
     paidBy: draft.paidBy,
-    date: new Date(draft.date).toISOString(),
+    date: parseExpenseDate(draft.date).toISOString(),
     notes: draft.notes ? draft.notes : null,
     paymentMode: draft.paymentMode ? draft.paymentMode : null,
     paymentDetail: draft.paymentDetail ? draft.paymentDetail : null,
@@ -205,6 +243,8 @@ export function draftToExpense(draft: ExpenseDraft, base?: Expense): Expense {
       draft.thumbnail !== undefined
         ? draft.thumbnail || null
         : (base?.thumbnail ?? null),
+    hasThumbnail:
+      draft.thumbnail !== undefined ? !!draft.thumbnail : (base?.hasThumbnail ?? !!base?.thumbnail),
     createdAt: base?.createdAt ?? now,
     updatedAt: now,
   };

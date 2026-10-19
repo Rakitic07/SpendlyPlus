@@ -15,6 +15,7 @@ export const dynamic = "force-dynamic";
 // updating its keys never wipes another platform's keys.
 const settingsSchema = z
   .object({
+    theme: z.enum(["glass", "neo"]).optional(),
     chartsCollapsed: z.boolean().optional(),
     defaultPeriod: z.enum(["day", "month", "year", "all"]).optional(),
     showThumbnails: z.boolean().optional(),

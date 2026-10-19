@@ -63,7 +63,9 @@ function DonutCard({ title, data, total }: { title: string; data: DonutDatum[]; 
                 <Text style={styles.legendLabel} numberOfLines={1}>
                   {d.label}
                 </Text>
-                <Text style={styles.legendVal}>{format(d.value)}</Text>
+                <Text style={styles.legendVal} numberOfLines={1}>
+                  {format(d.value)}
+                </Text>
               </View>
             ))}
           </View>
@@ -273,7 +275,7 @@ export function ChartsScreen() {
         )}
       </ScrollView>
 
-      <ReportModal open={reportOpen} onClose={() => setReportOpen(false)} />
+      {reportOpen && <ReportModal open onClose={() => setReportOpen(false)} />}
     </SafeAreaView>
   );
 }
@@ -305,8 +307,8 @@ const styles = StyleSheet.create({
   legend: { flex: 1, gap: 8 },
   legendRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   dot: { width: 10, height: 10, borderRadius: 5 },
-  legendLabel: { color: colors.textDim, fontSize: font.small, flex: 1 },
-  legendVal: { color: colors.text, fontSize: font.small, fontWeight: '700' },
+  legendLabel: { color: colors.textDim, fontSize: font.small, flex: 1, minWidth: 0 },
+  legendVal: { flexShrink: 0, color: colors.text, fontSize: font.small, fontWeight: '700' },
   empty: { color: colors.textFaint, textAlign: 'center', padding: spacing.lg },
   skelDonutRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.lg, marginTop: spacing.md },
   skelLegend: { flex: 1, gap: 12 },

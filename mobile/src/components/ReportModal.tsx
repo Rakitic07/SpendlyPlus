@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Text,
   View,
+  useWindowDimensions,
 } from 'react-native';
 import {
   X,
@@ -179,6 +180,10 @@ export function ReportModal({ open, onClose }: { open: boolean; onClose: () => v
     }
   };
 
+  // Leave room for the sheet header + footer buttons on short screens.
+  const { height: winH } = useWindowDimensions();
+  const bodyMaxH = Math.max(220, Math.min(460, winH - 300));
+
   const showYear = view !== 'all';
   const showMonth = view === 'month' || view === 'day';
   const showDay = view === 'day';
@@ -200,7 +205,7 @@ export function ReportModal({ open, onClose }: { open: boolean; onClose: () => v
             </Pressable>
           </View>
 
-          <ScrollView showsVerticalScrollIndicator={false} style={{ maxHeight: 460 }}>
+          <ScrollView showsVerticalScrollIndicator={false} style={{ maxHeight: bodyMaxH }}>
             {/* Format */}
             <Text style={styles.label}>Format</Text>
             <View style={styles.formatRow}>

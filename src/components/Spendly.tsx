@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { AnimatePresence, motion } from "framer-motion";
 import { Plus, LogOut, Sparkles, Wallet, ShieldCheck, PartyPopper, Github, Shield, Download, LayoutGrid, PieChart, ReceiptText, Settings } from "lucide-react";
@@ -23,6 +23,7 @@ import {
   getLastSpace,
   forgetSpace,
   mergeCachedThumbnails,
+  hydrateThumbnails,
   readBudget,
   setBudgetLocal,
   adoptServerBudget,
@@ -62,6 +63,7 @@ export default function Spendly() {
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Expense | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+  const toastTimer = useRef<number | null>(null);
   const [syncing, setSyncing] = useState(false);
   const [pending, setPending] = useState(0);
   const [online, setOnline] = useState(true);
@@ -75,6 +77,12 @@ export default function Spendly() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   // Which dashboard section the mobile bottom-nav is showing (desktop ignores it).
   const [mobileTab, setMobileTab] = useState<"overview" | "charts" | "activity">("overview");
+
+  const showToast = useCallback((msg: string, ms = 2600) => {
+    setToast(msg);
+    if (toastTimer.current) window.clearTimeout(toastTimer.current);
+    toastTimer.current = window.setTimeout(() => setToast(null), ms);
+  }, []);
 
   // Push queued writes to the DB, then pull the canonical list (when the queue
   // is fully drained). Takes the space explicitly so it can run before the
@@ -108,8 +116,7 @@ export default function Spendly() {
           dropped.length > 1
             ? `${dropped.length} changes couldn't be saved and were discarded`
             : `A change couldn't be saved: ${first.reason}`;
-        setToast(msg);
-        window.setTimeout(() => setToast(null), 3200);
+        showToast(msg, 3200);
       }
       // `undefined` means the server value wasn't touched this run — leave state.
       if (freshBudget !== undefined) setBudget(freshBudget);
@@ -128,7 +135,7 @@ export default function Spendly() {
       setSyncError(!ok); // green on success, red on failure
       setPending(pendingCount(space));
     }
-  }, []);
+  }, [showToast]);
 
   // Unique, most-recent expense titles for quick re-entry in the form.
   const recentTitles = useMemo(() => {
@@ -144,11 +151,6 @@ export default function Spendly() {
     }
     return out;
   }, [expenses]);
-
-  function showToast(msg: string) {
-    setToast(msg);
-    window.setTimeout(() => setToast(null), 2600);
-  }
 
   // Show cached data instantly, then reconcile with the server in the
   // background — this is the "opens fast even on a slow/absent network" path.
@@ -276,6 +278,24 @@ export default function Spendly() {
     if (status === "authed" && name) writeCache(name, expenses);
   }, [expenses, status, name]);
 
+  // Bill images live in IndexedDB, not the list cache; re-attach any this
+  // device has after paint. Each id is tried once so a miss can't loop.
+  const triedThumbs = useRef(new Set<string>());
+  useEffect(() => {
+    if (status !== "authed") return;
+    const todo = expenses.filter(
+      (e) => e.hasThumbnail && !e.thumbnail && !triedThumbs.current.has(e.id)
+    );
+    if (!todo.length) return;
+    todo.forEach((e) => triedThumbs.current.add(e.id));
+    void hydrateThumbnails(todo).then((found) => {
+      if (!found) return;
+      setExpenses((prev) =>
+        prev.map((e) => (!e.thumbnail && found.has(e.id) ? { ...e, thumbnail: found.get(e.id)! } : e))
+      );
+    });
+  }, [expenses, status]);
+
   // Detect iOS once so we can slightly shrink the header controls there (they
   // otherwise crowd out the space name on a narrow iPhone). iPadOS 13+ reports
   // as "MacIntel" with touch points, so include that case.
@@ -352,6 +372,11 @@ export default function Spendly() {
     },
     [name, runSync]
   );
+
+  const openEdit = useCallback((e: Expense) => {
+    setEditing(e);
+    setFormOpen(true);
+  }, []);
 
   // Writes are applied locally first (instant + offline-friendly) and queued;
   // runSync then flushes to the DB — a no-op that stays queued if offline.
@@ -475,10 +500,7 @@ export default function Spendly() {
             tabbed={isNative}
             spaceName={name}
             onToast={showToast}
-            onEdit={(e) => {
-              setEditing(e);
-              setFormOpen(true);
-            }}
+            onEdit={openEdit}
           />
         )}
 
@@ -539,12 +561,12 @@ export default function Spendly() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 24, scale: 0.95 }}
             transition={{ type: "spring", stiffness: 300, damping: 26 }}
-            className={`glass-strong fixed inset-x-0 z-[60] mx-auto flex w-fit items-center gap-2.5 rounded-2xl px-5 py-3 text-sm font-medium sm:bottom-6 ${
+            className={`glass-strong fixed inset-x-0 z-[60] mx-auto flex w-fit max-w-[calc(100vw-2rem)] items-center gap-2.5 rounded-2xl px-5 py-3 text-sm font-medium sm:bottom-6 ${
               isNative ? "bottom-[calc(env(safe-area-inset-bottom)+5.5rem)]" : "bottom-6"
             }`}
           >
-            <PartyPopper className="h-4 w-4 text-[#ffd43b]" />
-            {toast}
+            <PartyPopper className="h-4 w-4 shrink-0 text-[#ffd43b]" />
+            <span className="min-w-0 truncate">{toast}</span>
           </motion.div>
         )}
       </AnimatePresence>
@@ -559,7 +581,7 @@ export default function Spendly() {
             : "pb-8"
         }`}
       >
-        <span>Spendly-Plus · built with Next.js · deploy-ready for Vercel</span>
+        <span>Spendly-Plus · your expenses, synced across devices</span>
         <div className="flex items-center gap-1">
           {status === "authed" ? (
             /* Inside a space: keep ONLY the update check + log export (native
@@ -622,6 +644,7 @@ export default function Spendly() {
           Hidden on sm+ where the full desktop layout shows. */}
       {status === "authed" && isNative && (
         <>
+          {!formOpen && (
           <button
             onClick={() => {
               setEditing(null);
@@ -632,6 +655,7 @@ export default function Spendly() {
           >
             <Plus className="h-6 w-6" />
           </button>
+          )}
 
           <nav className="glass-strong fixed inset-x-0 bottom-0 z-40 flex items-stretch justify-around border-t border-white/10 px-2 pb-[calc(env(safe-area-inset-bottom)+0.3rem)] pt-1.5 sm:hidden">
             {(

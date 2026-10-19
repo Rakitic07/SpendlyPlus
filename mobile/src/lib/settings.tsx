@@ -9,6 +9,7 @@ import React, {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { PeriodView } from './analytics';
 import { api } from './api';
+import { setThemeMode, type ThemeName } from './themeMode';
 
 // Per-space preferences, persisted as a single JSON blob in AsyncStorage. Every
 // field has a default, so a missing/old blob still yields a complete object.
@@ -16,6 +17,8 @@ import { api } from './api';
 // state) read the current values synchronously after `loadSettings` has run.
 
 export type SpaceSettings = {
+  /** Visual theme. Default stays the liquid-glass UI; "neo" = Soft Aurora. */
+  theme: ThemeName;
   defaultPeriod: PeriodView;
   showThumbnails: boolean;
   confirmDelete: boolean;
@@ -26,6 +29,7 @@ export type SpaceSettings = {
 };
 
 export const DEFAULT_SETTINGS: SpaceSettings = {
+  theme: 'glass',
   defaultPeriod: 'month',
   showThumbnails: true,
   confirmDelete: true,
@@ -44,6 +48,7 @@ function normalize(raw: unknown): SpaceSettings {
   const r = raw as Partial<SpaceSettings>;
   const periods: PeriodView[] = ['day', 'month', 'year', 'all'];
   return {
+    theme: r.theme === 'neo' ? 'neo' : 'glass',
     defaultPeriod:
       r.defaultPeriod && periods.includes(r.defaultPeriod)
         ? r.defaultPeriod
@@ -172,6 +177,12 @@ export function SettingsProvider({
       .patchSettings(next as unknown as Record<string, unknown>)
       .catch(() => {});
   }, [space]);
+
+  const theme = settings.theme;
+  useEffect(() => {
+    setThemeMode(theme);
+  }, [theme]);
+  useEffect(() => () => setThemeMode('glass'), []);
 
   const value = useMemo<Ctx>(() => ({ settings, update, reset }), [settings, update, reset]);
 

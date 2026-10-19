@@ -9,6 +9,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   X,
   History,
@@ -17,10 +18,14 @@ import {
   Wallet,
   User,
   RotateCcw,
+  Palette,
+  Sparkles,
+  Vibrate,
 } from 'lucide-react-native';
 import { useSettings } from '../lib/settings';
+import { useNeo, type ThemeName } from '../lib/themeMode';
 import type { PeriodView } from '../lib/analytics';
-import { colors, font, radius, spacing } from '../theme';
+import { colors, font, neo, neoStyles, radius, spacing } from '../theme';
 
 const PERIODS: { value: PeriodView; label: string }[] = [
   { value: 'day', label: 'Day' },
@@ -29,33 +34,79 @@ const PERIODS: { value: PeriodView; label: string }[] = [
   { value: 'all', label: 'All' },
 ];
 
+const THEMES: { value: ThemeName; label: string }[] = [
+  { value: 'glass', label: 'Liquid glass' },
+  { value: 'neo', label: 'Soft Aurora' },
+];
+
 function Row({
   icon,
   title,
   desc,
+  stacked,
   children,
 }: {
   icon: React.ReactNode;
   title: string;
   desc?: string;
+  /** Put the control under the title (for wide segmented pickers). */
+  stacked?: boolean;
   children: React.ReactNode;
 }) {
+  const isNeo = useNeo();
   return (
-    <View style={styles.row}>
+    <View style={[styles.row, stacked && styles.rowStacked]}>
       <View style={styles.rowLeft}>
-        <View style={styles.rowIcon}>{icon}</View>
+        <View style={[styles.rowIcon, isNeo && neoStyles.raisedSm]}>{icon}</View>
         <View style={styles.rowText}>
           <Text style={styles.rowTitle}>{title}</Text>
           {desc ? <Text style={styles.rowDesc}>{desc}</Text> : null}
         </View>
       </View>
-      <View style={styles.rowRight}>{children}</View>
+      <View style={stacked ? styles.rowBelow : styles.rowRight}>{children}</View>
+    </View>
+  );
+}
+
+function Segmented<T extends string>({
+  options,
+  value,
+  onChange,
+}: {
+  options: { value: T; label: string }[];
+  value: T;
+  onChange: (v: T) => void;
+}) {
+  const isNeo = useNeo();
+  return (
+    <View style={styles.periodRow}>
+      {options.map(o => {
+        const active = value === o.value;
+        return (
+          <Pressable
+            key={o.value}
+            onPress={() => onChange(o.value)}
+            accessibilityRole="button"
+            accessibilityState={{ selected: active }}
+            style={[
+              styles.periodChip,
+              isNeo && (active ? neoStyles.pressed : neoStyles.raisedSm),
+              active && (isNeo ? { borderColor: colors.primary } : styles.periodChipActive),
+            ]}>
+            <Text style={[styles.periodChipText, active && styles.periodChipTextActive]}>
+              {o.label}
+            </Text>
+          </Pressable>
+        );
+      })}
     </View>
   );
 }
 
 export function SettingsModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { settings, update, reset } = useSettings();
+  const insets = useSafeAreaInsets();
+  const isNeo = useNeo();
 
   const track = { false: colors.border, true: colors.primary };
 
@@ -63,34 +114,42 @@ export function SettingsModal({ open, onClose }: { open: boolean; onClose: () =>
     <Modal visible={open} transparent animationType="slide" onRequestClose={onClose}>
       <View style={styles.wrap}>
         <Pressable style={styles.backdrop} onPress={onClose} />
-        <View style={styles.sheet}>
+        <View
+          style={[
+            styles.sheet,
+            isNeo && { backgroundColor: neo.bg },
+            { paddingBottom: spacing.xl + insets.bottom },
+          ]}>
           <View style={styles.header}>
-            <View>
+            <View style={styles.rowText}>
               <Text style={styles.title}>Space settings</Text>
-              <Text style={styles.subtitle}>Saved for this space on this device</Text>
+              <Text style={styles.subtitle}>Synced for this space across your devices</Text>
             </View>
-            <Pressable onPress={onClose} hitSlop={8} style={styles.closeBtn}>
+            <Pressable
+              onPress={onClose}
+              hitSlop={8}
+              accessibilityRole="button"
+              accessibilityLabel="Close settings"
+              style={[styles.closeBtn, isNeo && neoStyles.raisedSm]}>
               <X size={18} color={colors.text} />
             </Pressable>
           </View>
 
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <Row icon={<History size={16} color={colors.primary} />} title="Default period" desc="Which range the app opens on">
-              <View style={styles.periodRow}>
-                {PERIODS.map(p => {
-                  const active = settings.defaultPeriod === p.value;
-                  return (
-                    <Pressable
-                      key={p.value}
-                      onPress={() => update({ defaultPeriod: p.value })}
-                      style={[styles.periodChip, active && styles.periodChipActive]}>
-                      <Text style={[styles.periodChipText, active && styles.periodChipTextActive]}>
-                        {p.label}
-                      </Text>
-                    </Pressable>
-                  );
-                })}
-              </View>
+          <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+            <Row
+              stacked
+              icon={<Palette size={16} color={colors.primary} />}
+              title="Appearance"
+              desc="Soft Aurora is a neumorphic look in the same violet–pink palette">
+              <Segmented options={THEMES} value={settings.theme} onChange={v => update({ theme: v })} />
+            </Row>
+
+            <Row icon={<History size={16} color={colors.primary} />} title="Default period" desc="Which range the app opens on" stacked>
+              <Segmented
+                options={PERIODS}
+                value={settings.defaultPeriod}
+                onChange={v => update({ defaultPeriod: v })}
+              />
             </Row>
 
             <Row icon={<ImageIcon size={16} color={colors.primary} />} title="Show bill thumbnails" desc="Tiny scanned-receipt previews on rows and edits">
@@ -106,6 +165,15 @@ export function SettingsModal({ open, onClose }: { open: boolean; onClose: () =>
               <Switch
                 value={settings.confirmDelete}
                 onValueChange={v => update({ confirmDelete: v })}
+                trackColor={track}
+                thumbColor="#fff"
+              />
+            </Row>
+
+            <Row icon={<Sparkles size={16} color={colors.primary} />} title="Recent title suggestions" desc="Quick-fill chips from your recent expenses">
+              <Switch
+                value={settings.recentSuggestions}
+                onValueChange={v => update({ recentSuggestions: v })}
                 trackColor={track}
                 thumbColor="#fff"
               />
@@ -127,11 +195,11 @@ export function SettingsModal({ open, onClose }: { open: boolean; onClose: () =>
                 placeholder="e.g. Me"
                 placeholderTextColor={colors.textFaint}
                 maxLength={40}
-                style={styles.input}
+                style={[styles.input, isNeo && neoStyles.pressed]}
               />
             </Row>
 
-            <Row icon={<Wallet size={16} color={colors.primary} />} title="Haptic feedback" desc="A gentle tap on add / delete">
+            <Row icon={<Vibrate size={16} color={colors.primary} />} title="Haptic feedback" desc="A gentle tap on add / delete">
               <Switch
                 value={settings.haptics}
                 onValueChange={v => update({ haptics: v })}
@@ -140,7 +208,12 @@ export function SettingsModal({ open, onClose }: { open: boolean; onClose: () =>
               />
             </Row>
 
-            <Pressable onPress={reset} style={styles.resetBtn}>
+            <Pressable
+              onPress={reset}
+              style={({ pressed }) => [
+                styles.resetBtn,
+                isNeo && (pressed ? neoStyles.pressed : neoStyles.raisedSm),
+              ]}>
               <RotateCcw size={16} color={colors.textDim} />
               <Text style={styles.resetText}>Reset to defaults</Text>
             </Pressable>
@@ -162,12 +235,12 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderColor: colors.borderStrong,
     padding: spacing.lg,
-    paddingBottom: spacing.xl,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    gap: spacing.md,
     marginBottom: spacing.md,
   },
   title: { color: colors.text, fontSize: font.h3, fontWeight: '800' },
@@ -191,6 +264,7 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.border,
     gap: spacing.md,
   },
+  rowStacked: { flexDirection: 'column', alignItems: 'stretch', gap: spacing.sm },
   rowLeft: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, flex: 1 },
   rowIcon: {
     height: 32,
@@ -200,21 +274,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: colors.surface,
   },
-  rowText: { flex: 1 },
+  rowText: { flex: 1, minWidth: 0 },
   rowTitle: { color: colors.text, fontSize: font.body, fontWeight: '600' },
   rowDesc: { color: colors.textFaint, fontSize: font.tiny, marginTop: 2 },
   rowRight: { flexShrink: 0 },
-  periodRow: { flexDirection: 'row', gap: 4 },
+  rowBelow: { paddingLeft: 32 + spacing.sm },
+  periodRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
   periodChip: {
-    paddingHorizontal: 10,
-    paddingVertical: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 7,
     borderRadius: radius.pill,
     backgroundColor: colors.surface,
     borderWidth: 1,
     borderColor: colors.border,
   },
   periodChipActive: { backgroundColor: colors.primary + '33', borderColor: colors.primary },
-  periodChipText: { color: colors.textDim, fontSize: font.tiny, fontWeight: '600' },
+  periodChipText: { color: colors.textDim, fontSize: font.small, fontWeight: '600' },
   periodChipTextActive: { color: colors.text, fontWeight: '700' },
   input: {
     width: 120,

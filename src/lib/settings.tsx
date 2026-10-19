@@ -5,7 +5,9 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useLayoutEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { api } from "./api";
@@ -16,7 +18,12 @@ import { api } from "./api";
 
 export type PeriodView = "day" | "month" | "year" | "all";
 
+/** "glass" = the default liquid-glass look; "neo" = Soft Aurora (neumorphic). */
+export type ThemeName = "glass" | "neo";
+
 export type SpaceSettings = {
+  /** Visual theme. Default stays the liquid-glass UI. */
+  theme: ThemeName;
   /** Web/PWA: start the charts panel collapsed (native keeps a Charts tab). */
   chartsCollapsed: boolean;
   /** Which period the dashboard opens on. */
@@ -36,6 +43,7 @@ export type SpaceSettings = {
 };
 
 export const DEFAULT_SETTINGS: SpaceSettings = {
+  theme: "glass",
   chartsCollapsed: true,
   defaultPeriod: "month",
   showThumbnails: true,
@@ -57,6 +65,7 @@ function normalize(raw: unknown): SpaceSettings {
   const r = raw as Partial<SpaceSettings>;
   const period: PeriodView[] = ["day", "month", "year", "all"];
   return {
+    theme: r.theme === "neo" ? "neo" : "glass",
     chartsCollapsed:
       typeof r.chartsCollapsed === "boolean"
         ? r.chartsCollapsed
@@ -176,6 +185,34 @@ export function SettingsProvider({
     };
   }, [space, seedKey]);
 
+  // Changed keys are batched and pushed once typing / toggling settles, so a
+  // text field like "Default payer" doesn't fire one request per keystroke.
+  const pendingPatch = useRef<Partial<SpaceSettings>>({});
+  const flushTimer = useRef<number | null>(null);
+
+  const flush = useCallback(() => {
+    if (flushTimer.current) {
+      window.clearTimeout(flushTimer.current);
+      flushTimer.current = null;
+    }
+    const patch = pendingPatch.current;
+    pendingPatch.current = {};
+    if (Object.keys(patch).length === 0) return;
+    // The server merges just these keys into the shared blob.
+    void api.patchSettings(patch as Record<string, unknown>).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    const onHide = () => {
+      if (document.visibilityState === "hidden") flush();
+    };
+    document.addEventListener("visibilitychange", onHide);
+    return () => {
+      document.removeEventListener("visibilitychange", onHide);
+      flush();
+    };
+  }, [flush]);
+
   const update = useCallback(
     (patch: Partial<SpaceSettings>) => {
       setSettings((prev) => {
@@ -183,20 +220,33 @@ export function SettingsProvider({
         writeSettings(space, next);
         return next;
       });
-      // Push just the changed keys; the server merges them into the shared blob.
-      void api.patchSettings(patch as Record<string, unknown>).catch(() => {});
+      pendingPatch.current = { ...pendingPatch.current, ...patch };
+      if (flushTimer.current) window.clearTimeout(flushTimer.current);
+      flushTimer.current = window.setTimeout(flush, 600);
     },
-    [space]
+    [space, flush]
   );
 
   const reset = useCallback(() => {
     const next = { ...DEFAULT_SETTINGS };
     writeSettings(space, next);
     setSettings(next);
-    void api
-      .patchSettings(next as unknown as Record<string, unknown>)
-      .catch(() => {});
-  }, [space]);
+    pendingPatch.current = { ...next };
+    flush();
+  }, [space, flush]);
+
+  // The theme is a pure-CSS switch (see globals.css `html[data-theme="neo"]`).
+  // Layout effect so the attribute lands before paint — no glass→neo flash. The
+  // cleanup restores the default when the space is locked / switched.
+  const theme = settings.theme;
+  useLayoutEffect(() => {
+    const root = document.documentElement;
+    if (theme === "neo") root.dataset.theme = "neo";
+    else delete root.dataset.theme;
+    return () => {
+      delete root.dataset.theme;
+    };
+  }, [theme]);
 
   const value = useMemo<Ctx>(
     () => ({ settings, update, reset }),

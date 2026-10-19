@@ -11,9 +11,7 @@
 // Then paste the output back and we can see exactly what's slow: dropped frames
 // while scrolling, long main-thread tasks, slow taps, memory pressure, etc.
 //
-// Enabled in the native app by default; on the web add ?perf=1 to the URL.
-
-import { isNativeApp } from "./platform";
+// Off by default everywhere; open the app once with ?perf=1 to enable it.
 
 type MemoryInfo = {
   usedJSHeapSize: number;
@@ -28,6 +26,7 @@ let started = false;
 // survives an app relaunch.
 const LOG_MAX = 5000;
 const LOG_KEY = "spendly_perf_log";
+const PERF_FLAG = "spendly_perf_on";
 const logBuffer: string[] = [];
 
 function appendPerf(line: string): void {
@@ -63,10 +62,20 @@ export function clearPerfLog(): void {
 export function startPerfLogging(): void {
   if (started || typeof window === "undefined") return;
 
-  const forced =
-    typeof window.location !== "undefined" &&
-    window.location.search.includes("perf=1");
-  if (!isNativeApp() && !forced) return;
+  // Opt-in only: the probe runs a permanent rAF loop and keeps a large log
+  // buffer, which itself costs frames. `?perf=1` turns it on (remembered),
+  // `?perf=0` turns it off.
+  let enabled = false;
+  try {
+    const q = window.location.search;
+    if (q.includes("perf=1")) window.localStorage.setItem(PERF_FLAG, "1");
+    if (q.includes("perf=0")) window.localStorage.removeItem(PERF_FLAG);
+    enabled = window.localStorage.getItem(PERF_FLAG) === "1";
+    if (!enabled) window.localStorage.removeItem(LOG_KEY);
+  } catch {
+    /* ignore */
+  }
+  if (!enabled) return;
 
   started = true;
 
@@ -85,7 +94,6 @@ export function startPerfLogging(): void {
       /* ignore */
     }
   };
-  setInterval(persist, 5000);
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "hidden") persist();
   });

@@ -36,6 +36,17 @@ export function formatCompact(value: number): string {
   return formatNumber(value);
 }
 
+/**
+ * Parse an expense date. A bare `YYYY-MM-DD` is pinned to 12:00 UTC so it
+ * lands on the same calendar day in every timezone (UTC midnight shows up as
+ * the previous day west of Greenwich).
+ */
+export function parseExpenseDate(value: string): Date {
+  return /^\d{4}-\d{2}-\d{2}$/.test(value)
+    ? new Date(`${value}T12:00:00.000Z`)
+    : new Date(value);
+}
+
 export function monthKey(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
 }

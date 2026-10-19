@@ -98,6 +98,14 @@ const THUMB_REF = '\u0000thumb';
 // keep the main blob lightweight (thumbnails replaced by a sentinel) and store
 // each image in its own small row, well under the limit.
 
+// Thumbnail rows already on disk (row key -> stored data URL). Lets writeCache
+// skip re-writing hundreds of KB of unchanged base64 on every save.
+const writtenThumbs = new Map<string, string>();
+// Spaces whose leftover thumbnail rows were swept once this session.
+const sweptSpaces = new Set<string>();
+// Serialize cache writes so overlapping saves can't interleave.
+let writeChain: Promise<void> = Promise.resolve();
+
 export async function readCache(space: string): Promise<Expense[]> {
   try {
     const raw = await AsyncStorage.getItem(cacheKey(space));
@@ -113,7 +121,11 @@ export async function readCache(space: string): Promise<Expense[]> {
       );
       const byId = new Map(loaded);
       for (const e of list) {
-        if (e.thumbnail === THUMB_REF) e.thumbnail = byId.get(e.id) ?? null;
+        if (e.thumbnail === THUMB_REF) {
+          const t = byId.get(e.id) ?? null;
+          e.thumbnail = t;
+          if (t) writtenThumbs.set(thumbKey(space, e.id), t);
+        }
       }
     }
     return list;
@@ -122,26 +134,44 @@ export async function readCache(space: string): Promise<Expense[]> {
   }
 }
 
-export async function writeCache(space: string, expenses: Expense[]): Promise<void> {
+export function writeCache(space: string, expenses: Expense[]): Promise<void> {
+  writeChain = writeChain.then(() => doWriteCache(space, expenses));
+  return writeChain;
+}
+
+async function doWriteCache(space: string, expenses: Expense[]): Promise<void> {
   try {
-    const thumbSets: [string, string][] = [];
+    const wanted = new Set<string>();
+    const changed: [string, string][] = [];
     const light = expenses.map(e => {
       if (e.thumbnail) {
-        thumbSets.push([thumbKey(space, e.id), e.thumbnail]);
+        const k = thumbKey(space, e.id);
+        wanted.add(k);
+        if (writtenThumbs.get(k) !== e.thumbnail) changed.push([k, e.thumbnail]);
         return { ...e, thumbnail: THUMB_REF };
       }
       return e;
     });
 
     await AsyncStorage.setItem(cacheKey(space), JSON.stringify(light));
-    await Promise.all(thumbSets.map(([k, v]) => AsyncStorage.setItem(k, v)));
+    for (const [k, v] of changed) {
+      await AsyncStorage.setItem(k, v);
+      writtenThumbs.set(k, v);
+    }
 
     // Drop thumbnail rows for expenses that were deleted or had their image
-    // cleared, so they don't leak storage over time.
+    // cleared, so they don't leak storage over time. A full key scan runs once
+    // per space per session; after that the in-memory map is enough.
     const prefix = thumbPrefix(space);
-    const wanted = new Set(thumbSets.map(([k]) => k));
-    const allKeys = await AsyncStorage.getAllKeys();
-    const orphans = allKeys.filter(k => k.startsWith(prefix) && !wanted.has(k));
+    let orphans: string[];
+    if (!sweptSpaces.has(space)) {
+      sweptSpaces.add(space);
+      const allKeys = await AsyncStorage.getAllKeys();
+      orphans = allKeys.filter(k => k.startsWith(prefix) && !wanted.has(k));
+    } else {
+      orphans = [...writtenThumbs.keys()].filter(k => k.startsWith(prefix) && !wanted.has(k));
+    }
+    for (const k of orphans) writtenThumbs.delete(k);
     await Promise.all(orphans.map(k => AsyncStorage.removeItem(k)));
   } catch {
     /* ignore */

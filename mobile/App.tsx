@@ -36,7 +36,7 @@ function Tabs() {
     <View style={{ flex: 1 }}>
       <Tab.Navigator
         tabBar={props => <TabBar {...props} />}
-        screenOptions={{ headerShown: false, lazy: true }}>
+        screenOptions={{ headerShown: false, lazy: true, freezeOnBlur: true }}>
         <Tab.Screen name="Overview" component={OverviewScreen} />
         <Tab.Screen name="Charts" component={ChartsScreen} />
         <Tab.Screen name="Activity" component={ActivityScreen} />
@@ -73,12 +73,11 @@ function Splash() {
 
 function Root() {
   const { status, name } = useStore();
-  // Keep the splash up for a short, slightly-random beat (~0.6–1.1s) so it never
-  // vanishes in a single frame, even when we resolve auth instantly from cache.
+  // Keep the splash up for a short beat so it never vanishes in a single frame,
+  // even when we resolve auth instantly from cache.
   const [minSplashDone, setMinSplashDone] = useState(false);
   useEffect(() => {
-    const ms = 600 + Math.floor(Math.random() * 500);
-    const t = setTimeout(() => setMinSplashDone(true), ms);
+    const t = setTimeout(() => setMinSplashDone(true), 450);
     return () => clearTimeout(t);
   }, []);
 

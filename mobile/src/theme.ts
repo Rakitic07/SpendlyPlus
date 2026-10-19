@@ -1,3 +1,5 @@
+import { StyleSheet } from 'react-native';
+
 // Central design tokens.
 //
 // Glass look WITHOUT real backdrop blur (blur repaints every frame and is what
@@ -40,6 +42,40 @@ export const colors = {
 
 // Brand gradient used on the logo, FAB and key accents.
 export const brandGradient = ['#8b7bff', '#ff6bd0'] as const;
+
+// Soft Aurora (neumorphic) theme. Surfaces share the page colour and get depth
+// from a dark bottom-right + light top-left shadow pair (matches web globals.css).
+export const neo = {
+  bg: '#1b1d33',
+  dark: '#0e0f1f',
+  light: '#2a2d4c',
+  hairline: 'rgba(255,255,255,0.035)',
+};
+
+const neoSurface = {
+  backgroundColor: neo.bg,
+  borderColor: neo.hairline,
+  borderTopColor: neo.hairline,
+};
+
+export const neoStyles = StyleSheet.create({
+  raised: {
+    ...neoSurface,
+    boxShadow: `6px 6px 14px ${neo.dark}, -6px -6px 14px ${neo.light}`,
+  },
+  raisedLg: {
+    ...neoSurface,
+    boxShadow: `9px 9px 20px ${neo.dark}, -7px -7px 18px ${neo.light}`,
+  },
+  raisedSm: {
+    ...neoSurface,
+    boxShadow: `3px 3px 7px ${neo.dark}, -3px -3px 7px ${neo.light}`,
+  },
+  pressed: {
+    ...neoSurface,
+    boxShadow: `inset 3px 3px 7px ${neo.dark}, inset -3px -3px 7px ${neo.light}`,
+  },
+});
 
 export const radius = {
   sm: 10,

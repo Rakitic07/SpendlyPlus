@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getActiveLedger } from "@/lib/auth";
 import { expenseSchema } from "@/lib/validation";
+import { parseExpenseDate } from "@/lib/utils";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -80,7 +81,7 @@ export async function PATCH(req: Request, { params }: Params) {
       category,
       amount,
       paidBy,
-      date: new Date(date),
+      date: parseExpenseDate(date),
       notes: notes ? notes : null,
       paymentMode: paymentMode ? paymentMode : null,
       paymentDetail: paymentDetail ? paymentDetail : null,

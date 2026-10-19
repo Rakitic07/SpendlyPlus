@@ -8,7 +8,8 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import { colors, font, radius, spacing } from '../theme';
+import { useNeo } from '../lib/themeMode';
+import { colors, font, neoStyles, radius, spacing } from '../theme';
 
 export function Card({
   children,
@@ -19,8 +20,17 @@ export function Card({
   style?: ViewStyle | ViewStyle[];
   strong?: boolean;
 }) {
+  const isNeo = useNeo();
   return (
-    <View style={[styles.card, strong && styles.cardStrong, style]}>{children}</View>
+    <View
+      style={[
+        styles.card,
+        strong && styles.cardStrong,
+        isNeo && (strong ? neoStyles.raisedLg : neoStyles.raised),
+        style,
+      ]}>
+      {children}
+    </View>
   );
 }
 
@@ -39,6 +49,7 @@ export function Button({
   variant?: 'primary' | 'ghost' | 'danger';
   style?: ViewStyle;
 }) {
+  const isNeo = useNeo();
   const isPrimary = variant === 'primary';
   const isDanger = variant === 'danger';
   return (
@@ -51,6 +62,8 @@ export function Button({
         isPrimary && styles.btnPrimary,
         isDanger && styles.btnDanger,
         variant === 'ghost' && styles.btnGhost,
+        isNeo && variant === 'ghost' && (pressed ? neoStyles.pressed : neoStyles.raisedSm),
+        isNeo && variant !== 'ghost' && !pressed && styles.neoAccentShadow,
         (disabled || loading) && { opacity: 0.5 },
         pressed && { opacity: 0.85 },
         style,
@@ -83,16 +96,21 @@ export function Pill({
   color?: string;
   style?: ViewStyle;
 }) {
+  const isNeo = useNeo();
   return (
     <Pressable
       onPress={onPress}
       android_ripple={{ color: 'rgba(255,255,255,0.12)', borderless: false }}
       style={[
         styles.pill,
-        active && {
-          backgroundColor: (color ?? colors.primary) + '33',
-          borderColor: color ?? colors.primary,
-        },
+        isNeo && (active ? neoStyles.pressed : neoStyles.raisedSm),
+        active &&
+          (isNeo
+            ? { borderColor: color ?? colors.primary }
+            : {
+                backgroundColor: (color ?? colors.primary) + '33',
+                borderColor: color ?? colors.primary,
+              }),
         style,
       ]}>
       <Text
@@ -139,6 +157,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.borderStrong,
   },
+  neoAccentShadow: { boxShadow: '4px 4px 10px #0e0f1f, -3px -3px 8px #2a2d4c' },
   btnText: { color: '#fff', fontSize: font.body, fontWeight: '700' },
   pill: {
     paddingHorizontal: 14,

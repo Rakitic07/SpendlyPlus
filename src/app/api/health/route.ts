@@ -4,12 +4,18 @@ import { prisma } from "@/lib/prisma";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-// Health check that ALSO issues a trivial DB query. Point an external uptime
-// pinger (e.g. cron-job.org / UptimeRobot) at this every ~3-4 min so the
-// serverless function AND the Neon compute stay warm — this is what kills the
-// multi-second "scale-to-zero" cold start users feel on the first load after
-// the database has been idle.
-export async function GET() {
+// Liveness check. By default it does NOT touch the database: an external
+// uptime pinger hitting a DB-querying endpoint every few minutes keeps the
+// Neon compute awake 24/7 and exhausts the free plan's monthly compute hours.
+// Add `?db=1` for a one-off database check (returns 503 if unreachable).
+export async function GET(req: Request) {
+  const checkDb = new URL(req.url).searchParams.get("db") === "1";
+  const time = new Date().toISOString();
+
+  if (!checkDb) {
+    return NextResponse.json({ ok: true, service: "spendly-plus", time });
+  }
+
   const t0 = Date.now();
   let db = false;
   try {
@@ -18,11 +24,8 @@ export async function GET() {
   } catch {
     db = false;
   }
-  return NextResponse.json({
-    ok: true,
-    service: "spendly-plus",
-    db,
-    dbMs: Date.now() - t0,
-    time: new Date().toISOString(),
-  });
+  return NextResponse.json(
+    { ok: db, service: "spendly-plus", db, dbMs: Date.now() - t0, time },
+    { status: db ? 200 : 503 }
+  );
 }

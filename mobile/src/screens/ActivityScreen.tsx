@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { FlatList, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -78,9 +78,16 @@ export function ActivityScreen() {
     listRef.current?.scrollToOffset({ offset: 0, animated: false });
   };
 
-  const renderItem = ({ item }: { item: Expense }) => (
-    <ExpenseRow e={item} onPress={ex => nav.navigate('ExpenseForm', { expense: ex })} />
+  // Stable callbacks so memoized rows don't all re-render on every keystroke.
+  const openExpense = useCallback(
+    (ex: Expense) => nav.navigate('ExpenseForm', { expense: ex }),
+    [nav],
   );
+  const renderItem = useCallback(
+    ({ item }: { item: Expense }) => <ExpenseRow e={item} onPress={openExpense} />,
+    [openExpense],
+  );
+  const filtersActive = query.trim() !== '' || catFilter !== '';
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
@@ -134,7 +141,7 @@ export function ActivityScreen() {
         data={pageItems}
         keyExtractor={e => e.id}
         renderItem={renderItem}
-        contentContainerStyle={styles.list}
+        contentContainerStyle={[styles.list, pageCount <= 1 && styles.listClearTabBar]}
         showsVerticalScrollIndicator={false}
         initialNumToRender={PAGE_SIZE}
         maxToRenderPerBatch={PAGE_SIZE}
@@ -146,7 +153,9 @@ export function ActivityScreen() {
               <SkeletonRows count={7} />
             </View>
           ) : (
-            <Text style={styles.empty}>Nothing here yet.</Text>
+            <Text style={styles.empty}>
+              {filtersActive ? 'No expenses match your search.' : 'Nothing here yet.'}
+            </Text>
           )
         }
       />
@@ -164,8 +173,8 @@ export function ActivityScreen() {
             </Text>
           </Pressable>
 
-          <Text style={styles.pagerLabel}>
-            Page {safePage + 1} of {pageCount}
+          <Text style={styles.pagerLabel} numberOfLines={1}>
+            {safePage + 1} / {pageCount}
           </Text>
 
           <Pressable
@@ -260,6 +269,8 @@ const styles = StyleSheet.create({
   search: { flex: 1, color: colors.text, fontSize: font.body },
   listFlex: { flex: 1 },
   list: { paddingHorizontal: spacing.md, paddingBottom: spacing.md },
+  // No pager below the list: clear the floating tab bar + add button instead.
+  listClearTabBar: { paddingBottom: 140 },
   skeletonWrap: { paddingHorizontal: spacing.xs, paddingTop: spacing.sm },
   empty: { color: colors.textFaint, textAlign: 'center', padding: spacing.xl },
   pager: {
@@ -285,10 +296,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
     backgroundColor: colors.surface,
-    minWidth: 92,
+    minWidth: 76,
     justifyContent: 'center',
   },
   pagerBtnDisabled: { opacity: 0.5 },
   pagerBtnText: { color: colors.text, fontSize: font.small, fontWeight: '700' },
-  pagerLabel: { color: colors.textDim, fontSize: font.small, fontWeight: '600' },
+  pagerLabel: {
+    flexShrink: 1,
+    color: colors.textDim,
+    fontSize: font.small,
+    fontWeight: '600',
+    marginHorizontal: spacing.sm,
+  },
 });

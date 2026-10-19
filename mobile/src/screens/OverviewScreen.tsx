@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   Modal,
   Pressable,
@@ -8,7 +8,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Download, AlertTriangle } from 'lucide-react-native';
@@ -27,12 +27,21 @@ import { SkeletonRows } from '../components/Shimmer';
 import { Button, Card } from '../components/ui';
 import { colors, font, radius, spacing } from '../theme';
 import type { RootStackParamList } from '../navigation';
+import type { Expense } from '../lib/types';
 
 function StatCard({ label, value, accent }: { label: string; value: string; accent?: string }) {
   return (
     <View style={styles.stat}>
-      <Text style={styles.statLabel}>{label}</Text>
-      <Text style={[styles.statValue, accent ? { color: accent } : null]}>{value}</Text>
+      <Text style={styles.statLabel} numberOfLines={1}>
+        {label}
+      </Text>
+      <Text
+        style={[styles.statValue, accent ? { color: accent } : null]}
+        numberOfLines={1}
+        adjustsFontSizeToFit
+        minimumFontScale={0.6}>
+        {value}
+      </Text>
     </View>
   );
 }
@@ -46,6 +55,11 @@ export function OverviewScreen() {
   const [budgetModal, setBudgetModal] = useState(false);
   const [budgetInput, setBudgetInput] = useState('');
   const [reportOpen, setReportOpen] = useState(false);
+  const insets = useSafeAreaInsets();
+  const openExpense = useCallback(
+    (ex: Expense) => nav.navigate('ExpenseForm', { expense: ex }),
+    [nav],
+  );
 
   const scoped = useMemo(
     () => filterByPeriod(expenses, view, year, month, day),
@@ -125,8 +139,12 @@ export function OverviewScreen() {
                 <View key={c.name} style={styles.catRow}>
                   <View style={{ flex: 1 }}>
                     <View style={styles.catHead}>
-                      <Text style={styles.catName}>{c.name}</Text>
-                      <Text style={styles.catVal}>{format(c.value)}</Text>
+                      <Text style={styles.catName} numberOfLines={1}>
+                        {c.name}
+                      </Text>
+                      <Text style={styles.catVal} numberOfLines={1}>
+                        {format(c.value)}
+                      </Text>
                     </View>
                     <View style={styles.track}>
                       <View
@@ -159,7 +177,7 @@ export function OverviewScreen() {
             )
           ) : (
             recent.map(e => (
-              <ExpenseRow key={e.id} e={e} onPress={ex => nav.navigate('ExpenseForm', { expense: ex })} />
+              <ExpenseRow key={e.id} e={e} onPress={openExpense} />
             ))
           )}
         </Card>
@@ -169,9 +187,14 @@ export function OverviewScreen() {
 
       <Modal visible={budgetModal} transparent animationType="fade" onRequestClose={() => setBudgetModal(false)}>
         <Pressable style={styles.backdrop} onPress={() => setBudgetModal(false)}>
-          <View style={styles.sheet}>
+          {/* Swallow taps inside the sheet so only the backdrop closes it. */}
+          <Pressable
+            style={[styles.sheet, { paddingBottom: spacing.xl + insets.bottom }]}
+            onPress={() => {}}>
             <Text style={styles.sheetTitle}>Monthly budget</Text>
             <TextInput
+              autoFocus
+              onSubmitEditing={commitBudget}
               value={budgetInput}
               onChangeText={setBudgetInput}
               keyboardType="decimal-pad"
@@ -180,11 +203,11 @@ export function OverviewScreen() {
               style={styles.input}
             />
             <Button label="Save" onPress={commitBudget} style={{ marginTop: spacing.md }} />
-          </View>
+          </Pressable>
         </Pressable>
       </Modal>
 
-      <ReportModal open={reportOpen} onClose={() => setReportOpen(false)} />
+      {reportOpen && <ReportModal open onClose={() => setReportOpen(false)} />}
     </SafeAreaView>
   );
 }
@@ -193,7 +216,7 @@ const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: 'transparent' },
   scroll: { padding: spacing.lg, paddingBottom: 120 },
   hero: { flexDirection: 'row', alignItems: 'center', gap: spacing.lg },
-  heroSide: { flex: 1, gap: spacing.sm },
+  heroSide: { flex: 1, minWidth: 0, gap: spacing.sm },
   stat: {},
   statLabel: { color: colors.textFaint, fontSize: font.tiny, fontWeight: '600' },
   statValue: { color: colors.text, fontSize: font.h3, fontWeight: '800', marginTop: 2 },
@@ -222,9 +245,9 @@ const styles = StyleSheet.create({
   alertText: { flex: 1, color: colors.text, fontSize: font.small, fontWeight: '600' },
   sectionTitle: { color: colors.text, fontSize: font.h3, fontWeight: '800', marginBottom: spacing.sm },
   catRow: { flexDirection: 'row', alignItems: 'center', marginBottom: spacing.sm },
-  catHead: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5 },
-  catName: { color: colors.textDim, fontSize: font.small, fontWeight: '600' },
-  catVal: { color: colors.text, fontSize: font.small, fontWeight: '700' },
+  catHead: { flexDirection: 'row', justifyContent: 'space-between', gap: spacing.sm, marginBottom: 5 },
+  catName: { flex: 1, minWidth: 0, color: colors.textDim, fontSize: font.small, fontWeight: '600' },
+  catVal: { flexShrink: 0, color: colors.text, fontSize: font.small, fontWeight: '700' },
   track: { height: 8, borderRadius: 4, backgroundColor: colors.surface2, overflow: 'hidden' },
   fill: { height: 8, borderRadius: 4 },
   recentHead: {

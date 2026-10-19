@@ -1,5 +1,6 @@
 "use client";
 
+import { useId } from "react";
 import {
   AreaChart,
   Area,
@@ -16,11 +17,13 @@ type Point = { month: string; total: number };
 
 export default function TrendArea({ data }: { data: Point[] }) {
   const { format } = useCurrency();
+  // Unique per instance: two charts sharing one gradient id would clash.
+  const fillId = `trendFill-${useId().replace(/[^a-zA-Z0-9_-]/g, "")}`;
   return (
     <ResponsiveContainer width="100%" height={280}>
       <AreaChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
         <defs>
-          <linearGradient id="trendFill" x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id={fillId} x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="#7c8cff" stopOpacity={0.75} />
             <stop offset="100%" stopColor="#7c8cff" stopOpacity={0.03} />
           </linearGradient>
@@ -45,7 +48,7 @@ export default function TrendArea({ data }: { data: Point[] }) {
           dataKey="total"
           stroke="#a5b4ff"
           strokeWidth={2.5}
-          fill="url(#trendFill)"
+          fill={`url(#${fillId})`}
           activeDot={{ r: 5, fill: "#fff" }}
         />
       </AreaChart>

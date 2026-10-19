@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { CalendarDays, ChevronLeft, ChevronRight } from 'lucide-react-native';
-import { colors, font, radius, spacing } from '../theme';
+import { useNeo } from '../lib/themeMode';
+import { colors, font, neoStyles, radius, spacing } from '../theme';
 
 const WEEKDAYS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 const MONTHS = [
@@ -33,6 +34,7 @@ export function DatePickerField({
   onChange: (iso: string) => void;
 }) {
   const sel = parse(value);
+  const isNeo = useNeo();
   const [open, setOpen] = useState(false);
   const [viewY, setViewY] = useState(sel.y);
   const [viewM, setViewM] = useState(sel.m);
@@ -77,14 +79,20 @@ export function DatePickerField({
 
   return (
     <>
-      <Pressable style={styles.field} onPress={openCal}>
-        <Text style={styles.fieldText}>{label}</Text>
+      <Pressable
+        style={[styles.field, isNeo && neoStyles.pressed]}
+        onPress={openCal}
+        accessibilityRole="button"
+        accessibilityLabel={`Date: ${label}`}>
+        <Text style={styles.fieldText} numberOfLines={1}>
+          {label}
+        </Text>
         <CalendarDays size={18} color={colors.textDim} />
       </Pressable>
 
       <Modal visible={open} transparent animationType="fade" onRequestClose={() => setOpen(false)}>
         <Pressable style={styles.backdrop} onPress={() => setOpen(false)}>
-          <Pressable style={styles.card} onPress={() => {}}>
+          <Pressable style={[styles.card, isNeo && neoStyles.raisedLg]} onPress={() => {}}>
             <View style={styles.header}>
               <Pressable onPress={() => shift(-1)} hitSlop={10} style={styles.nav}>
                 <ChevronLeft size={22} color={colors.text} />
@@ -149,10 +157,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     height: 50,
   },
-  fieldText: { color: colors.text, fontSize: font.body },
+  fieldText: { color: colors.text, fontSize: font.body, flexShrink: 1 },
   backdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)', justifyContent: 'center', padding: spacing.xl },
   card: {
-    backgroundColor: colors.bgElevated,
+    backgroundColor: '#14152a',
     borderRadius: radius.xl,
     borderWidth: 1,
     borderColor: colors.border,

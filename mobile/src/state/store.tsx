@@ -61,7 +61,10 @@ function draftToExpense(draft: ExpenseDraft, id: string): Expense {
     category: draft.category,
     amount: draft.amount,
     paidBy: draft.paidBy,
-    date: new Date(draft.date).toISOString(),
+    date: (/^\d{4}-\d{2}-\d{2}$/.test(draft.date)
+      ? new Date(`${draft.date}T12:00:00.000Z`) // same calendar day in every timezone
+      : new Date(draft.date)
+    ).toISOString(),
     notes: draft.notes ? draft.notes : null,
     paymentMode: draft.paymentMode ? draft.paymentMode : null,
     paymentDetail: draft.paymentDetail ? draft.paymentDetail : null,
@@ -80,11 +83,10 @@ function dayStart(iso: string): number {
 // Same-day rows carry an identical date-only value, so `createdAt` breaks the
 // tie and keeps the latest entry at the top of the list.
 function sortByDate(list: Expense[]): Expense[] {
-  return [...list].sort((a, b) => {
-    const dayDiff = dayStart(b.date) - dayStart(a.date);
-    if (dayDiff !== 0) return dayDiff;
-    return (+new Date(b.createdAt) || 0) - (+new Date(a.createdAt) || 0);
-  });
+  return list
+    .map(e => ({ e, day: dayStart(e.date), created: +new Date(e.createdAt) || 0 }))
+    .sort((a, b) => b.day - a.day || b.created - a.created)
+    .map(x => x.e);
 }
 
 // The backend may not echo `thumbnail` back yet (older deploy / column not
@@ -121,8 +123,12 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [pending, setPending] = useState<PendingOp[]>([]);
 
   const spaceRef = useRef('');
+  // Latest queue, readable from callbacks created before it loaded (e.g. the
+  // startup refresh), so queued offline changes are flushed on launch.
+  const pendingRef = useRef<PendingOp[]>([]);
 
   const persistQueue = useCallback(async (q: PendingOp[]) => {
+    pendingRef.current = q;
     setPending(q);
     try {
       await AsyncStorage.setItem(QUEUE_KEY, JSON.stringify(q));
@@ -191,7 +197,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const refresh = useCallback(async () => {
     setSyncing(true);
     try {
-      const flushed = await flushQueue(pending);
+      const flushed = await flushQueue(pendingRef.current);
       const data = await api.bootstrap();
       setOnline(true);
       if (!data.authenticated) {
@@ -205,11 +211,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         void setLastSpace(data.name);
       }
       if (flushed) {
-        setExpenses(prev => {
-          const merged = sortByDate(backfillThumbs(data.expenses ?? [], prev));
-          if (spaceRef.current) void writeCache(spaceRef.current, merged);
-          return merged;
-        });
+        setExpenses(prev => sortByDate(backfillThumbs(data.expenses ?? [], prev)));
       }
       const b = data.budget ?? null;
       setBudget(b);
@@ -219,7 +221,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setSyncing(false);
     }
-  }, [flushQueue, pending]);
+  }, [flushQueue]);
 
   // Bootstrap: load token + cache for instant paint, then refresh from network.
   useEffect(() => {
@@ -228,7 +230,11 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       const token = await loadToken();
       try {
         const raw = await AsyncStorage.getItem(QUEUE_KEY);
-        if (raw && alive) setPending(JSON.parse(raw));
+        if (raw && alive) {
+          const q = JSON.parse(raw) as PendingOp[];
+          pendingRef.current = q;
+          setPending(q);
+        }
       } catch {
         /* ignore */
       }
@@ -301,38 +307,34 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     async (draft: ExpenseDraft) => {
       const tempId = uid();
       const optimistic = draftToExpense(draft, tempId);
-      const next = sortByDate([optimistic, ...expenses]);
-      setExpenses(next);
-      if (spaceRef.current) void writeCache(spaceRef.current, next);
+      setExpenses(prev => sortByDate([optimistic, ...prev]));
       try {
         const { expense } = await api.createExpense(draft);
-        setExpenses(prev => {
-          const merged = sortByDate(
+        setExpenses(prev =>
+          sortByDate(
             prev.map(e => (e.id === tempId ? keepThumb(expense, optimistic.thumbnail) : e)),
-          );
-          if (spaceRef.current) void writeCache(spaceRef.current, merged);
-          return merged;
-        });
+          ),
+        );
         setOnline(true);
       } catch {
         setOnline(false);
-        await persistQueue([...pending, { kind: 'create', tempId, draft }]);
+        await persistQueue([...pendingRef.current, { kind: 'create', tempId, draft }]);
       }
     },
-    [expenses, pending, persistQueue],
+    [persistQueue],
   );
 
   const editExpense = useCallback(
     async (id: string, draft: ExpenseDraft) => {
-      const next = sortByDate(
-        expenses.map(e => (e.id === id ? { ...draftToExpense(draft, id), createdAt: e.createdAt } : e)),
+      setExpenses(prev =>
+        sortByDate(
+          prev.map(e => (e.id === id ? { ...draftToExpense(draft, id), createdAt: e.createdAt } : e)),
+        ),
       );
-      setExpenses(next);
-      if (spaceRef.current) void writeCache(spaceRef.current, next);
       if (id.startsWith('local-')) {
         // still-unsynced create: rewrite its queued draft
         await persistQueue(
-          pending.map(op =>
+          pendingRef.current.map(op =>
             op.kind === 'create' && op.tempId === id ? { ...op, draft } : op,
           ),
         );
@@ -340,29 +342,25 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       }
       try {
         const { expense } = await api.updateExpense(id, draft);
-        setExpenses(prev => {
-          const merged = sortByDate(
+        setExpenses(prev =>
+          sortByDate(
             prev.map(e => (e.id === id ? keepThumb(expense, draft.thumbnail || null) : e)),
-          );
-          if (spaceRef.current) void writeCache(spaceRef.current, merged);
-          return merged;
-        });
+          ),
+        );
         setOnline(true);
       } catch {
         setOnline(false);
-        await persistQueue([...pending, { kind: 'update', id, draft }]);
+        await persistQueue([...pendingRef.current, { kind: 'update', id, draft }]);
       }
     },
-    [expenses, pending, persistQueue],
+    [persistQueue],
   );
 
   const removeExpense = useCallback(
     async (id: string) => {
-      const next = expenses.filter(e => e.id !== id);
-      setExpenses(next);
-      if (spaceRef.current) void writeCache(spaceRef.current, next);
+      setExpenses(prev => prev.filter(e => e.id !== id));
       if (id.startsWith('local-')) {
-        await persistQueue(pending.filter(op => !('tempId' in op && op.tempId === id)));
+        await persistQueue(pendingRef.current.filter(op => !('tempId' in op && op.tempId === id)));
         return;
       }
       try {
@@ -370,11 +368,21 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         setOnline(true);
       } catch {
         setOnline(false);
-        await persistQueue([...pending, { kind: 'delete', id }]);
+        await persistQueue([...pendingRef.current, { kind: 'delete', id }]);
       }
     },
-    [expenses, pending, persistQueue],
+    [persistQueue],
   );
+
+  // Persist the list once changes settle instead of inside every state updater
+  // (updaters must stay pure and can run twice; bursts of edits would also
+  // serialize the whole list repeatedly).
+  useEffect(() => {
+    const space = spaceRef.current;
+    if (!space || status !== 'authed') return;
+    const t = setTimeout(() => void writeCache(space, expenses), 400);
+    return () => clearTimeout(t);
+  }, [expenses, status]);
 
   const saveBudget = useCallback(async (b: number | null) => {
     setBudget(b);

@@ -25,6 +25,29 @@ export function currencyMeta(code: string): Currency {
   return CURRENCIES.find((c) => c.code === code) ?? DEFAULT;
 }
 
+// Building an Intl.NumberFormat is expensive and `format` runs for every row
+// on every render, so keep one formatter per currency + fraction mode.
+const formatterCache = new Map<string, Intl.NumberFormat | null>();
+
+function formatMoney(cur: Currency, v: number): string {
+  const frac = v % 1 === 0 ? 0 : 2;
+  const key = `${cur.code}|${frac}`;
+  let f = formatterCache.get(key);
+  if (f === undefined) {
+    try {
+      f = new Intl.NumberFormat(cur.locale, {
+        style: "currency",
+        currency: cur.code,
+        maximumFractionDigits: frac,
+      });
+    } catch {
+      f = null;
+    }
+    formatterCache.set(key, f);
+  }
+  return f ? f.format(v) : `${cur.symbol}${v.toFixed(2)}`;
+}
+
 type Ctx = {
   currency: Currency;
   setCurrency: (code: string) => void;
@@ -70,17 +93,7 @@ export function CurrencyProvider({
 
   const value = useMemo<Ctx>(() => {
     const cur = currencyMeta(code);
-    const format = (v: number) => {
-      try {
-        return new Intl.NumberFormat(cur.locale, {
-          style: "currency",
-          currency: cur.code,
-          maximumFractionDigits: v % 1 === 0 ? 0 : 2,
-        }).format(v);
-      } catch {
-        return `${cur.symbol}${v.toFixed(2)}`;
-      }
-    };
+    const format = (v: number) => formatMoney(cur, v);
     return { currency: cur, setCurrency, format };
   }, [code, setCurrency]);
 
@@ -96,31 +109,17 @@ export function formatFor(space: string, value: number): string {
   } catch {
     /* ignore */
   }
-  const cur = currencyMeta(code);
-  try {
-    return new Intl.NumberFormat(cur.locale, {
-      style: "currency",
-      currency: cur.code,
-      maximumFractionDigits: value % 1 === 0 ? 0 : 2,
-    }).format(value);
-  } catch {
-    return `${cur.symbol}${value.toFixed(2)}`;
-  }
+  return formatMoney(currencyMeta(code), value);
 }
+
+const fallbackCtx: Ctx = {
+  currency: DEFAULT,
+  setCurrency: () => {},
+  format: (v: number) => formatMoney(DEFAULT, v),
+};
 
 export function useCurrency(): Ctx {
   const ctx = useContext(CurrencyContext);
-  if (ctx) return ctx;
   // Fallback (e.g. if used outside a provider): default to INR formatting.
-  const cur = DEFAULT;
-  return {
-    currency: cur,
-    setCurrency: () => {},
-    format: (v: number) =>
-      new Intl.NumberFormat(cur.locale, {
-        style: "currency",
-        currency: cur.code,
-        maximumFractionDigits: v % 1 === 0 ? 0 : 2,
-      }).format(v),
-  };
+  return ctx ?? fallbackCtx;
 }

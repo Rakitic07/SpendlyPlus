@@ -32,7 +32,8 @@ import type { Expense } from '../lib/types';
 import { Button, Label } from '../components/ui';
 import { DatePickerField } from '../components/DatePickerField';
 import { Background } from '../components/Background';
-import { colors, font, radius, spacing } from '../theme';
+import { useNeo } from '../lib/themeMode';
+import { colors, font, neoStyles, radius, spacing } from '../theme';
 import type { RootStackParamList } from '../navigation';
 
 const MODE_COLORS: Record<string, string> = {
@@ -62,9 +63,27 @@ type Props = NativeStackScreenProps<RootStackParamList, 'ExpenseForm'>;
 
 export function ExpenseFormScreen({ route, navigation }: Props) {
   const editing: Expense | undefined = route.params?.expense;
-  const { addExpense, editExpense, removeExpense } = useStore();
+  const { expenses, addExpense, editExpense, removeExpense } = useStore();
   const { currency } = useCurrency();
   const { settings } = useSettings();
+  const isNeo = useNeo();
+
+  // Unique most-recent titles for one-tap re-entry (new expenses only).
+  const recentTitles = useMemo(() => {
+    if (editing || !settings.recentSuggestions) return [];
+    const seen = new Set<string>();
+    const out: string[] = [];
+    for (const e of expenses) {
+      const t = e.title.trim();
+      const k = t.toLowerCase();
+      if (t && !seen.has(k)) {
+        seen.add(k);
+        out.push(t);
+        if (out.length >= 6) break;
+      }
+    }
+    return out;
+  }, [expenses, editing, settings.recentSuggestions]);
 
   const [title, setTitle] = useState(editing?.title ?? '');
   const [amount, setAmount] = useState(editing ? String(editing.amount) : '');
@@ -253,18 +272,22 @@ export function ExpenseFormScreen({ route, navigation }: Props) {
         <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
           <View style={styles.scanRow}>
             <Pressable
-              style={styles.scanBtn}
+              style={[styles.scanBtn, isNeo && [neoStyles.raisedSm, styles.scanBtnNeo]]}
               onPress={() => runScan('camera')}
               disabled={scanning}>
               <Camera size={18} color={colors.primary} />
-              <Text style={styles.scanText}>Scan a bill</Text>
+              <Text style={styles.scanText} numberOfLines={1}>
+                Scan a bill
+              </Text>
             </Pressable>
             <Pressable
-              style={styles.scanBtn}
+              style={[styles.scanBtn, isNeo && [neoStyles.raisedSm, styles.scanBtnNeo]]}
               onPress={() => runScan('library')}
               disabled={scanning}>
               <Images size={18} color={colors.primary} />
-              <Text style={styles.scanText}>Choose from Gallery</Text>
+              <Text style={styles.scanText} numberOfLines={1}>
+                Choose from Gallery
+              </Text>
             </Pressable>
           </View>
 
@@ -277,12 +300,14 @@ export function ExpenseFormScreen({ route, navigation }: Props) {
                   </Pressable>
                   <Pressable
                     style={styles.thumbRemove}
-                    hitSlop={8}
+                    hitSlop={12}
+                    accessibilityRole="button"
+                    accessibilityLabel="Remove bill preview"
                     onPress={() => {
                       setThumbnail(null);
                       setThumbCleared(true);
                     }}>
-                    <X size={14} color="#fff" />
+                    <X size={16} color="#fff" />
                   </Pressable>
                 </View>
               ) : null}
@@ -298,8 +323,22 @@ export function ExpenseFormScreen({ route, navigation }: Props) {
             onChangeText={t => { setTitle(t); clearHi('title'); }}
             placeholder="e.g. Paid for groceries, Online shopping at Amazon"
             placeholderTextColor={colors.textFaint}
-            style={[styles.input, hi.title && styles.inputHi]}
+            style={[styles.input, isNeo && neoStyles.pressed, hi.title && styles.inputHi]}
           />
+          {recentTitles.length > 0 && !title ? (
+            <View style={styles.wrap}>
+              {recentTitles.map(t => (
+                <Pressable
+                  key={t}
+                  onPress={() => setTitle(t)}
+                  style={[styles.recentChip, isNeo && neoStyles.raisedSm]}>
+                  <Text style={styles.catText} numberOfLines={1}>
+                    {t}
+                  </Text>
+                </Pressable>
+              ))}
+            </View>
+          ) : null}
 
           <View style={styles.row}>
             <View style={{ flex: 1 }}>
@@ -310,7 +349,7 @@ export function ExpenseFormScreen({ route, navigation }: Props) {
                 keyboardType="decimal-pad"
                 placeholder="0"
                 placeholderTextColor={colors.textFaint}
-                style={[styles.input, hi.amount && styles.inputHi]}
+                style={[styles.input, isNeo && neoStyles.pressed, hi.amount && styles.inputHi]}
               />
             </View>
             <View style={{ flex: 1 }}>
@@ -330,7 +369,7 @@ export function ExpenseFormScreen({ route, navigation }: Props) {
             onChangeText={setPaidBy}
             placeholder="Name of who paid"
             placeholderTextColor={colors.textFaint}
-            style={styles.input}
+            style={[styles.input, isNeo && neoStyles.pressed]}
           />
 
           <Label style={{ marginTop: spacing.md }}>Category</Label>
@@ -343,7 +382,11 @@ export function ExpenseFormScreen({ route, navigation }: Props) {
                   onPress={() => { setCategory(c.name); clearHi('category'); }}
                   style={[
                     styles.catPill,
-                    active && { backgroundColor: c.color + '33', borderColor: c.color },
+                    isNeo && (active ? neoStyles.pressed : neoStyles.raisedSm),
+                    active &&
+                      (isNeo
+                        ? { borderColor: c.color }
+                        : { backgroundColor: c.color + '33', borderColor: c.color }),
                   ]}>
                   {/* Emoji and label in separate Text nodes: on Android an emoji +
                       Latin text in ONE Text can drop the trailing text (font
@@ -371,10 +414,11 @@ export function ExpenseFormScreen({ route, navigation }: Props) {
                   }}
                   style={[
                     styles.modeBtn,
-                    active && {
-                      backgroundColor: clr + '33',
-                      borderColor: clr,
-                    },
+                    isNeo && (active ? neoStyles.pressed : neoStyles.raisedSm),
+                    active &&
+                      (isNeo
+                        ? { borderColor: clr }
+                        : { backgroundColor: clr + '33', borderColor: clr }),
                   ]}>
                   <Text style={[styles.modeText, active && { color: colors.text, fontWeight: '800' }]}>
                     {m}
@@ -394,7 +438,11 @@ export function ExpenseFormScreen({ route, navigation }: Props) {
                     onPress={() => setProvider(p)}
                     style={[
                       styles.catPill,
-                      active && { backgroundColor: colors.primary + '33', borderColor: colors.primary },
+                      isNeo && (active ? neoStyles.pressed : neoStyles.raisedSm),
+                      active &&
+                        (isNeo
+                          ? { borderColor: colors.primary }
+                          : { backgroundColor: colors.primary + '33', borderColor: colors.primary }),
                     ]}>
                     <Text style={styles.catText}>{p}</Text>
                   </Pressable>
@@ -409,7 +457,7 @@ export function ExpenseFormScreen({ route, navigation }: Props) {
               onChangeText={setCustomProvider}
               placeholder="Enter provider name"
               placeholderTextColor={colors.textFaint}
-              style={[styles.input, { marginTop: spacing.sm }]}
+              style={[styles.input, isNeo && neoStyles.pressed, { marginTop: spacing.sm }]}
             />
           )}
 
@@ -482,7 +530,17 @@ const styles = StyleSheet.create({
     borderColor: colors.primary,
     backgroundColor: colors.primary + '22',
   },
-  scanText: { color: colors.text, fontSize: font.small, fontWeight: '700' },
+  scanBtnNeo: { borderColor: colors.primary + '55' },
+  scanText: { color: colors.text, fontSize: font.small, fontWeight: '700', flexShrink: 1 },
+  recentChip: {
+    maxWidth: '48%',
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
+  },
   scanResult: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -500,11 +558,11 @@ const styles = StyleSheet.create({
   },
   thumbRemove: {
     position: 'absolute',
-    top: -6,
-    right: -6,
-    width: 22,
-    height: 22,
-    borderRadius: 11,
+    top: -8,
+    right: -8,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
     backgroundColor: colors.red,
     alignItems: 'center',
     justifyContent: 'center',
@@ -562,7 +620,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   loadingCard: {
-    backgroundColor: colors.bgElevated,
+    backgroundColor: '#14152a',
     borderRadius: radius.lg,
     borderWidth: 1,
     borderColor: colors.border,

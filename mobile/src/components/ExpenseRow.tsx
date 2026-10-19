@@ -27,13 +27,13 @@ function ExpenseRowBase({ e, onPress }: { e: Expense; onPress?: (e: Expense) => 
       android_ripple={{ color: 'rgba(255,255,255,0.06)' }}
       style={styles.row}>
       {e.thumbnail && settings.showThumbnails ? (
-        <Image source={{ uri: e.thumbnail }} style={styles.thumb} resizeMode="cover" />
+        <Image source={{ uri: e.thumbnail }} style={styles.thumb} resizeMode="cover" resizeMethod="resize" />
       ) : (
         <View style={[styles.icon, { backgroundColor: meta.color + '22' }]}>
           <Text style={styles.emoji}>{meta.emoji}</Text>
         </View>
       )}
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, minWidth: 0 }}>
         <Text numberOfLines={1} style={styles.title}>
           {e.title}
           {pending ? '  ·  ⏳' : ''}
@@ -42,8 +42,10 @@ function ExpenseRowBase({ e, onPress }: { e: Expense; onPress?: (e: Expense) => 
           {sub}
         </Text>
       </View>
-      <View style={{ alignItems: 'flex-end' }}>
-        <Text style={styles.amount}>{format(e.amount)}</Text>
+      <View style={{ alignItems: 'flex-end', flexShrink: 0, maxWidth: '45%' }}>
+        <Text style={styles.amount} numberOfLines={1}>
+          {format(e.amount)}
+        </Text>
         <Text style={styles.date}>
           {new Date(e.date).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })}
         </Text>

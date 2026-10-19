@@ -3,7 +3,8 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { LayoutDashboard, PieChart, ListChecks } from 'lucide-react-native';
-import { colors, font, spacing } from '../theme';
+import { useNeo } from '../lib/themeMode';
+import { colors, font, neo, spacing } from '../theme';
 
 const ICONS: Record<string, React.ComponentType<{ size: number; color: string }>> = {
   Overview: LayoutDashboard,
@@ -19,9 +20,15 @@ const LABELS: Record<string, string> = {
 
 export function TabBar({ state, navigation }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
+  const isNeo = useNeo();
 
   return (
-    <View style={[styles.wrap, { paddingBottom: Math.max(insets.bottom, 10) }]}>
+    <View
+      style={[
+        styles.wrap,
+        isNeo && styles.wrapNeo,
+        { paddingBottom: Math.max(insets.bottom, 10) },
+      ]}>
       <View style={styles.bar}>
         {state.routes.map((route, index) => {
           const focused = state.index === index;
@@ -60,6 +67,11 @@ const styles = StyleSheet.create({
     backgroundColor: colors.bgElevated,
     borderTopWidth: 1,
     borderTopColor: colors.border,
+  },
+  wrapNeo: {
+    backgroundColor: neo.bg,
+    borderTopColor: neo.hairline,
+    boxShadow: `0px -6px 14px ${neo.dark}`,
   },
   bar: {
     flexDirection: 'row',

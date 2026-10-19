@@ -1,6 +1,8 @@
 import React from 'react';
 import { StyleSheet, useWindowDimensions, View } from 'react-native';
 import Svg, { Circle, Defs, RadialGradient, Rect, Stop } from 'react-native-svg';
+import { useNeo } from '../lib/themeMode';
+import { neo } from '../theme';
 
 // Mirrors the web Background (src/components/Background.tsx): a deep blue-black
 // radial base plus three soft colour blobs (violet / pink / teal). Rendered once
@@ -8,6 +10,10 @@ import Svg, { Circle, Defs, RadialGradient, Rect, Stop } from 'react-native-svg'
 // as the website.
 function BackgroundBase() {
   const { width, height } = useWindowDimensions();
+  const isNeo = useNeo();
+
+  // Neumorphism needs a flat page the raised surfaces can blend into.
+  if (isNeo) return <View style={[styles.fill, { backgroundColor: neo.bg }]} pointerEvents="none" />;
 
   // Blob centres roughly match the web positions (top-left, right, bottom-left).
   const violet = { cx: width * 0.14, cy: height * 0.02, r: width * 0.62 };

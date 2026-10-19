@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { FlatList, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { ChevronDown } from 'lucide-react-native';
 import { useStore } from '../state/store';
 import { usePeriod } from '../state/period';
 import { availableYears, daysInMonth, type PeriodView } from '../lib/analytics';
 import { MONTH_LABELS } from '../lib/utils';
-import { colors, font, radius, spacing } from '../theme';
+import { useNeo } from '../lib/themeMode';
+import { colors, font, neoStyles, radius, spacing } from '../theme';
 
 const VIEWS: { key: PeriodView; label: string }[] = [
   { key: 'day', label: 'Day' },
@@ -13,6 +14,8 @@ const VIEWS: { key: PeriodView; label: string }[] = [
   { key: 'year', label: 'Year' },
   { key: 'all', label: 'All Time' },
 ];
+
+const MONTH_OPTS = MONTH_LABELS.map((m, i) => ({ label: m, value: i }));
 
 function SelectPill({
   value,
@@ -24,15 +27,16 @@ function SelectPill({
   onSelect: (v: number) => void;
 }) {
   const [open, setOpen] = useState(false);
+  const isNeo = useNeo();
   return (
     <>
-      <Pressable style={styles.pill} onPress={() => setOpen(true)}>
+      <Pressable style={[styles.pill, isNeo && neoStyles.raisedSm]} onPress={() => setOpen(true)}>
         <Text style={styles.pillText}>{value}</Text>
         <ChevronDown size={15} color={colors.textDim} />
       </Pressable>
       <Modal visible={open} transparent animationType="fade" onRequestClose={() => setOpen(false)}>
         <Pressable style={styles.backdrop} onPress={() => setOpen(false)}>
-          <View style={styles.sheet}>
+          <View style={[styles.sheet, isNeo && neoStyles.raisedLg]}>
             <FlatList
               data={options}
               keyExtractor={o => String(o.value)}
@@ -58,14 +62,21 @@ function SelectPill({
 export function PeriodBar() {
   const { expenses } = useStore();
   const { view, year, month, day, setView, setYear, setMonth, setDay } = usePeriod();
+  const isNeo = useNeo();
 
-  const years = availableYears(expenses);
-  const yearOpts = years.map(y => ({ label: String(y), value: y }));
-  const monthOpts = MONTH_LABELS.map((m, i) => ({ label: m, value: i }));
-  const dayOpts = Array.from({ length: daysInMonth(year, month) }, (_, i) => ({
-    label: String(i + 1),
-    value: i + 1,
-  }));
+  // Scans every expense, and this bar renders on three screens — memoize.
+  const yearOpts = useMemo(
+    () => availableYears(expenses).map(y => ({ label: String(y), value: y })),
+    [expenses],
+  );
+  const dayOpts = useMemo(
+    () =>
+      Array.from({ length: daysInMonth(year, month) }, (_, i) => ({
+        label: String(i + 1),
+        value: i + 1,
+      })),
+    [year, month],
+  );
 
   const showYear = view !== 'all';
   const showMonth = view === 'month' || view === 'day';
@@ -73,7 +84,7 @@ export function PeriodBar() {
 
   return (
     <View style={styles.wrap}>
-      <View style={styles.segment}>
+      <View style={[styles.segment, isNeo && neoStyles.pressed]}>
         {VIEWS.map(v => {
           const active = view === v.key;
           return (
@@ -90,7 +101,7 @@ export function PeriodBar() {
       {(showYear || showMonth || showDay) && (
         <View style={styles.selectors}>
           {showMonth && (
-            <SelectPill value={MONTH_LABELS[month]} options={monthOpts} onSelect={setMonth} />
+            <SelectPill value={MONTH_LABELS[month]} options={MONTH_OPTS} onSelect={setMonth} />
           )}
           {showDay && (
             <SelectPill value={String(day)} options={dayOpts} onSelect={setDay} />
@@ -135,7 +146,7 @@ const styles = StyleSheet.create({
   pillText: { color: colors.text, fontSize: font.small, fontWeight: '700' },
   backdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)', justifyContent: 'center', padding: spacing.xl },
   sheet: {
-    backgroundColor: colors.bgElevated,
+    backgroundColor: '#14152a',
     borderRadius: radius.lg,
     borderWidth: 1,
     borderColor: colors.border,

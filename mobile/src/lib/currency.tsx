@@ -30,17 +30,34 @@ export function currencyMeta(code: string): Currency {
   return CURRENCIES.find(c => c.code === code) ?? DEFAULT;
 }
 
+// Constructing Intl.NumberFormat is slow on Hermes and `format` runs for every
+// row on every render, so keep one formatter per currency + fraction mode.
+const formatterCache = new Map<string, Intl.NumberFormat | null>();
+
 function formatWith(cur: Currency, v: number): string {
-  try {
-    return new Intl.NumberFormat(cur.locale, {
-      style: 'currency',
-      currency: cur.code,
-      maximumFractionDigits: v % 1 === 0 ? 0 : 2,
-    }).format(v);
-  } catch {
-    return `${cur.symbol}${v.toFixed(2)}`;
+  const frac = v % 1 === 0 ? 0 : 2;
+  const key = `${cur.code}|${frac}`;
+  let f = formatterCache.get(key);
+  if (f === undefined) {
+    try {
+      f = new Intl.NumberFormat(cur.locale, {
+        style: 'currency',
+        currency: cur.code,
+        maximumFractionDigits: frac,
+      });
+    } catch {
+      f = null;
+    }
+    formatterCache.set(key, f);
   }
+  return f ? f.format(v) : `${cur.symbol}${v.toFixed(2)}`;
 }
+
+const fallbackCtx: Ctx = {
+  currency: DEFAULT,
+  setCurrency: () => {},
+  format: (v: number) => formatWith(DEFAULT, v),
+};
 
 type Ctx = {
   currency: Currency;
@@ -92,10 +109,5 @@ export function CurrencyProvider({
 
 export function useCurrency(): Ctx {
   const ctx = useContext(CurrencyContext);
-  if (ctx) return ctx;
-  return {
-    currency: DEFAULT,
-    setCurrency: () => {},
-    format: (v: number) => formatWith(DEFAULT, v),
-  };
+  return ctx ?? fallbackCtx;
 }

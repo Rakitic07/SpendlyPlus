@@ -54,6 +54,9 @@ export default function BudgetRing({
   const pct = budget && budget > 0 ? Math.min(spent / budget, 1) : 0;
   const over = budget != null && spent > budget;
   const remaining = budget != null ? budget - spent : 0;
+  // The ring caps at 100%, but the label shows how far over the budget you are.
+  const usedPct = budget && budget > 0 ? Math.round((spent / budget) * 100) : 0;
+  const usedLabel = usedPct > 999 ? "999%+" : `${usedPct}%`;
 
   // Pacing maths (only meaningful when we have the month's day context).
   const hasPace = budget != null && budget > 0 && !!daysInMonth;
@@ -92,7 +95,9 @@ export default function BudgetRing({
         <div className="absolute inset-0 grid place-items-center text-center">
           {budget ? (
             <div>
-              <p className="text-2xl font-bold tracking-tight">{Math.round(pct * 100)}%</p>
+              <p className={`text-2xl font-bold tabular-nums tracking-tight ${over ? "text-red-300" : ""}`}>
+                {usedLabel}
+              </p>
               <p className="text-[11px] text-white/50">used</p>
             </div>
           ) : (
@@ -118,6 +123,10 @@ export default function BudgetRing({
           >
             <input
               autoFocus
+              aria-label="Monthly budget amount"
+              onKeyDown={(e) => {
+                if (e.key === "Escape") setEditing(false);
+              }}
               type="number"
               min="0"
               inputMode="decimal"
@@ -126,14 +135,14 @@ export default function BudgetRing({
               placeholder="e.g. 30000"
               className="glass-input py-2"
             />
-            <button type="submit" className="glass-btn-primary shrink-0 px-3 py-2">
+            <button type="submit" aria-label="Save budget" className="glass-btn-primary shrink-0 px-3 py-2">
               <Check className="h-4 w-4" />
             </button>
           </form>
         ) : budget ? (
           <>
-            <div className="mt-1 flex items-baseline justify-center gap-2">
-              <span className="text-2xl font-semibold">{format(spent)}</span>
+            <div className="mt-1 flex flex-wrap items-baseline justify-center gap-x-2">
+              <span className="text-2xl font-semibold tabular-nums">{format(spent)}</span>
               <span className="text-sm text-white/45">of {format(budget)}</span>
             </div>
             <p className={`mt-1 text-sm font-medium ${over ? "text-red-300" : "text-emerald-300"}`}>
@@ -153,7 +162,7 @@ export default function BudgetRing({
                   <Detail
                     label="Safe to spend / day"
                     value={format(safePerDay)}
-                    hint={`What you can spend on each of the ${daysLeft} remaining day(s) and still finish within budget (money left ÷ days left).`}
+                    hint={`What you can spend on each of the ${daysLeft} remaining ${daysLeft === 1 ? "day" : "days"} and still finish within budget (money left ÷ days left).`}
                   />
                 ) : (
                   <Detail

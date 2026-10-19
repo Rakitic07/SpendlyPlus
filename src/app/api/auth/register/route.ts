@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { registerSchema } from "@/lib/validation";
 import { createSession } from "@/lib/auth";
 import { generateRecoveryCode, normalizeCode } from "@/lib/recovery";
+import { dbUnavailable } from "@/lib/dbError";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -27,7 +28,12 @@ export async function POST(req: Request) {
   const { name, passphrase } = parsed.data;
   const nameKey = name.toLowerCase();
 
-  const existing = await prisma.ledger.findUnique({ where: { nameKey } });
+  let existing: Awaited<ReturnType<typeof prisma.ledger.findUnique>>;
+  try {
+    existing = await prisma.ledger.findUnique({ where: { nameKey } });
+  } catch (err) {
+    return dbUnavailable("register", err);
+  }
   if (existing) {
     return NextResponse.json(
       {
@@ -45,13 +51,30 @@ export async function POST(req: Request) {
   const recoveryCode = generateRecoveryCode();
   const recoveryHash = await bcrypt.hash(normalizeCode(recoveryCode), 12);
 
-  const ledger = await prisma.ledger.create({
-    data: { name, nameKey, passHash, recoveryHash },
-  });
+  let ledger: Awaited<ReturnType<typeof prisma.ledger.create>>;
+  try {
+    ledger = await prisma.ledger.create({
+      data: { name, nameKey, passHash, recoveryHash },
+    });
+  } catch (err) {
+    // Lost a race with another signup for the same name.
+    if ((err as { code?: unknown })?.code === "P2002") {
+      return NextResponse.json(
+        { error: "That space name is already taken. Pick another name, or unlock it with its passphrase." },
+        { status: 409 }
+      );
+    }
+    return dbUnavailable("register", err);
+  }
 
   // Token is returned for native clients (Bearer auth); the web app ignores it
   // and relies on the HttpOnly cookie set by createSession.
-  const token = await createSession({ ledgerId: ledger.id, name: ledger.name });
+  let token: string;
+  try {
+    token = await createSession({ ledgerId: ledger.id, name: ledger.name });
+  } catch (err) {
+    return dbUnavailable("register", err);
+  }
   return NextResponse.json(
     { name: ledger.name, recoveryCode, token },
     { status: 201 }

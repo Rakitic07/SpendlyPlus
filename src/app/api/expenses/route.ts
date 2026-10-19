@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getActiveLedger } from "@/lib/auth";
 import { expenseSchema } from "@/lib/validation";
 import { EXPENSE_LIST_SELECT } from "@/lib/expenseSelect";
+import { parseExpenseDate } from "@/lib/utils";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -72,7 +73,7 @@ export async function POST(req: Request) {
       category,
       amount,
       paidBy,
-      date: new Date(date),
+      date: parseExpenseDate(date),
       notes: notes ? notes : null,
       paymentMode: paymentMode ? paymentMode : null,
       paymentDetail: paymentDetail ? paymentDetail : null,

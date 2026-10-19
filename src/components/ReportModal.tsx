@@ -10,6 +10,7 @@ import { useCurrency } from "@/lib/currency";
 import { generateReport } from "@/lib/report";
 import type { ReportSectionKey, ReportView } from "@/lib/report";
 import { filterByPeriod } from "@/lib/report/data";
+import { useEscape } from "@/lib/useEscape";
 import DatePicker from "./DatePicker";
 import { ShimmerText } from "./Shimmer";
 
@@ -84,6 +85,10 @@ export default function ReportModal({
   );
   const anySection = visibleSections.some((s) => sections[s.key]);
 
+  useEscape(open, () => {
+    if (!generating) onClose();
+  });
+
   function toggle(key: ReportSectionKey) {
     setSections((prev) => ({ ...prev, [key]: !prev[key] }));
   }
@@ -126,7 +131,12 @@ export default function ReportModal({
           transition={{ duration: 0.12 }}
         >
           <div className="absolute inset-0 bg-black/60" onClick={onClose} />
-          <div className="glass-strong relative z-10 max-h-[92vh] w-full overflow-y-auto rounded-t-4xl p-6 sm:max-w-lg sm:rounded-4xl">
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Download report"
+            className="glass-strong relative z-10 max-h-[92dvh] w-full overflow-y-auto overscroll-contain rounded-t-4xl p-6 pb-[calc(env(safe-area-inset-bottom)+1.5rem)] sm:max-w-lg sm:rounded-4xl sm:pb-6"
+          >
             {generating && (
               <div className="absolute inset-0 z-20 grid place-items-center gap-2 rounded-t-4xl bg-black/70 sm:rounded-4xl">
                 <div className="flex flex-col items-center gap-2">
