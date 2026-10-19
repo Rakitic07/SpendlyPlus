@@ -1,0 +1,114 @@
+mobile/src/screens/ExpenseFormScreen.tsx
+  s_995f1e3ac5091f::t_163a90a6115ee7 415-419
+  s_995f1e3ac5091f::t_ef1aa46b76c299 275,279-281,284,288-290
+  s_995f1e3ac5091f::t_145f4a61be459f 458
+  s_995f1e3ac5091f::t_10736221348bc8 531-541
+  s_995f1e3ac5091f::t_52282d42081836 66,69-86
+  s_995f1e3ac5091f::t_2896bab7b266c6 35-36
+  s_995f1e3ac5091f::t_5e265dc5a58bfe 621
+  s_995f1e3ac5091f::t_103e2d9a90395b 439-443
+  s_995f1e3ac5091f::t_9cb83c445e0b01 350
+  s_995f1e3ac5091f::t_84af38ca3b99fc 383-387
+  s_995f1e3ac5091f::t_07bfa4aba8b567 324,326-339
+  s_995f1e3ac5091f::t_eecc849e29dc18 370
+src/lib/thumbStore.ts
+  s_995f1e3ac5091f::t_2b5183499fe643 1-99
+mobile/src/components/FloatingAddButton.tsx
+  s_995f1e3ac5091f::t_3a2b3c68b60b21 19,24-25,27
+  s_995f1e3ac5091f::t_5473ad0d12fcf1 8-9
+  s_995f1e3ac5091f::t_e71d6697731f0c 60-64
+mobile/src/components/Background.tsx
+  s_995f1e3ac5091f::t_ee95926d33d588 4-5
+  s_995f1e3ac5091f::t_9b09c48c65ffe4 13-16
+src/lib/settings.tsx
+  s_995f1e3ac5091f::t_15820cdb5a0560 20-22,24-25
+  s_995f1e3ac5091f::t_8c3d6ae7f8895c 8
+  s_995f1e3ac5091f::t_eafb7e0e0dce9b 45
+  s_995f1e3ac5091f::t_75d29d0c0b5595 67
+  s_995f1e3ac5091f::t_bd8d62ecf26c00 209-221
+mobile/src/components/SettingsModal.tsx
+  s_995f1e3ac5091f::t_d072bfda924fe0 12,21-23,26,28,37-41,46,52-53,56,58,60,66-101,108-109,117-122,124,126,128-133,138-152,173-181,198,202,211-216,243,267,277,281-282,284-285,292
+mobile/src/components/AppHeader.tsx
+  s_995f1e3ac5091f::t_cf7c02a7dd6a98 3,7,9,16-17,23,25-27,30-34,37-42,45-50,54-59,66-71,84,104,106,109,125,129,132-133
+mobile/src/lib/themeMode.ts
+  s_995f1e3ac5091f::t_0bb63df5703d12 1-31
+mobile/src/theme.ts
+  s_995f1e3ac5091f::t_957c7c25e4befa 46-79
+  s_995f1e3ac5091f::t_0eaaa32b393d39 1-2
+src/app/globals.css
+  s_995f1e3ac5091f::t_c524860df72221 454-537
+  s_995f1e3ac5091f::t_739ff36ff668a0 407-410,412-417
+  s_995f1e3ac5091f::t_8d00d3ee3d32ec 411
+src/app/api/settings/route.ts
+  s_995f1e3ac5091f::t_6816cd7248d058 18
+mobile/src/components/DatePickerField.tsx
+  s_995f1e3ac5091f::t_57e1bec2915412 4-5
+  s_995f1e3ac5091f::t_b52b04a0ae5aa6 160,163
+  s_995f1e3ac5091f::t_bce0c59a516cb1 37
+  s_995f1e3ac5091f::t_600582ad3963aa 82-89,95
+mobile/src/components/ui.tsx
+  s_995f1e3ac5091f::t_02eb512b40a3c8 11-12,23,25-33,52,65-66,99,106,160
+  s_995f1e3ac5091f::t_87c2c5879a9a4e 107-113
+src/lib/offline.ts
+  s_995f1e3ac5091f::t_6ce10e4f11ab17 245-246
+  s_995f1e3ac5091f::t_1905caa4d73e71 80-81,84-97,102-123
+  s_995f1e3ac5091f::t_ddc8d42adc1354 3
+  s_995f1e3ac5091f::t_9fbc226df79208 136,141-145,152
+src/components/Spendly.tsx
+  s_995f1e3ac5091f::t_75a93b5e3203d4 26
+  s_995f1e3ac5091f::t_2149f5dd63cc01 291
+  s_995f1e3ac5091f::t_15e0955a940169 280-290,292-297
+  s_995f1e3ac5091f::t_2eec6ab5b571db 3
+src/lib/dbError.ts
+  s_995f1e3ac5091f::t_a77025eccf828c 1-29
+src/app/api/auth/register/route.ts
+  s_995f1e3ac5091f::t_975ed54f327974 54-68,72-77
+  s_995f1e3ac5091f::t_140b424683c2a0 31-36
+  s_995f1e3ac5091f::t_0572eddf4719bb 7
+mobile/src/lib/settings.tsx
+  s_995f1e3ac5091f::t_d39268b7f1f339 20-21
+  s_995f1e3ac5091f::t_d670ba3ada6ff4 51
+  s_995f1e3ac5091f::t_36d0b9590f83b2 12
+  s_995f1e3ac5091f::t_da06dfd5824308 181-186
+  s_995f1e3ac5091f::t_3e25c6d767ac64 32
+src/components/SettingsSheet.tsx
+  s_995f1e3ac5091f::t_1664dc35f32e7c 75-76
+  s_995f1e3ac5091f::t_117ed666c3badd 138-162
+  s_995f1e3ac5091f::t_05a8ac236ea45d 15,18-23
+  s_995f1e3ac5091f::t_6ad32b79673b36 85
+  s_995f1e3ac5091f::t_14c6353d4a192b 124
+mobile/src/components/TabBar.tsx
+  s_995f1e3ac5091f::t_855d8ef852ae49 6-7
+  s_995f1e3ac5091f::t_d0af5372af56fa 23,26-31
+  s_995f1e3ac5091f::t_fb4d697fcaca6f 71-75
+mobile/src/components/PeriodBar.tsx
+  s_995f1e3ac5091f::t_02b170fb02ec44 141
+  s_995f1e3ac5091f::t_10fb65d61f3278 28,31,37
+  s_995f1e3ac5091f::t_823944271ea998 63
+  s_995f1e3ac5091f::t_722dbd8a6319cb 79
+  s_995f1e3ac5091f::t_83e7a5b149955e 8-9
+src/app/api/auth/login/route.ts
+  s_995f1e3ac5091f::t_3491f38e2cb161 6
+  s_995f1e3ac5091f::t_5ea455dbdba3a8 39
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "285061048cda03552e82ce6c0af568ca61b7fa52",
+  "prompts": {},
+  "humans": {
+    "h_a373eedd7fd2e3": {
+      "author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  },
+  "sessions": {
+    "s_995f1e3ac5091f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2cfe14fe-abca-475a-b90e-25b3e200ffb2",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  }
+}
