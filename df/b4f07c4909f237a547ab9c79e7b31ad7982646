@@ -1,0 +1,256 @@
+mobile/src/components/ReportModal.tsx
+  s_995f1e3ac5091f::t_4ed4dd8fe895dd 208
+  s_995f1e3ac5091f::t_1f000e7ea69c6a 10,183-186
+src/lib/settings.tsx
+  s_995f1e3ac5091f::t_e39e3ce665ed92 188-215,223-225,227,234-236
+  s_995f1e3ac5091f::t_15820cdb5a0560 21-23,25-26
+  s_995f1e3ac5091f::t_75d29d0c0b5595 68
+  s_995f1e3ac5091f::t_8c3d6ae7f8895c 8
+  s_995f1e3ac5091f::t_310c274aa877be 10
+  s_995f1e3ac5091f::t_bd8d62ecf26c00 238-249
+  s_995f1e3ac5091f::t_9c7c43da081ca8 237
+  s_995f1e3ac5091f::t_eafb7e0e0dce9b 46
+mobile/src/components/TabBar.tsx
+  s_995f1e3ac5091f::t_855d8ef852ae49 6-7
+  s_995f1e3ac5091f::t_d0af5372af56fa 23,26-31
+  s_995f1e3ac5091f::t_fb4d697fcaca6f 71-75
+src/components/Dashboard.tsx
+  s_995f1e3ac5091f::t_9d0ef3470e7c24 3
+  s_995f1e3ac5091f::t_2fd163342b7b06 372
+  s_995f1e3ac5091f::t_8fe6d1698357b7 377
+  s_995f1e3ac5091f::t_601017bb99ccfb 71-74
+  s_995f1e3ac5091f::t_52c22aab58adbe 525
+  s_995f1e3ac5091f::t_938688306539fd 539
+  s_995f1e3ac5091f::t_556670ebd17339 121-124,128-131
+  s_995f1e3ac5091f::t_4299d896c6523f 553-554
+  s_995f1e3ac5091f::t_45d09819a71539 165-167
+  s_995f1e3ac5091f::t_6017aa535efdfc 649-671
+  s_995f1e3ac5091f::t_498e44ce50bdc7 304-305,308
+  s_995f1e3ac5091f::t_c353ecec70ef7c 43
+  s_995f1e3ac5091f::t_43a4b6efc9b6b8 319,321
+mobile/src/components/ui.tsx
+  s_995f1e3ac5091f::t_87c2c5879a9a4e 107-113
+  s_995f1e3ac5091f::t_02eb512b40a3c8 11-12,23,25-33,52,65-66,99,106,160
+src/lib/perf.ts
+  s_995f1e3ac5091f::t_57c900c71e117f 29
+  s_995f1e3ac5091f::t_ed70f777db3eb0 65-73,75-78
+  s_995f1e3ac5091f::t_dd57cd4ed3b6ba 14
+  s_995f1e3ac5091f::t_466b93b801660f 74
+mobile/src/state/store.tsx
+  s_995f1e3ac5091f::t_83a406b71f21ea 224,233-237,310
+  s_995f1e3ac5091f::t_a23e548e97fa9b 314,316
+  s_995f1e3ac5091f::t_14b4b4aac1a8d7 64-67,126-128,131
+  s_995f1e3ac5091f::t_f5459178a432cf 200
+  s_995f1e3ac5091f::t_6926dd6434837f 321,324,329-332,337
+  s_995f1e3ac5091f::t_839a40c0e02bee 346,348
+  s_995f1e3ac5091f::t_fcf0f8cc6a82b7 353,356,361,363,371,386
+  s_995f1e3ac5091f::t_785ddf3306f1cc 214,313,317,345,349
+  s_995f1e3ac5091f::t_25ea8a7e6e29f3 374,377-385
+  s_995f1e3ac5091f::t_f52eda92d6d53e 86-89
+src/app/api/auth/login/route.ts
+  s_995f1e3ac5091f::t_3491f38e2cb161 6
+  s_995f1e3ac5091f::t_5ea455dbdba3a8 39
+src/lib/thumbStore.ts
+  s_995f1e3ac5091f::t_2b5183499fe643 1-99
+mobile/src/screens/ActivityScreen.tsx
+  s_995f1e3ac5091f::t_5b25429cd6e066 81
+  s_995f1e3ac5091f::t_52bb014d99a697 82-84,86-90,272-273
+  s_995f1e3ac5091f::t_619042367069ef 144
+  s_995f1e3ac5091f::t_ad46580b85dc9c 1
+  s_995f1e3ac5091f::t_2ace43f5b8e1b4 156-158
+  s_995f1e3ac5091f::t_d0a94220c50881 176-177
+  s_995f1e3ac5091f::t_8c6c5c1a43769d 299,304-310
+mobile/App.tsx
+  s_995f1e3ac5091f::t_6464cc9521da99 76-77,80
+  s_995f1e3ac5091f::t_e59fc74822ce41 39
+src/app/globals.css
+  s_995f1e3ac5091f::t_fc222dd8e64c1c 158-159
+  s_995f1e3ac5091f::t_8d00d3ee3d32ec 430
+  s_995f1e3ac5091f::t_304a6f9cf7ca89 176-193
+  s_995f1e3ac5091f::t_c524860df72221 473-556
+  s_995f1e3ac5091f::t_739ff36ff668a0 426-429,431-436
+mobile/src/screens/ExpenseFormScreen.tsx
+  s_995f1e3ac5091f::t_163a90a6115ee7 417-421
+  s_995f1e3ac5091f::t_5e265dc5a58bfe 623
+  s_995f1e3ac5091f::t_ef1aa46b76c299 275,279-281,284,288-290
+  s_995f1e3ac5091f::t_9cb83c445e0b01 352
+  s_995f1e3ac5091f::t_103e2d9a90395b 441-445
+  s_995f1e3ac5091f::t_eecc849e29dc18 372
+  s_995f1e3ac5091f::t_07bfa4aba8b567 326,328-341
+  s_995f1e3ac5091f::t_25cdbd5717e40c 561-565
+  s_995f1e3ac5091f::t_2896bab7b266c6 35-36
+  s_995f1e3ac5091f::t_52282d42081836 66,69-86
+  s_995f1e3ac5091f::t_887cee73435225 303-305,310
+  s_995f1e3ac5091f::t_84af38ca3b99fc 385-389
+  s_995f1e3ac5091f::t_145f4a61be459f 460
+  s_995f1e3ac5091f::t_10736221348bc8 533-543
+mobile/src/lib/settings.tsx
+  s_995f1e3ac5091f::t_36d0b9590f83b2 12
+  s_995f1e3ac5091f::t_d670ba3ada6ff4 51
+  s_995f1e3ac5091f::t_d39268b7f1f339 20-21
+  s_995f1e3ac5091f::t_3e25c6d767ac64 32
+  s_995f1e3ac5091f::t_da06dfd5824308 181-186
+mobile/src/lib/currency.tsx
+  s_995f1e3ac5091f::t_f3196fea3fe0a2 33-36,38-51,53,56-60
+  s_995f1e3ac5091f::t_2a399b32abc35c 61
+  s_995f1e3ac5091f::t_4a7b80b9248bc6 112
+mobile/src/components/ExpenseRow.tsx
+  s_995f1e3ac5091f::t_e143c1cf167139 30
+  s_995f1e3ac5091f::t_72451b331c1761 36,45-48
+mobile/src/lib/themeMode.ts
+  s_995f1e3ac5091f::t_0bb63df5703d12 1-31
+src/lib/offline.ts
+  s_995f1e3ac5091f::t_45ec6fc3c22ae8 235
+  s_995f1e3ac5091f::t_6ce10e4f11ab17 246-247
+  s_995f1e3ac5091f::t_ddc8d42adc1354 3
+  s_995f1e3ac5091f::t_d5d2d5ce90d92b 4
+  s_995f1e3ac5091f::t_1905caa4d73e71 81-82,85-98,103-124
+  s_995f1e3ac5091f::t_9fbc226df79208 137,142-146,153
+src/app/api/expenses/route.ts
+  s_995f1e3ac5091f::t_df80f8e5d09f74 6,76
+src/components/BudgetRing.tsx
+  s_995f1e3ac5091f::t_7a57b2cd30526c 57-59
+  s_995f1e3ac5091f::t_6cb10becdd6b8b 165
+  s_995f1e3ac5091f::t_a60b37123eedc5 138
+  s_995f1e3ac5091f::t_b818c0e774b949 98-100
+  s_995f1e3ac5091f::t_f484891ebb1c8d 126-129
+  s_995f1e3ac5091f::t_4b10a6d9f9d759 144-145
+src/app/api/expenses/[id]/route.ts
+  s_995f1e3ac5091f::t_8cc97b1bfaa689 5,84
+src/app/api/auth/register/route.ts
+  s_995f1e3ac5091f::t_0572eddf4719bb 7
+  s_995f1e3ac5091f::t_140b424683c2a0 31-36
+  s_995f1e3ac5091f::t_975ed54f327974 54-68,72-77
+src/components/charts/TrendArea.tsx
+  s_995f1e3ac5091f::t_9cc5bd7531dea7 3,20-21,26,51
+src/components/charts/Bars.tsx
+  s_995f1e3ac5091f::t_7a95110a59c44e 56
+mobile/src/components/PeriodBar.tsx
+  s_995f1e3ac5091f::t_83e7a5b149955e 8-9
+  s_995f1e3ac5091f::t_85d519fe1b4855 1,68-79,104
+  s_995f1e3ac5091f::t_6617bba5c0ce55 18-19,67
+  s_995f1e3ac5091f::t_823944271ea998 65
+  s_995f1e3ac5091f::t_10fb65d61f3278 30,33,39
+  s_995f1e3ac5091f::t_722dbd8a6319cb 87
+  s_995f1e3ac5091f::t_02b170fb02ec44 149
+mobile/src/lib/storage.ts
+  s_995f1e3ac5091f::t_2c1ae0e8775e7b 124-128
+  s_995f1e3ac5091f::t_93bbe9fe80c06e 137-142,144-145,148-150,157-160,163-164,166-174
+  s_995f1e3ac5091f::t_a8b90ca46a5d9a 101-108
+src/components/Spendly.tsx
+  s_995f1e3ac5091f::t_2149f5dd63cc01 292
+  s_995f1e3ac5091f::t_e55f0f66b6ea6b 81-86
+  s_995f1e3ac5091f::t_db48a552517ab0 119
+  s_995f1e3ac5091f::t_096253cdfc98ae 564
+  s_995f1e3ac5091f::t_4ee4cf39ab2f44 568-569
+  s_995f1e3ac5091f::t_dc9b4831bb23c1 66
+  s_995f1e3ac5091f::t_98b2e56d309619 376-380
+  s_995f1e3ac5091f::t_75a93b5e3203d4 26
+  s_995f1e3ac5091f::t_996747f4d47446 503
+  s_995f1e3ac5091f::t_2eec6ab5b571db 3
+  s_995f1e3ac5091f::t_61670e4588dc76 658
+  s_995f1e3ac5091f::t_b1947dbff2546e 584
+  s_995f1e3ac5091f::t_415d1c892db8b9 138
+  s_995f1e3ac5091f::t_0582f6ca53fb00 647
+  s_995f1e3ac5091f::t_15e0955a940169 281-291,293-298
+src/app/api/health/route.ts
+  s_995f1e3ac5091f::t_481e87925bc278 27,29-30
+  s_995f1e3ac5091f::t_d2d4be50ac0ef4 7-18,28
+mobile/src/screens/ChartsScreen.tsx
+  s_995f1e3ac5091f::t_e58a63b78a74c4 278
+  s_995f1e3ac5091f::t_ec990a1b669b28 310-311
+  s_995f1e3ac5091f::t_1f5cc3b8e4cebb 66-68
+src/components/ExpenseList.tsx
+  s_995f1e3ac5091f::t_972c08f159966d 29-30
+  s_995f1e3ac5091f::t_5feee36012fed6 3,11-14,22-28,31-38,44,65,69-70,72,76-78,86-91,96,101,113,119,127-128,143,147,149,161-162
+src/components/ExpenseForm.tsx
+  s_995f1e3ac5091f::t_bfdab1bb703378 422
+  s_995f1e3ac5091f::t_e000b78fc0a919 11
+  s_995f1e3ac5091f::t_7ccefd368f3bc2 334-339
+  s_995f1e3ac5091f::t_a4e1f1e41f20ed 99-102
+  s_995f1e3ac5091f::t_cb6d41d1cb3205 721
+src/lib/currency.tsx
+  s_995f1e3ac5091f::t_52ca35b900b9f0 112,115-119
+  s_995f1e3ac5091f::t_aaf57740af2b1a 28-50
+  s_995f1e3ac5091f::t_5519e076b3fb36 120
+  s_995f1e3ac5091f::t_fa6ece93a260ff 124
+  s_995f1e3ac5091f::t_104b265a5da91d 96
+src/app/api/settings/route.ts
+  s_995f1e3ac5091f::t_6816cd7248d058 18
+mobile/src/components/AppHeader.tsx
+  s_995f1e3ac5091f::t_cf7c02a7dd6a98 3,7,9,12-27,31-32,38,40-42,45-49,52-57,60-65,69-74,81-88,101,104,121,123,126,142,146,149-150
+  s_995f1e3ac5091f::t_02b3b8900401f4 2
+mobile/src/components/SettingsModal.tsx
+  s_995f1e3ac5091f::t_d072bfda924fe0 12,21-23,26,28,37-41,46,52-53,56,58,60,66-101,108-109,117-122,124,126,128-133,138-152,173-181,198,202,211-216,243,267,277,281-282,284-285,292
+mobile/src/components/FloatingAddButton.tsx
+  s_995f1e3ac5091f::t_e71d6697731f0c 60-64
+  s_995f1e3ac5091f::t_5473ad0d12fcf1 8-9
+  s_995f1e3ac5091f::t_3a2b3c68b60b21 19,24-25,27
+mobile/src/components/Background.tsx
+  s_995f1e3ac5091f::t_ee95926d33d588 4-5
+  s_995f1e3ac5091f::t_9b09c48c65ffe4 13-16
+mobile/src/screens/OverviewScreen.tsx
+  s_995f1e3ac5091f::t_29ec1fc7f22d9c 1
+  s_995f1e3ac5091f::t_51c9d2f0cf1041 191-193,196-197,206
+  s_995f1e3ac5091f::t_6d7ef6aaab3135 30
+  s_995f1e3ac5091f::t_38cde7d165fe86 142-147,180
+  s_995f1e3ac5091f::t_ef68fd69b8f211 61-62
+  s_995f1e3ac5091f::t_37ae6f47380e00 58-59
+  s_995f1e3ac5091f::t_4f399e4a88aa1a 35-44
+  s_995f1e3ac5091f::t_8658e752db2ebc 60
+  s_995f1e3ac5091f::t_04e6d650088d32 219
+  s_995f1e3ac5091f::t_e4d1c550c66f40 248-250
+  s_995f1e3ac5091f::t_6d9f313e6aab88 210
+  s_995f1e3ac5091f::t_5e2b8e49fba051 11
+  s_995f1e3ac5091f::t_29e7a021562c2e 190
+src/lib/useEscape.ts
+  s_995f1e3ac5091f::t_e748531b45ab2b 8-10
+  s_995f1e3ac5091f::t_30b9afb57cfc39 1-7,11-20
+mobile/src/components/DatePickerField.tsx
+  s_995f1e3ac5091f::t_bce0c59a516cb1 37
+  s_995f1e3ac5091f::t_600582ad3963aa 82-89,95
+  s_995f1e3ac5091f::t_57e1bec2915412 4-5
+  s_995f1e3ac5091f::t_b52b04a0ae5aa6 160,163
+src/lib/utils.ts
+  s_995f1e3ac5091f::t_befa9b197bc626 39-49
+src/components/ReportModal.tsx
+  s_995f1e3ac5091f::t_b6a1fb207b5054 88-91
+  s_995f1e3ac5091f::t_26b056b61098ab 13
+  s_995f1e3ac5091f::t_aceb4b25fc28fc 134-139
+src/components/SettingsSheet.tsx
+  s_995f1e3ac5091f::t_de1e246da3c250 19
+  s_995f1e3ac5091f::t_05a8ac236ea45d 15,18,20-24
+  s_995f1e3ac5091f::t_1664dc35f32e7c 76-77
+  s_995f1e3ac5091f::t_117ed666c3badd 142-166
+  s_995f1e3ac5091f::t_8a11398528ec7d 282
+  s_995f1e3ac5091f::t_12826e0a4d4afc 268
+  s_995f1e3ac5091f::t_14c6353d4a192b 128
+  s_995f1e3ac5091f::t_6ad32b79673b36 86
+  s_995f1e3ac5091f::t_ad5f552bbce24a 99,108,112-118
+mobile/src/theme.ts
+  s_995f1e3ac5091f::t_0eaaa32b393d39 1-2
+  s_995f1e3ac5091f::t_957c7c25e4befa 46-79
+src/lib/dbError.ts
+  s_995f1e3ac5091f::t_a77025eccf828c 1-29
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "dfb4f07c4909f237a547ab9c79e7b31ad7982646",
+  "prompts": {},
+  "humans": {
+    "h_a373eedd7fd2e3": {
+      "author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  },
+  "sessions": {
+    "s_995f1e3ac5091f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2cfe14fe-abca-475a-b90e-25b3e200ffb2",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": null
+    }
+  }
+}
