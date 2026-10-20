@@ -2,6 +2,7 @@ import os from "os";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { adminGate, makeAdminPool } from "@/lib/admin";
+import { neonUsage } from "@/lib/neonUsage";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -27,6 +28,7 @@ const bodySchema = z.object({
     "payers",
     "activity",
     "resets",
+    "usage",
   ]),
   page: z.number().int().min(0).max(100_000).optional(),
   bucket: z.enum(["day", "week", "month", "year"]).optional(),
@@ -247,6 +249,47 @@ async function systemStats(): Promise<SystemStats> {
   };
 }
 
+type QueryStats = {
+  last24h: number;
+  last7d: number;
+  periodTotal: number;
+  hourly: { hour: string; count: number }[];
+};
+
+// Prisma query counts from DbUsage (see lib/dbUsage.ts). Null if the table
+// doesn't exist yet or the DB is unreachable.
+async function queryStats(pool: import("pg").Pool, since: Date): Promise<QueryStats | null> {
+  try {
+    const now = Date.now();
+    const thisHour = Math.floor(now / 3_600_000) * 3_600_000;
+    const from = new Date(Math.min(since.getTime(), now - 7 * 86_400_000));
+    const { rows } = await pool.query(
+      `SELECT hour, queries FROM "DbUsage" WHERE hour >= $1 ORDER BY hour`,
+      [from]
+    );
+    const hourly = new Map<number, number>();
+    for (let i = 23; i >= 0; i--) hourly.set(thisHour - i * 3_600_000, 0);
+    let last24h = 0, last7d = 0, periodTotal = 0;
+    for (const r of rows) {
+      const t = new Date(r.hour).getTime();
+      const n = Number(r.queries);
+      if (t >= since.getTime()) periodTotal += n;
+      if (t > now - 7 * 86_400_000) last7d += n;
+      if (t > now - 86_400_000) last24h += n;
+      if (hourly.has(t)) hourly.set(t, hourly.get(t)! + n);
+    }
+    await pool.query(`DELETE FROM "DbUsage" WHERE hour < $1`, [new Date(now - 95 * 86_400_000)]);
+    return {
+      last24h,
+      last7d,
+      periodTotal,
+      hourly: [...hourly].map(([t, count]) => ({ hour: new Date(t).toISOString(), count })),
+    };
+  } catch {
+    return null;
+  }
+}
+
 export async function POST(req: Request) {
   let raw: unknown;
   try {
@@ -272,6 +315,18 @@ export async function POST(req: Request) {
 
   try {
     switch (section) {
+      // Compute hours come from the Neon API and never wake the database.
+      // `light` skips the query counts, which do read from the DB.
+      case "usage": {
+        const neon = await neonUsage();
+        if (light) return json({ neon });
+        const now = new Date();
+        const since = neon.periodStart
+          ? new Date(neon.periodStart)
+          : new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
+        return json({ neon, queries: await queryStats(pool, since) });
+      }
+
       case "overview": {
         const [exp, led] = await Promise.all([
           pool.query(

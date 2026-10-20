@@ -110,6 +110,25 @@ type ResetItem = {
   titles: string[];
   amounts: number[];
 };
+type Usage = {
+  neon: {
+    configured: boolean;
+    error?: string;
+    periodStart?: string;
+    periodEnd?: string;
+    cuHours?: number;
+    activeHours?: number;
+    limitCuHours: number;
+    projectedCuHours?: number | null;
+    compute?: { state: string; lastActive: string | null; minCu: number; maxCu: number } | null;
+  };
+  queries?: {
+    last24h: number;
+    last7d: number;
+    periodTotal: number;
+    hourly: { hour: string; count: number }[];
+  } | null;
+};
 type Tab = "spaces" | "categories" | "payers" | "activity" | "resets";
 type Creds = { databaseUrl: string; authSecret: string };
 
@@ -172,16 +191,20 @@ export default function AdminDashboard({ open, onClose }: { open: boolean; onClo
   const [storage, setStorage] = useState<Storage | null>(null);
   const [ocr, setOcr] = useState<Ocr | null>(null);
   const [system, setSystem] = useState<System | null>(null);
+  const [usage, setUsage] = useState<Usage | null>(null);
+  const [dbDown, setDbDown] = useState(false);
 
   // Collapsible detail panels — all closed by default. Data is fetched on
   // expand and cleared on collapse so nothing heavy lingers in memory.
-  type PanelKind = "storage" | "ocr" | "system";
+  type PanelKind = "usage" | "storage" | "ocr" | "system";
   const [openPanel, setOpenPanel] = useState<Record<PanelKind, boolean>>({
+    usage: false,
     storage: false,
     ocr: false,
     system: false,
   });
   const [panelLoading, setPanelLoading] = useState<Record<PanelKind, boolean>>({
+    usage: false,
     storage: false,
     ocr: false,
     system: false,
@@ -213,8 +236,10 @@ export default function AdminDashboard({ open, onClose }: { open: boolean; onClo
       setStorage(null);
       setOcr(null);
       setSystem(null);
-      setOpenPanel({ storage: false, ocr: false, system: false });
-      setPanelLoading({ storage: false, ocr: false, system: false });
+      setUsage(null);
+      setDbDown(false);
+      setOpenPanel({ usage: false, storage: false, ocr: false, system: false });
+      setPanelLoading({ usage: false, storage: false, ocr: false, system: false });
       setTab("spaces");
       setSpaces(null);
       setCategories(null);
@@ -239,7 +264,7 @@ export default function AdminDashboard({ open, onClose }: { open: boolean; onClo
       body: JSON.stringify({ ...c, section, ...extra }),
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data?.error ?? "Request failed.");
+    if (!res.ok) throw Object.assign(new Error(data?.error ?? "Request failed."), { status: res.status });
     return data;
   }
 
@@ -270,17 +295,24 @@ export default function AdminDashboard({ open, onClose }: { open: boolean; onClo
       // Light unlock: fetch only the cheap totals. The storage / OCR / host
       // panels stay collapsed and each loads its own data when expanded, so the
       // page isn't heavy on first paint.
-      const ov = await runSection(c, "overview", { light: true });
-      setTotals(ov.totals as Totals);
+      try {
+        const ov = await runSection(c, "overview", { light: true });
+        setTotals(ov.totals as Totals);
+        setDbDown(false);
+      } catch (err) {
+        // 502 = credentials were accepted but the DB couldn't be queried (e.g.
+        // Neon quota exhausted). Unlock anyway so the usage panel still works.
+        if ((err as { status?: number }).status !== 502) throw err;
+        setDbDown(true);
+      }
       setCreds(c);
       setTab("spaces");
-      // Load the first tab immediately; other tabs load on demand.
-      const sp = await runSection(c, "spaces", { page: 0 });
-      setSpaces(sp as Paged<Space>);
       // Clear the raw gate inputs — the working copy lives in `creds`.
       setDatabaseUrl("");
       setAuthSecret("");
       setPasteText("");
+      // Load the first tab immediately; other tabs load on demand.
+      load(c, "spaces", { page: 0 });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
     } finally {
@@ -310,7 +342,8 @@ export default function AdminDashboard({ open, onClose }: { open: boolean; onClo
   async function togglePanel(kind: PanelKind) {
     if (openPanel[kind]) {
       setOpenPanel((p) => ({ ...p, [kind]: false }));
-      if (kind === "storage") setStorage(null);
+      if (kind === "usage") setUsage(null);
+      else if (kind === "storage") setStorage(null);
       else if (kind === "ocr") setOcr(null);
       else setSystem(null);
       return;
@@ -320,8 +353,10 @@ export default function AdminDashboard({ open, onClose }: { open: boolean; onClo
     if (!creds) return;
     setPanelLoading((p) => ({ ...p, [kind]: true }));
     try {
-      const data = await runSection(creds, kind);
-      if (kind === "storage") setStorage((data.storage ?? null) as Storage | null);
+      // While the DB is unreachable, skip the query counts (they'd just fail).
+      const data = await runSection(creds, kind, kind === "usage" && dbDown ? { light: true } : {});
+      if (kind === "usage") setUsage(data as Usage);
+      else if (kind === "storage") setStorage((data.storage ?? null) as Storage | null);
       else if (kind === "ocr") setOcr((data.ocr ?? null) as Ocr | null);
       else setSystem((data.system ?? null) as System | null);
     } catch {
@@ -538,9 +573,26 @@ export default function AdminDashboard({ open, onClose }: { open: boolean; onClo
                   Amounts are currency-agnostic — currency is a per-device display setting and isn&apos;t stored.
                 </p>
 
+                {dbDown && (
+                  <p className="rounded-xl border border-[#ffb347]/30 bg-[#ffb347]/10 px-3 py-2 text-sm text-[#ffd8a8]">
+                    The database couldn&apos;t be reached — it may be over its monthly compute quota. Open
+                    &ldquo;Database usage&rdquo; to check; the other panels need the database.
+                  </p>
+                )}
+
                 {/* Detail panels — collapsed by default, each loads on expand
                     and clears on collapse to keep the page light. */}
                 <div className="space-y-2">
+                  <CollapseCard
+                    icon={<ActivityIcon className="h-3.5 w-3.5" />}
+                    title="Database usage (Neon)"
+                    open={openPanel.usage}
+                    loading={panelLoading.usage}
+                    onToggle={() => togglePanel("usage")}
+                  >
+                    {usage ? <UsagePanel u={usage} /> : null}
+                  </CollapseCard>
+
                   <CollapseCard
                     icon={<HardDrive className="h-3.5 w-3.5" />}
                     title="Database storage"
@@ -952,6 +1004,115 @@ function StoragePanel({ s }: { s: Storage }) {
 
       {/* detailed breakdown of where the DB size sits */}
       <StorageBreakdown s={s} />
+    </div>
+  );
+}
+
+function UsagePanel({ u }: { u: Usage }) {
+  const n = u.neon;
+  const q = u.queries;
+  const nfmt = (v: number) => v.toLocaleString("en-IN", { maximumFractionDigits: 1 });
+  const day = (s?: string) => (s ? new Date(s).toLocaleDateString("en-IN", { day: "2-digit", month: "short" }) : "—");
+  const used = n.cuHours ?? 0;
+  const usedPct = n.limitCuHours > 0 ? Math.min(100, (used / n.limitCuHours) * 100) : 0;
+  const projected = n.projectedCuHours ?? null;
+  const overPace = projected !== null && projected > n.limitCuHours;
+  const maxHourly = Math.max(1, ...(q?.hourly.map((h) => h.count) ?? [0]));
+
+  return (
+    <div className="space-y-3">
+      <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+        {!n.configured ? (
+          <p className="text-[13px] text-white/55">
+            Set <span className="text-white/70">NEON_API_KEY</span> and <span className="text-white/70">NEON_PROJECT_ID</span> in
+            your env to see compute hours. Reading them never wakes the database.
+          </p>
+        ) : n.error ? (
+          <p className="text-[13px] text-[#ffb3b3]">{n.error}</p>
+        ) : (
+          <>
+            <p className="text-xl font-semibold tabular-nums">
+              {nfmt(used)}
+              <span className="text-sm font-normal text-white/45"> / {n.limitCuHours} CU-hours this cycle</span>
+            </p>
+            <div className="mt-2 h-2 overflow-hidden rounded-full bg-white/5" title="Monthly compute used">
+              <div
+                className={`h-full rounded-full ${
+                  usedPct > 85
+                    ? "bg-gradient-to-r from-[#ff6b6b] to-[#ff8787]"
+                    : "bg-gradient-to-r from-[#7c8cff] to-[#ff6bd0]"
+                }`}
+                style={{ width: `${usedPct}%` }}
+              />
+            </div>
+            <p className="mt-1.5 text-[11px] text-white/45">
+              {usedPct.toFixed(1)}% used · cycle {day(n.periodStart)} – {day(n.periodEnd)} · resets {day(n.periodEnd)}
+            </p>
+            <div className="mt-3 grid grid-cols-3 gap-2 text-center">
+              <div className="rounded-xl bg-white/5 p-2">
+                <p className="text-[10px] uppercase tracking-wide text-white/40">Hours awake</p>
+                <p className="text-sm font-semibold tabular-nums">{nfmt(n.activeHours ?? 0)}</p>
+              </div>
+              <div className="rounded-xl bg-white/5 p-2">
+                <p className="text-[10px] uppercase tracking-wide text-white/40">Month-end pace</p>
+                <p className={`text-sm font-semibold tabular-nums ${overPace ? "text-[#ff8787]" : "text-[#7be3a8]"}`}>
+                  {projected !== null ? nfmt(projected) : "—"}
+                </p>
+              </div>
+              <div className="rounded-xl bg-white/5 p-2">
+                <p className="text-[10px] uppercase tracking-wide text-white/40">Compute now</p>
+                <p className="text-sm font-semibold">
+                  {n.compute ? (n.compute.state === "active" ? "Awake" : "Asleep") : "—"}
+                </p>
+              </div>
+            </div>
+            {n.compute && n.compute.maxCu > 0.25 && (
+              <p className="mt-2 text-[11px] text-[#ffd8a8]">
+                Autoscaling max is {n.compute.maxCu} CU — each awake hour can cost up to {n.compute.maxCu / 0.25}× more.
+                Set max to 0.25 CU in Neon to stretch the free quota.
+              </p>
+            )}
+            {overPace && (
+              <p className="mt-1 text-[11px] text-[#ffb3b3]">
+                At this pace the cycle will exceed the free quota. Check for pingers hitting database endpoints.
+              </p>
+            )}
+          </>
+        )}
+      </div>
+
+      {q && (
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+          <div className="mb-2 grid grid-cols-3 gap-2 text-center">
+            {[
+              ["Queries 24h", q.last24h],
+              ["Queries 7d", q.last7d],
+              ["This cycle", q.periodTotal],
+            ].map(([label, v]) => (
+              <div key={label as string} className="rounded-xl bg-white/5 p-2">
+                <p className="text-[10px] uppercase tracking-wide text-white/40">{label}</p>
+                <p className="text-sm font-semibold tabular-nums">{(v as number).toLocaleString("en-IN")}</p>
+              </div>
+            ))}
+          </div>
+          <div className="flex h-20 items-end gap-[2px]">
+            {q.hourly.map((h) => (
+              <div
+                key={h.hour}
+                title={`${new Date(h.hour).toLocaleString("en-IN", { hour: "numeric", day: "2-digit", month: "short" })}: ${h.count} queries`}
+                className="flex-1 rounded-t bg-gradient-to-t from-[#7c8cff] to-[#ff6bd0]"
+                style={{ height: `${Math.max(2, (h.count / maxHourly) * 100)}%`, opacity: h.count ? 1 : 0.2 }}
+              />
+            ))}
+          </div>
+          <p className="mt-1.5 text-[11px] text-white/35">Database queries per hour, last 24 hours.</p>
+        </div>
+      )}
+      {u.queries === null && (
+        <p className="text-[11px] text-white/40">
+          Query counts unavailable — the database is unreachable or the DbUsage table hasn&apos;t been created yet (run the schema push).
+        </p>
+      )}
     </div>
   );
 }

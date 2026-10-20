@@ -83,3 +83,9 @@ model Expense {
 
   @@index([ledgerId, date])
 }
+
+// Database queries per UTC hour, for the admin "Database usage" panel.
+model DbUsage {
+  hour    DateTime @id
+  queries Int      @default(0)
+}

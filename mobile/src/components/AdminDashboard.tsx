@@ -40,7 +40,7 @@ import {
   X,
   XCircle,
 } from 'lucide-react-native';
-import { api } from '../lib/api';
+import { api, ApiError } from '../lib/api';
 import { colors, font, radius, spacing } from '../theme';
 
 /* ---------- types (mirror the web admin) ---------- */
@@ -120,7 +120,26 @@ type System = {
   node: string;
   region: string | null;
 };
-type PanelKind = 'storage' | 'ocr' | 'system';
+type Usage = {
+  neon: {
+    configured: boolean;
+    error?: string;
+    periodStart?: string;
+    periodEnd?: string;
+    cuHours?: number;
+    activeHours?: number;
+    limitCuHours: number;
+    projectedCuHours?: number | null;
+    compute?: { state: string; lastActive: string | null; minCu: number; maxCu: number } | null;
+  };
+  queries?: {
+    last24h: number;
+    last7d: number;
+    periodTotal: number;
+    hourly: { hour: string; count: number }[];
+  } | null;
+};
+type PanelKind = 'usage' | 'storage' | 'ocr' | 'system';
 
 /* ---------- helpers ---------- */
 
@@ -257,15 +276,19 @@ export function AdminDashboard({ open, onClose }: { open: boolean; onClose: () =
   const [storage, setStorage] = useState<Storage | null>(null);
   const [ocr, setOcr] = useState<Ocr | null>(null);
   const [system, setSystem] = useState<System | null>(null);
+  const [usage, setUsage] = useState<Usage | null>(null);
+  const [dbDown, setDbDown] = useState(false);
 
   // Collapsible detail panels — closed by default. Data is fetched on expand and
   // cleared on collapse so nothing heavy lingers in device memory.
   const [openPanel, setOpenPanel] = useState<Record<PanelKind, boolean>>({
+    usage: false,
     storage: false,
     ocr: false,
     system: false,
   });
   const [panelLoading, setPanelLoading] = useState<Record<PanelKind, boolean>>({
+    usage: false,
     storage: false,
     ocr: false,
     system: false,
@@ -296,8 +319,10 @@ export function AdminDashboard({ open, onClose }: { open: boolean; onClose: () =
       setStorage(null);
       setOcr(null);
       setSystem(null);
-      setOpenPanel({ storage: false, ocr: false, system: false });
-      setPanelLoading({ storage: false, ocr: false, system: false });
+      setUsage(null);
+      setDbDown(false);
+      setOpenPanel({ usage: false, storage: false, ocr: false, system: false });
+      setPanelLoading({ usage: false, storage: false, ocr: false, system: false });
       setTab('spaces');
       setSpaces(null);
       setCategories(null);
@@ -339,15 +364,22 @@ export function AdminDashboard({ open, onClose }: { open: boolean; onClose: () =
       // Light unlock: only the cheap totals. The storage / OCR / host panels stay
       // collapsed and each fetches its own slice on expand, so unlocking is fast
       // and the screen stays light on the phone.
-      const ov = await api.adminSection<Overview>(c, 'overview', { light: true });
-      setTotals(ov.totals);
+      try {
+        const ov = await api.adminSection<Overview>(c, 'overview', { light: true });
+        setTotals(ov.totals);
+        setDbDown(false);
+      } catch (e) {
+        // 502 = credentials were accepted but the DB couldn't be queried (e.g.
+        // Neon quota exhausted). Unlock anyway so the usage panel still works.
+        if (!(e instanceof ApiError) || e.status !== 502) throw e;
+        setDbDown(true);
+      }
       setCreds(c);
       setTab('spaces');
-      const sp = await api.adminSection<Paged<Space>>(c, 'spaces', { page: 0 });
-      setSpaces(sp);
       setDatabaseUrl('');
       setAuthSecret('');
       setPasteText('');
+      void load(c, 'spaces', { page: 0 });
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Something went wrong.');
     } finally {
@@ -377,7 +409,8 @@ export function AdminDashboard({ open, onClose }: { open: boolean; onClose: () =
   async function togglePanel(kind: PanelKind) {
     if (openPanel[kind]) {
       setOpenPanel(p => ({ ...p, [kind]: false }));
-      if (kind === 'storage') setStorage(null);
+      if (kind === 'usage') setUsage(null);
+      else if (kind === 'storage') setStorage(null);
       else if (kind === 'ocr') setOcr(null);
       else setSystem(null);
       return;
@@ -387,7 +420,10 @@ export function AdminDashboard({ open, onClose }: { open: boolean; onClose: () =
     if (!creds) return;
     setPanelLoading(p => ({ ...p, [kind]: true }));
     try {
-      if (kind === 'storage') {
+      if (kind === 'usage') {
+        // While the DB is unreachable, skip the query counts (they'd just fail).
+        setUsage(await api.adminSection<Usage>(creds, 'usage', dbDown ? { light: true } : {}));
+      } else if (kind === 'storage') {
         const d = await api.adminSection<{ storage: Storage | null }>(creds, 'storage');
         setStorage(d.storage ?? null);
       } else if (kind === 'ocr') {
@@ -544,9 +580,26 @@ export function AdminDashboard({ open, onClose }: { open: boolean; onClose: () =
                 Amounts are currency-agnostic — currency is a per-device display setting and isn't stored.
               </Text>
 
+              {dbDown ? (
+                <Text style={styles.warnBox}>
+                  The database couldn't be reached — it may be over its monthly compute quota. Open
+                  "Database usage" to check; the other panels need the database.
+                </Text>
+              ) : null}
+
               {/* Detail panels — collapsed by default, each loads on expand and
                   clears on collapse to keep the screen light. */}
               <View style={{ gap: spacing.xs }}>
+                <CollapseCard
+                  icon={<ActivityIcon size={13} color={colors.accent} />}
+                  title="Database usage (Neon)"
+                  open={openPanel.usage}
+                  loading={panelLoading.usage}
+                  onToggle={() => togglePanel('usage')}
+                >
+                  {usage ? <UsagePanel u={usage} /> : null}
+                </CollapseCard>
+
                 <CollapseCard
                   icon={<HardDrive size={13} color={colors.textDim} />}
                   title="Database storage"
@@ -737,6 +790,107 @@ function StoragePanel({ s }: { s: Storage }) {
             most of a small DB is baseline overhead, not your rows.
           </Text>
         </View>
+      ) : null}
+    </View>
+  );
+}
+
+function UsagePanel({ u }: { u: Usage }) {
+  const n = u.neon;
+  const q = u.queries;
+  const dec = (v: number) => v.toLocaleString('en-IN', { maximumFractionDigits: 1 });
+  const day = (s?: string) => (s ? new Date(s).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' }) : '—');
+  const used = n.cuHours ?? 0;
+  const usedPct = n.limitCuHours > 0 ? Math.min(100, (used / n.limitCuHours) * 100) : 0;
+  const projected = n.projectedCuHours ?? null;
+  const overPace = projected !== null && projected > n.limitCuHours;
+  const maxHourly = Math.max(1, ...(q?.hourly.map(h => h.count) ?? [0]));
+
+  return (
+    <View style={{ gap: spacing.sm }}>
+      <View style={styles.card}>
+        <View style={styles.cardHead}>
+          <ActivityIcon size={13} color={colors.accent} />
+          <Text style={styles.cardHeadText}>Compute (Neon)</Text>
+        </View>
+        {!n.configured ? (
+          <Text style={styles.tinyDim}>
+            Set NEON_API_KEY and NEON_PROJECT_ID on the server to see compute hours. Reading them
+            never wakes the database.
+          </Text>
+        ) : n.error ? (
+          <Text style={[styles.tinyDim, { color: colors.red }]}>{n.error}</Text>
+        ) : (
+          <>
+            <Text style={styles.bigNum}>
+              {dec(used)}
+              <Text style={styles.bigNumSub}> / {n.limitCuHours} CU-hours this cycle</Text>
+            </Text>
+            <Bar ratio={usedPct / 100} colorA={usedPct > 85 ? colors.red : colors.primary} />
+            <Text style={styles.tinyDim}>
+              {usedPct.toFixed(1)}% used · cycle {day(n.periodStart)} – {day(n.periodEnd)} · resets {day(n.periodEnd)}
+            </Text>
+            <View style={styles.rowBetween}>
+              <Text style={styles.rowLabel}>Hours awake</Text>
+              <Text style={styles.rowValue}>{dec(n.activeHours ?? 0)}</Text>
+            </View>
+            <View style={styles.rowBetween}>
+              <Text style={styles.rowLabel}>Month-end pace</Text>
+              <Text style={[styles.rowValue, { color: overPace ? colors.red : colors.green }]}>
+                {projected !== null ? `${dec(projected)} CU-h` : '—'}
+              </Text>
+            </View>
+            <View style={styles.rowBetween}>
+              <Text style={styles.rowLabel}>Compute now</Text>
+              <Text style={styles.rowValue}>
+                {n.compute ? `${n.compute.state === 'active' ? 'Awake' : 'Asleep'} · ${n.compute.minCu}–${n.compute.maxCu} CU` : '—'}
+              </Text>
+            </View>
+            {n.compute && n.compute.maxCu > 0.25 ? (
+              <Text style={[styles.tinyDim, { color: colors.amber }]}>
+                Autoscaling max is {n.compute.maxCu} CU — each awake hour can cost up to {n.compute.maxCu / 0.25}× more.
+                Set max to 0.25 CU in Neon to stretch the free quota.
+              </Text>
+            ) : null}
+            {overPace ? (
+              <Text style={[styles.tinyDim, { color: colors.red }]}>
+                At this pace the cycle will exceed the free quota. Check for pingers hitting database endpoints.
+              </Text>
+            ) : null}
+          </>
+        )}
+      </View>
+
+      {q ? (
+        <View style={styles.card}>
+          <View style={styles.cardHead}>
+            <Database size={13} color={colors.textDim} />
+            <Text style={styles.cardHeadText}>Database queries</Text>
+          </View>
+          <View style={styles.rowBetween}>
+            <Text style={styles.rowLabel}>Last 24h · 7d · cycle</Text>
+            <Text style={styles.rowValue}>
+              {nfmt(q.last24h)} · {nfmt(q.last7d)} · {nfmt(q.periodTotal)}
+            </Text>
+          </View>
+          <View style={styles.hourBars}>
+            {q.hourly.map(h => (
+              <View
+                key={h.hour}
+                style={[
+                  styles.hourBar,
+                  { height: `${Math.max(3, (h.count / maxHourly) * 100)}%`, opacity: h.count ? 1 : 0.25 },
+                ]}
+              />
+            ))}
+          </View>
+          <Text style={styles.tinyFaint}>Queries per hour, last 24 hours.</Text>
+        </View>
+      ) : null}
+      {u.queries === null ? (
+        <Text style={styles.tinyFaint}>
+          Query counts unavailable — the database is unreachable or the DbUsage table hasn't been created yet.
+        </Text>
       ) : null}
     </View>
   );
@@ -1479,6 +1633,18 @@ const styles = StyleSheet.create({
   deltaText: { fontSize: font.h3, fontWeight: '800' },
 
   sectionTitle: { color: colors.text, fontSize: font.small, fontWeight: '700', marginBottom: spacing.sm },
+  warnBox: {
+    color: '#ffd8a8',
+    fontSize: font.small,
+    lineHeight: 19,
+    padding: spacing.sm,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: 'rgba(255,179,71,0.3)',
+    backgroundColor: 'rgba(255,179,71,0.1)',
+  },
+  hourBars: { flexDirection: 'row', alignItems: 'flex-end', gap: 2, height: 64, marginTop: spacing.sm },
+  hourBar: { flex: 1, borderTopLeftRadius: 3, borderTopRightRadius: 3, backgroundColor: colors.accent },
   barsRow: {
     alignItems: 'flex-end', gap: spacing.sm, padding: spacing.md,
     backgroundColor: colors.surface, borderRadius: radius.md, borderWidth: 1, borderColor: colors.border,
