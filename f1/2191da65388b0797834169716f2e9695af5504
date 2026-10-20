@@ -1,0 +1,62 @@
+src/components/AdminDashboard.tsx
+  s_cb0fba85de97fe::t_7f0ced28f1c957 576-582,586-595
+  s_cb0fba85de97fe::t_b2554b560cf115 194-195,199,201,207
+  s_cb0fba85de97fe::t_855002bd1ebfaa 1011-1119
+  s_cb0fba85de97fe::t_6aba1aa3421bb5 113-131
+  s_cb0fba85de97fe::t_8c27e691809139 345-346,356-359
+  s_cb0fba85de97fe::t_134370fa7c3e41 239-242
+  s_cb0fba85de97fe::t_7dd1a7264fae40 298-307,314-315
+  s_cb0fba85de97fe::t_9a74d32abd6cf4 267
+src/lib/prisma.ts
+  s_cb0fba85de97fe::t_503d6db9c646a0 2,8-9,12-16
+src/lib/neonUsage.ts
+  s_cb0fba85de97fe::t_f8d2836dd39104 1-101
+src/app/api/admin/stats/route.ts
+  s_cb0fba85de97fe::t_9ee4c3c01bf959 318-329
+  s_cb0fba85de97fe::t_12bbd65908930b 252-292
+  s_cb0fba85de97fe::t_37bb379284f0d9 5
+  s_cb0fba85de97fe::t_a5a72bcd696426 31
+src/lib/dbUsage.ts
+  s_cb0fba85de97fe::t_71432063e8e027 1-57
+prisma/schema.sqlite.prisma
+  s_cb0fba85de97fe::t_5480b3f873269a 65-70
+prisma/schema.prisma
+  s_cb0fba85de97fe::t_3fde8bffc1ac57 86-91
+mobile/src/components/AdminDashboard.tsx
+  s_cb0fba85de97fe::t_d8584b552f7998 1636-1647
+  s_cb0fba85de97fe::t_0a8c90cd24e6a6 583-589,593-602
+  s_cb0fba85de97fe::t_4d91e0bda55743 798-898
+  s_cb0fba85de97fe::t_d20d2641f276b9 412-413,423-426
+  s_cb0fba85de97fe::t_36341a3a20e3ad 43
+  s_cb0fba85de97fe::t_677c65f62815a9 123-142
+  s_cb0fba85de97fe::t_bb6b2ccd328d42 367-376,382
+  s_cb0fba85de97fe::t_20b1e57d65c48e 279-280,285,291
+  s_cb0fba85de97fe::t_cf5a54c41b8f4e 322-325
+.env.example
+  s_cb0fba85de97fe::t_a3be26dc481f92 41-49
+package-lock.json
+  s_cb0fba85de97fe::t_0ad4d42466b21a 16,3011-3079,5637-5671,6165-6176,6604-6612,7780-7785,7806-7814,8207-8218,8356-8370,8412-8420,10647-10655,11664-11688
+package.json
+  s_cb0fba85de97fe::t_7f6b321043f3e9 27
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f12191da65388b0797834169716f2e9695af5504",
+  "prompts": {},
+  "humans": {
+    "h_a373eedd7fd2e3": {
+      "author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  },
+  "sessions": {
+    "s_cb0fba85de97fe": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "734c7345-66fa-44f9-a3c2-de3b88fff4a0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "rakbiswa <rakbiswa@cisco.com>"
+    }
+  }
+}
